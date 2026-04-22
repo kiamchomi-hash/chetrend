@@ -716,7 +716,8 @@ html.is-mobile-viewport .mobile-topic-stage__view--list {
 
 html.is-mobile-viewport .mobile-topic-stage__view--create {
   display: flex;
-  align-items: stretch;
+  align-items: flex-start;
+  justify-content: flex-start;
   opacity: 0;
   transform: translateY(12px);
   pointer-events: none;
@@ -741,10 +742,11 @@ html.is-mobile-viewport .mobile-topic-stage__view--list .scroll-list {
 html.is-mobile-viewport .mobile-create-card {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 4px;
   width: 100%;
-  min-height: 100%;
-  padding: 8px 0 0;
+  min-height: 0;
+  align-self: flex-start;
+  padding: 4px 0 0;
   background: transparent;
   border: 0;
   border-radius: 0;
@@ -756,7 +758,7 @@ html.is-mobile-viewport .mobile-create-card__header {
   align-items: flex-start;
   justify-content: flex-end;
   gap: 10px;
-  padding: 0 0 4px;
+  padding: 0 0 2px;
   border-bottom: 1px solid var(--line);
   flex: 0 0 auto;
 }
@@ -797,8 +799,8 @@ html.is-mobile-viewport .text-button {
 }
 
 html.is-mobile-viewport .create-form--mobile {
-  padding: 8px 0 0;
-  gap: 10px;
+  padding: 4px 0 0;
+  gap: 8px;
   flex: 0 0 auto;
 }
 
@@ -808,12 +810,16 @@ html.is-mobile-viewport .create-form--mobile .primary-button {
 }
 
 html.is-mobile-viewport .create-form--mobile .field {
-  gap: 4px;
+  gap: 0;
+}
+
+html.is-mobile-viewport .create-form--mobile .field span {
+  display: none;
 }
 
 html.is-mobile-viewport .create-form--mobile input,
 html.is-mobile-viewport .create-form--mobile textarea {
-  padding: 0.82rem 0.92rem;
+  padding: 0.74rem 0.92rem;
 }
 
 html.is-mobile-viewport .panel__header,
