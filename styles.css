@@ -648,7 +648,8 @@ textarea:focus {
   gap: 10px;
   flex: 1 1 0;
   position: relative;
-  padding: 0.72rem 0.85rem 0.72rem 3rem;
+  min-height: 44px;
+  padding: 0.85rem 1rem 0.85rem 3.25rem;
   text-align: center;
 }
 
@@ -1314,6 +1315,8 @@ html.is-mobile-viewport .drawer-ranking__switch .icon-button {
 html.is-mobile-viewport .drawer-ranking__switch .ranking-switch__button {
   min-width: 0;
   width: 100%;
+  min-height: 44px;
+  padding: 0.85rem 1rem 0.85rem 3.25rem;
 }
 
 html.is-mobile-viewport .drawer-ranking__switch .button-label,
