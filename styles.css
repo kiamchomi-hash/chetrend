@@ -868,6 +868,7 @@ html.is-mobile-viewport .drawer--right {
   padding: 0;
   left: 0;
   right: 0;
+  background: color-mix(in srgb, var(--surface-strong) 90%, var(--bg) 10%);
 }
 
 html.is-mobile-viewport .drawer--right.is-open {
@@ -883,8 +884,9 @@ html.is-mobile-viewport .drawer--right.is-closing {
 html.is-mobile-viewport .drawer__header {
   align-items: center;
   min-height: 70px;
-  padding: 12px 12px 10px;
+  padding: 12px 12px 12px;
   border-bottom: 1px solid color-mix(in srgb, var(--accent-soft) 65%, var(--line));
+  background: color-mix(in srgb, var(--surface-strong) 98%, var(--bg) 2%);
 }
 
 html.is-mobile-viewport .drawer__header .icon-button {
@@ -916,6 +918,7 @@ html.is-mobile-viewport .drawer__section--half {
 
 html.is-mobile-viewport .drawer--right .drawer__section {
   align-content: start;
+  background: color-mix(in srgb, var(--surface-strong) 90%, var(--bg) 10%);
 }
 
 html.is-mobile-viewport .drawer__section--half:first-of-type {
