@@ -1042,7 +1042,7 @@ html.is-mobile-viewport .shell[data-mobile-view="create"] .mobile-topic-stage__v
 
 html.is-mobile-viewport .mobile-topic-stage__view--list .scroll-list {
   height: 100%;
-  padding: 10px 4px 10px 2px;
+  padding: 10px 4px 16px 2px;
   scrollbar-width: thin;
   scrollbar-color: color-mix(in srgb, var(--accent) 60%, var(--bg) 40%) transparent;
 }
@@ -1064,7 +1064,7 @@ html.is-mobile-viewport .mobile-topic-stage__view--list .scroll-list::-webkit-sc
 html.is-mobile-viewport .mobile-topic-stage__view--list .scroll-list::-webkit-scrollbar-track {
   background: transparent;
   margin-top: 10px;
-  margin-bottom: 10px;
+  margin-bottom: 18px;
 }
 
 html.is-mobile-viewport .mobile-topic-stage__view--list .scroll-list::-webkit-scrollbar-thumb {
@@ -1340,7 +1340,7 @@ html.is-mobile-viewport .drawer--right .ranking-mode {
 }
 
 html.is-mobile-viewport .drawer--right .scroll-list {
-  padding: 10px 6px 10px 4px;
+  padding: 10px 6px 16px 4px;
   scrollbar-gutter: stable;
   scrollbar-width: thin;
   scrollbar-color: color-mix(in srgb, var(--accent) 60%, var(--bg) 40%) transparent;
@@ -1353,7 +1353,7 @@ html.is-mobile-viewport .drawer--right .scroll-list::-webkit-scrollbar {
 html.is-mobile-viewport .drawer--right .scroll-list::-webkit-scrollbar-track {
   background: transparent;
   margin-top: 10px;
-  margin-bottom: 10px;
+  margin-bottom: 18px;
 }
 
 html.is-mobile-viewport .drawer--right .scroll-list::-webkit-scrollbar-thumb {
