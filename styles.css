@@ -849,12 +849,13 @@ html.is-mobile-viewport .message-stream {
 }
 
 html.is-mobile-viewport .drawer {
+  inset: 0;
   width: 100vw;
-  top: var(--topbar-offset, 70px);
-  left: 0;
-  right: 0;
-  bottom: 0;
+  height: 100dvh;
   border-radius: 0;
+  transform: translateY(-8px) scale(0.98);
+  transform-origin: top right;
+  pointer-events: none;
 }
 
 html.is-mobile-viewport .drawer--right {
@@ -862,11 +863,26 @@ html.is-mobile-viewport .drawer--right {
   grid-template-rows: auto minmax(0, 1fr) minmax(0, 1fr);
   gap: 12px;
   padding: 12px;
+  padding-top: calc(var(--topbar-offset, 70px) + 12px);
+  left: 0;
+  right: 0;
+}
+
+html.is-mobile-viewport .drawer--right.is-open {
+  transform: translateY(0) scale(1);
+  pointer-events: auto;
 }
 
 html.is-mobile-viewport .drawer__header {
   padding-bottom: 0;
   border-bottom: 0;
+}
+
+html.is-mobile-viewport .drawer__header .icon-button {
+  position: fixed;
+  top: 14px;
+  right: 12px;
+  z-index: 26;
 }
 
 html.is-mobile-viewport .drawer__section--half {
