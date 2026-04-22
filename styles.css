@@ -623,7 +623,7 @@ html.is-mobile-viewport .mobile-create-close--header {
   min-width: 162px;
   justify-content: center;
   padding: 0.92rem 1rem;
-  margin: 0;
+  margin-left: auto;
   white-space: nowrap;
 }
 
