@@ -672,7 +672,7 @@ html.is-mobile-viewport .workspace {
   display: flex;
   flex-direction: column;
   gap: 12px;
-  padding: calc(var(--topbar-offset, var(--topbar-height)) + 12px) 12px 12px;
+  padding: calc(var(--topbar-offset, var(--topbar-height)) + 10px) 10px 10px;
   min-height: 0;
 }
 
@@ -717,6 +717,7 @@ html.is-mobile-viewport .panel--topics {
   position: relative;
   display: flex;
   flex-direction: column;
+  width: 100%;
   height: calc(100dvh - var(--topbar-offset, var(--topbar-height)) - 24px);
 }
 
@@ -724,12 +725,14 @@ html.is-mobile-viewport .mobile-topic-stage {
   position: relative;
   flex: 1;
   min-height: 0;
+  width: 100%;
   overflow: hidden;
 }
 
 html.is-mobile-viewport .mobile-topic-stage__view {
   position: absolute;
   inset: 0;
+  width: 100%;
   overflow: hidden;
   transition:
     opacity 220ms ease,
@@ -744,8 +747,8 @@ html.is-mobile-viewport .mobile-topic-stage__view--list {
 
 html.is-mobile-viewport .mobile-topic-stage__view--create {
   display: flex;
-  align-items: flex-start;
-  justify-content: flex-start;
+  align-items: stretch;
+  justify-content: stretch;
   opacity: 0;
   transform: translateY(12px);
   pointer-events: none;
@@ -772,8 +775,9 @@ html.is-mobile-viewport .mobile-create-card {
   flex-direction: column;
   gap: 4px;
   width: 100%;
+  max-width: 100%;
   min-height: 0;
-  align-self: flex-start;
+  align-self: stretch;
   padding: 4px 0 0;
   background: transparent;
   border: 0;
