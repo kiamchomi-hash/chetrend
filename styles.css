@@ -690,7 +690,7 @@ textarea:focus {
   width: 1rem;
   height: 1rem;
   margin: auto;
-  stroke: color-mix(in srgb, var(--accent-strong) 92%, #000 8%);
+  stroke: color-mix(in srgb, var(--accent-strong) 68%, #6a3a1f 32%);
 }
 
 .ranking-switch__button .button-label {
