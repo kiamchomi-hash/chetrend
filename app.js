@@ -206,6 +206,7 @@ function render() {
   renderRankings();
   renderRankings("drawerRankingList");
   renderTitles();
+  updateLayoutMetrics();
 }
 
 function syncResponsiveView() {
@@ -480,6 +481,18 @@ function isMobileViewport() {
 
 function getPreviewMode() {
   return window.CHTREND_PREVIEW_MODE || "responsive";
+}
+
+function updateLayoutMetrics() {
+  const topbar = document.querySelector(".topbar");
+  if (!topbar) {
+    return;
+  }
+
+  document.documentElement.style.setProperty(
+    "--topbar-offset",
+    `${Math.ceil(topbar.getBoundingClientRect().height)}px`
+  );
 }
 
 function escapeHtml(value) {
