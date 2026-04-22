@@ -151,8 +151,13 @@ function bindEvents() {
   });
 
   window.addEventListener("resize", () => {
+    const wasMobile = document.documentElement.classList.contains("is-mobile-viewport");
     syncResponsiveView();
-    render();
+    updateLayoutMetrics();
+    const isMobile = document.documentElement.classList.contains("is-mobile-viewport");
+    if (wasMobile !== isMobile) {
+      render();
+    }
   });
 
   document.addEventListener("wheel", handleScrollableWheel, { passive: false, capture: true });
