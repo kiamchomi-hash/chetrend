@@ -753,7 +753,7 @@ html.is-mobile-viewport .mobile-create-card {
 html.is-mobile-viewport .mobile-create-card__header {
   display: flex;
   align-items: flex-start;
-  justify-content: space-between;
+  justify-content: flex-end;
   gap: 10px;
   padding: 0 0 4px;
   border-bottom: 1px solid var(--line);
