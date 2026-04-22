@@ -739,7 +739,8 @@ html.is-mobile-viewport .mobile-topic-stage__view--list .scroll-list {
 }
 
 html.is-mobile-viewport .mobile-create-card {
-  display: grid;
+  display: flex;
+  flex-direction: column;
   gap: 8px;
   width: 100%;
   min-height: 100%;
@@ -757,6 +758,7 @@ html.is-mobile-viewport .mobile-create-card__header {
   gap: 10px;
   padding: 0 0 4px;
   border-bottom: 1px solid var(--line);
+  flex: 0 0 auto;
 }
 
 html.is-mobile-viewport .panel--chat {
@@ -797,6 +799,7 @@ html.is-mobile-viewport .text-button {
 html.is-mobile-viewport .create-form--mobile {
   padding: 8px 0 0;
   gap: 10px;
+  flex: 0 0 auto;
 }
 
 html.is-mobile-viewport .create-form--mobile .primary-button {
