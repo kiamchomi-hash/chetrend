@@ -853,9 +853,12 @@ html.is-mobile-viewport .drawer {
   width: 100vw;
   height: 100dvh;
   border-radius: 0;
-  transform: translateY(-8px) scale(0.98);
-  transform-origin: top right;
+  transform: translateX(100%);
   pointer-events: none;
+}
+
+html.is-mobile-viewport .drawer--left {
+  display: none;
 }
 
 html.is-mobile-viewport .drawer--right {
@@ -869,12 +872,12 @@ html.is-mobile-viewport .drawer--right {
 }
 
 html.is-mobile-viewport .drawer--right.is-open {
-  transform: translateY(0) scale(1);
+  transform: translateX(0);
   pointer-events: auto;
 }
 
 html.is-mobile-viewport .drawer--right.is-closing {
-  transform: translateX(105%) scale(0.98);
+  transform: translateX(100%);
   pointer-events: none;
 }
 
