@@ -214,7 +214,18 @@
         <div class="scroll-list" id="drawerUserList"></div>
       </section>
       <section class="drawer__section drawer__section--half">
-        <h3>Ranking</h3>
+        <div class="drawer-ranking__header">
+          <h3>Ranking</h3>
+          <div class="drawer-ranking__switch" aria-label="Cambiar modo de ranking">
+            <button class="icon-button icon-button--compact" id="drawerRankingPrev" type="button" aria-label="Ver ranking global">
+              <span aria-hidden="true">↑</span>
+            </button>
+            <button class="icon-button icon-button--compact" id="drawerRankingNext" type="button" aria-label="Ver ranking del tema">
+              <span aria-hidden="true">↓</span>
+            </button>
+          </div>
+        </div>
+        <div class="ranking-mode" id="drawerRankingMode">Global</div>
         <div class="scroll-list" id="drawerRankingList"></div>
       </section>
     </aside>

@@ -110,14 +110,16 @@ function bindEvents() {
   document.getElementById("refreshButton").addEventListener("click", refreshCurrentTopic);
   document.getElementById("messageForm").addEventListener("submit", submitMessage);
   document.getElementById("createTopicForm").addEventListener("submit", createTopic);
-  document.getElementById("mobileCreateTopicForm").addEventListener("submit", createTopic);
-  document.getElementById("openMobileCreate").addEventListener("click", toggleMobileCreate);
-  document.getElementById("closeMobileCreate").addEventListener("click", closeMobileCreate);
-  document.getElementById("closeMobileCreateMobile").addEventListener("click", closeMobileCreate);
-  document.getElementById("rankingPrev").addEventListener("click", () => setRankingMode("global"));
-  document.getElementById("rankingNext").addEventListener("click", () => setRankingMode("topic"));
-  document.getElementById("openRightDrawer").addEventListener("click", () => openDrawer("right"));
-  document.getElementById("drawerBackdrop").addEventListener("click", closeDrawers);
+    document.getElementById("mobileCreateTopicForm").addEventListener("submit", createTopic);
+    document.getElementById("openMobileCreate").addEventListener("click", toggleMobileCreate);
+    document.getElementById("closeMobileCreate").addEventListener("click", closeMobileCreate);
+    document.getElementById("closeMobileCreateMobile").addEventListener("click", closeMobileCreate);
+    document.getElementById("rankingPrev").addEventListener("click", () => setRankingMode("global"));
+    document.getElementById("rankingNext").addEventListener("click", () => setRankingMode("topic"));
+    document.getElementById("drawerRankingPrev").addEventListener("click", () => setRankingMode("global"));
+    document.getElementById("drawerRankingNext").addEventListener("click", () => setRankingMode("topic"));
+    document.getElementById("openRightDrawer").addEventListener("click", () => openDrawer("right"));
+    document.getElementById("drawerBackdrop").addEventListener("click", closeDrawers);
 
   document.querySelectorAll("[data-close-drawer]").forEach((button) => {
     button.addEventListener("click", closeDrawers);
@@ -284,6 +286,11 @@ function renderTitles() {
   document.getElementById("chatTopicDescription").textContent = topic.subtitle;
   document.getElementById("rankingMode").textContent =
     state.rankingMode === "global" ? "Global" : `Particular: ${topic.title}`;
+  const drawerRankingMode = document.getElementById("drawerRankingMode");
+  if (drawerRankingMode) {
+    drawerRankingMode.textContent =
+      state.rankingMode === "global" ? "Global" : `Particular: ${topic.title}`;
+  }
 }
 
 function renderTopics(targetId = "topicList") {

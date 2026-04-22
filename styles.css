@@ -927,6 +927,29 @@ html.is-mobile-viewport .drawer--right .drawer__section h3 {
   text-transform: uppercase;
 }
 
+html.is-mobile-viewport .drawer-ranking__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 4px;
+}
+
+html.is-mobile-viewport .drawer-ranking__switch {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+html.is-mobile-viewport .drawer-ranking__switch .icon-button {
+  flex: 0 0 auto;
+}
+
+html.is-mobile-viewport .drawer--right .ranking-mode {
+  padding: 0 0 6px;
+  font-size: 0.82rem;
+}
+
 html.is-mobile-viewport .drawer--right .scroll-list {
   padding: 6px 8px 8px 6px;
   scrollbar-gutter: stable;
