@@ -849,6 +849,26 @@ html.is-mobile-viewport .message-stream {
 }
 
 html.is-mobile-viewport .drawer {
-  width: min(94vw, 360px);
+  width: 100vw;
   top: var(--topbar-offset, 70px);
+  left: 0;
+  right: 0;
+  bottom: 0;
+  border-radius: 0;
+}
+
+html.is-mobile-viewport .drawer--right {
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr) minmax(0, 1fr);
+  gap: 12px;
+  padding: 12px;
+}
+
+html.is-mobile-viewport .drawer__header {
+  padding-bottom: 0;
+  border-bottom: 0;
+}
+
+html.is-mobile-viewport .drawer__section--half {
+  min-height: 0;
 }
