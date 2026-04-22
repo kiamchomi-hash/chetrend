@@ -662,11 +662,18 @@ html.is-mobile-viewport .shell[data-mobile-view="browse"] .panel--chat {
 html.is-mobile-viewport .shell[data-mobile-create="open"] .panel--create {
   display: flex;
   position: fixed;
-  inset: calc(var(--topbar-offset, var(--topbar-height)) + 12px) 12px 12px;
+  inset: auto;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
   z-index: 30;
   margin: 0;
   background: var(--surface-strong);
   overflow: auto;
+  width: min(calc(100vw - 24px), 520px);
+  max-height: calc(100vh - var(--topbar-offset, var(--topbar-height)) - 24px);
+  border-radius: 22px;
+  box-shadow: var(--shadow);
 }
 
 html.is-mobile-viewport .panel--chat {
