@@ -687,52 +687,62 @@ html.is-mobile-viewport .shell[data-mobile-view="chat"] .panel--topics {
 
 html.is-mobile-viewport .panel--topics {
   position: relative;
+  display: flex;
+  flex-direction: column;
+  height: calc(100dvh - var(--topbar-offset, var(--topbar-height)) - 24px);
 }
 
 html.is-mobile-viewport .mobile-topic-stage {
-  display: grid;
+  position: relative;
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
 }
 
 html.is-mobile-viewport .mobile-topic-stage__view {
-  grid-area: 1 / 1;
+  position: absolute;
+  inset: 0;
   overflow: hidden;
   transition:
     opacity 220ms ease,
-    transform 220ms ease,
-    max-height 220ms ease;
+    transform 220ms ease;
 }
 
 html.is-mobile-viewport .mobile-topic-stage__view--list {
-  max-height: 3000px;
+  display: flex;
   opacity: 1;
   transform: translateY(0);
 }
 
 html.is-mobile-viewport .mobile-topic-stage__view--create {
-  max-height: 0;
+  display: flex;
+  align-items: stretch;
   opacity: 0;
   transform: translateY(12px);
   pointer-events: none;
 }
 
 html.is-mobile-viewport .shell[data-mobile-view="create"] .mobile-topic-stage__view--list {
-  max-height: 0;
   opacity: 0;
   transform: translateY(-12px);
   pointer-events: none;
 }
 
 html.is-mobile-viewport .shell[data-mobile-view="create"] .mobile-topic-stage__view--create {
-  display: block;
-  max-height: 3000px;
   opacity: 1;
   transform: translateY(0);
   pointer-events: auto;
 }
 
+html.is-mobile-viewport .mobile-topic-stage__view--list .scroll-list {
+  height: 100%;
+}
+
 html.is-mobile-viewport .mobile-create-card {
   display: grid;
   gap: 12px;
+  width: 100%;
+  min-height: 100%;
   padding: 12px;
   background: color-mix(in srgb, var(--surface-strong) 80%, transparent);
   border: 1px solid var(--line);
@@ -745,6 +755,7 @@ html.is-mobile-viewport .mobile-create-card__header {
   align-items: flex-start;
   justify-content: space-between;
   gap: 12px;
+  padding: 0;
 }
 
 html.is-mobile-viewport .panel--chat {
