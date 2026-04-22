@@ -185,9 +185,13 @@ function setRankingMode(mode) {
   render();
 }
 
+let rightDrawerCloseTimer = 0;
+
 function openDrawer(side) {
   const drawer = document.getElementById(side === "left" ? "leftDrawer" : "rightDrawer");
   const backdrop = document.getElementById("drawerBackdrop");
+  window.clearTimeout(rightDrawerCloseTimer);
+  rightDrawerCloseTimer = 0;
   drawer.classList.remove("is-closing");
   drawer.classList.add("is-open");
   drawer.setAttribute("aria-hidden", "false");
@@ -205,16 +209,45 @@ function closeDrawers() {
   if (isMobileViewport() && rightDrawer.classList.contains("is-open")) {
     rightDrawer.classList.add("is-closing");
     rightDrawer.setAttribute("aria-hidden", "true");
-    window.setTimeout(() => {
+    window.clearTimeout(rightDrawerCloseTimer);
+    rightDrawerCloseTimer = window.setTimeout(() => {
       rightDrawer.classList.remove("is-open", "is-closing");
       backdrop.hidden = true;
-    }, 220);
+      rightDrawerCloseTimer = 0;
+    }, getTransitionDurationMs(rightDrawer));
     return;
   }
 
   rightDrawer.classList.remove("is-open", "is-closing");
   rightDrawer.setAttribute("aria-hidden", "true");
   backdrop.hidden = true;
+}
+
+function getTransitionDurationMs(element) {
+  const styles = window.getComputedStyle(element);
+  const durations = styles.transitionDuration.split(",").map(parseTimeToMs);
+  const delays = styles.transitionDelay.split(",").map(parseTimeToMs);
+  const count = Math.max(durations.length, delays.length);
+
+  let total = 0;
+  for (let index = 0; index < count; index += 1) {
+    const duration = durations[index] ?? durations[durations.length - 1] ?? 0;
+    const delay = delays[index] ?? delays[delays.length - 1] ?? 0;
+    total = Math.max(total, duration + delay);
+  }
+
+  return total;
+}
+
+function parseTimeToMs(value) {
+  const text = value.trim();
+  if (text.endsWith("ms")) {
+    return Number.parseFloat(text) || 0;
+  }
+  if (text.endsWith("s")) {
+    return (Number.parseFloat(text) || 0) * 1000;
+  }
+  return Number.parseFloat(text) || 0;
 }
 
 function getSelectedTopic() {
@@ -235,43 +268,6 @@ function render() {
   updateLayoutMetrics();
 }
 
-
-let topicAvatarSyncFrame = 0;
-
-function scheduleTopicAvatarSync() {
-  window.cancelAnimationFrame(topicAvatarSyncFrame);
-  topicAvatarSyncFrame = window.requestAnimationFrame(() => {
-    syncTopicAvatarSizes();
-  });
-}
-
-function syncTopicAvatarSizes() {
-  const items = document.querySelectorAll(".topic-item");
-  if (!items.length) {
-    return;
-  }
-
-  for (let pass = 0; pass < 3; pass += 1) {
-    let changed = false;
-
-    items.forEach((item) => {
-      const nextSize = Math.max(0, Math.round(item.getBoundingClientRect().height));
-      if (!nextSize) {
-        return;
-      }
-
-      const currentSize = Number.parseFloat(item.style.getPropertyValue("--topic-avatar-size")) || 0;
-      if (Math.abs(nextSize - currentSize) > 1) {
-        item.style.setProperty("--topic-avatar-size", `${nextSize}px`);
-        changed = true;
-      }
-    });
-
-    if (!changed) {
-      break;
-    }
-  }
-}
 
 function syncResponsiveView() {
   const shell = document.querySelector(".shell");
@@ -312,10 +308,12 @@ function syncMobileStageAccessibility() {
 
   if (listView) {
     listView.setAttribute("aria-hidden", state.mobileView === "create" ? "true" : "false");
+    listView.toggleAttribute("inert", state.mobileView === "create");
   }
 
   if (createView) {
     createView.setAttribute("aria-hidden", state.mobileView === "create" ? "false" : "true");
+    createView.toggleAttribute("inert", state.mobileView !== "create");
   }
 }
 
@@ -567,7 +565,7 @@ function refreshCurrentTopic() {
     topic.messages.push(
       createMessage(
         "u2",
-        `ActualizaciÃ³n manual ${state.refreshCount}: la sala sigue estable y sin sincronizaciÃ³n en tiempo real.`,
+        `Actualización manual ${state.refreshCount}: la sala sigue estable y sin sincronización en tiempo real.`,
         0,
         "system"
       )
@@ -575,9 +573,7 @@ function refreshCurrentTopic() {
     trimMessages(topic);
   }
   document.getElementById("refreshState").textContent = `Actualizado ${nowLabel()}`;
-  renderChat();
-  renderRankings();
-  renderTitles();
+  render();
 }
 
 function toggleMobileCreate() {
