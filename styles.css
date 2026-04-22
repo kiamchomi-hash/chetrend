@@ -1213,7 +1213,7 @@ html.is-mobile-viewport .drawer__brand {
   inset: 0 56px 0 56px;
   display: flex;
   align-items: center;
-  justify-content: flex-start;
+  justify-content: center;
   gap: 8px;
   pointer-events: none;
 }
