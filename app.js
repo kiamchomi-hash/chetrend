@@ -318,8 +318,17 @@ function renderTopics(targetId = "topicList") {
     button.type = "button";
     button.className = `topic-item${topic.id === state.selectedTopicId ? " is-active" : ""}`;
     button.innerHTML = `
-      <span class="topic-item__title">${index + 1}. ${escapeHtml(topic.title)}</span>
-      <span class="topic-item__meta">${topic.messages.length} mensajes Â· ${escapeHtml(topic.subtitle)}</span>
+      <span class="topic-item__avatar" aria-hidden="true">
+        <svg viewBox="0 0 48 48" fill="none" aria-hidden="true">
+          <rect x="4" y="4" width="40" height="40" rx="10"></rect>
+          <circle cx="24" cy="18" r="7"></circle>
+          <path d="M11.5 38c2.6-6.2 7.7-9.3 12.5-9.3S33.9 31.8 36.5 38"></path>
+        </svg>
+      </span>
+      <span class="topic-item__content">
+        <span class="topic-item__title">${index + 1}. ${escapeHtml(topic.title)}</span>
+        <span class="topic-item__meta">${topic.messages.length} mensajes · ${escapeHtml(topic.subtitle)}</span>
+      </span>
     `;
     button.addEventListener("click", () => {
       focusTopic(topic.id);
@@ -641,3 +650,4 @@ function escapeHtml(value) {
 }
 
 bootstrap();
+

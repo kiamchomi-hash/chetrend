@@ -463,9 +463,39 @@ html.is-desktop-viewport .message-stream::-webkit-scrollbar-thumb {
 }
 
 .topic-item {
-  display: grid;
-  gap: 8px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
   text-align: left;
+}
+
+.topic-item__avatar {
+  width: 44px;
+  height: 44px;
+  flex: none;
+  border-radius: 10px;
+  overflow: hidden;
+  background: linear-gradient(180deg, color-mix(in srgb, var(--surface-strong) 72%, var(--bg) 28%), color-mix(in srgb, var(--surface-strong) 58%, var(--bg) 42%));
+  border: 1px solid color-mix(in srgb, var(--line-strong) 70%, transparent);
+  color: color-mix(in srgb, var(--text-soft) 72%, var(--bg) 28%);
+}
+
+.topic-item__avatar svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+  stroke: currentColor;
+  fill: none;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.topic-item__content {
+  display: grid;
+  gap: 6px;
+  min-width: 0;
+  flex: 1;
 }
 
 .topic-item__title,
