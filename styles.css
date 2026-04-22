@@ -280,6 +280,10 @@ button {
   backdrop-filter: blur(18px);
 }
 
+.panel__header--topics {
+  display: none;
+}
+
 .panel--create {
   justify-content: space-between;
 }
@@ -321,6 +325,35 @@ button {
   padding: 12px;
   scrollbar-width: thin;
   min-height: 0;
+  scrollbar-color: color-mix(in srgb, var(--accent) 58%, var(--bg) 42%) transparent;
+}
+
+.scroll-list::-webkit-scrollbar,
+.message-stream::-webkit-scrollbar,
+.panel--topics::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+.scroll-list::-webkit-scrollbar-track,
+.message-stream::-webkit-scrollbar-track,
+.panel--topics::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.scroll-list::-webkit-scrollbar-thumb,
+.message-stream::-webkit-scrollbar-thumb,
+.panel--topics::-webkit-scrollbar-thumb {
+  background: color-mix(in srgb, var(--accent) 58%, var(--bg) 42%);
+  border-radius: 999px;
+  border: 2px solid transparent;
+  background-clip: content-box;
+}
+
+.scroll-list::-webkit-scrollbar-thumb:hover,
+.message-stream::-webkit-scrollbar-thumb:hover,
+.panel--topics::-webkit-scrollbar-thumb:hover {
+  background: color-mix(in srgb, var(--accent-strong) 72%, var(--bg) 28%);
 }
 
 .topic-list,
@@ -709,6 +742,7 @@ html.is-mobile-viewport #closeMobileCreateMobile {
 }
 
 html.is-mobile-viewport .panel__header--topics {
+  display: flex;
   width: 100%;
 }
 
