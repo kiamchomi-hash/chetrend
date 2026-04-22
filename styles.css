@@ -581,7 +581,7 @@ html[data-theme="dark"] .theme-icon--sun {
 html.is-mobile-viewport .topbar {
   min-height: var(--topbar-height);
   height: auto;
-  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+  grid-template-columns: auto minmax(0, 1fr) auto;
   gap: 10px;
   align-items: start;
   padding: 12px;
@@ -609,6 +609,9 @@ html.is-mobile-viewport .topbar__title {
 html.is-mobile-viewport .mobile-create-toggle {
   display: flex;
   width: 100%;
+  flex: 1 1 0;
+  min-width: 0;
+  align-self: stretch;
   justify-content: center;
   padding: 0.92rem 1rem;
   margin: 0;
@@ -643,6 +646,9 @@ html.is-mobile-viewport .text-button {
 }
 
 html.is-mobile-viewport #openMobileCreate {
+  width: 100%;
+  flex: 1 1 0;
+  min-width: 0;
   padding: 0.92rem 1rem;
 }
 
