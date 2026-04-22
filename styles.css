@@ -129,7 +129,7 @@ button {
 
 .brand-mark {
   display: inline-flex;
-  align-items: baseline;
+  align-items: center;
   gap: 0;
   font-size: clamp(1.05rem, 1.8vw, 1.65rem);
   line-height: 1;
@@ -192,13 +192,17 @@ button {
 
 .icon-button__icon {
   display: inline-flex;
+  align-items: center;
+  justify-content: center;
   width: 1.1rem;
   height: 1.1rem;
+  line-height: 0;
 }
 
 .icon-button__icon svg {
   width: 100%;
   height: 100%;
+  display: block;
 }
 
 .icon-button--ghost {
@@ -720,7 +724,7 @@ html.is-mobile-viewport .topbar {
   height: auto;
   grid-template-columns: auto minmax(0, 1fr) auto;
   gap: 10px;
-  align-items: start;
+  align-items: center;
   padding: 12px;
 }
 
@@ -729,6 +733,7 @@ html.is-mobile-viewport .topbar__group {
   flex-wrap: nowrap;
   align-items: center;
   gap: 8px;
+  align-self: center;
 }
 
 html.is-mobile-viewport .topbar__group--left {
@@ -741,6 +746,7 @@ html.is-mobile-viewport .topbar__group--right {
 
 html.is-mobile-viewport .topbar__title {
   gap: 8px;
+  align-self: center;
 }
 
 html.is-mobile-viewport .mobile-create-toggle {
@@ -1082,11 +1088,32 @@ html.is-mobile-viewport .drawer--right.is-closing {
 }
 
 html.is-mobile-viewport .drawer__header {
+  position: relative;
   align-items: center;
   min-height: 64px;
   padding: 10px 10px 14px;
   border-bottom: 1px solid color-mix(in srgb, var(--accent-soft) 65%, var(--line));
   background: color-mix(in srgb, var(--surface-strong) 98%, var(--bg) 2%);
+}
+
+html.is-mobile-viewport .drawer__brand {
+  position: absolute;
+  inset: 0 56px 0 56px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  pointer-events: none;
+}
+
+html.is-mobile-viewport .drawer__brand-icon {
+  width: 1.35rem;
+  height: 1.35rem;
+}
+
+html.is-mobile-viewport .drawer__brand .brand-mark {
+  font-size: 0.8rem;
+  letter-spacing: 0.05em;
 }
 
 html.is-mobile-viewport .drawer__header .icon-button {
