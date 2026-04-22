@@ -625,14 +625,15 @@ html.is-mobile-viewport .topbar__title h1 {
 }
 
 html.is-mobile-viewport .workspace {
-  display: grid;
-  grid-template-columns: 1fr;
+  display: flex;
+  flex-direction: column;
   gap: 12px;
   padding: calc(var(--topbar-offset, var(--topbar-height)) + 12px) 12px 12px;
   min-height: 0;
 }
 
 html.is-mobile-viewport .panel {
+  width: 100%;
   min-height: auto;
 }
 
@@ -640,6 +641,13 @@ html.is-mobile-viewport .shell[data-mobile-view="browse"] .panel--chat,
 html.is-mobile-viewport .shell[data-mobile-view="browse"] .panel--create,
 html.is-mobile-viewport .shell[data-mobile-view="browse"] .panel--users,
 html.is-mobile-viewport .shell[data-mobile-view="browse"] .panel--rankings {
+  display: none;
+}
+
+html.is-mobile-viewport .shell[data-mobile-view="create"] .panel--topics,
+html.is-mobile-viewport .shell[data-mobile-view="create"] .panel--chat,
+html.is-mobile-viewport .shell[data-mobile-view="create"] .panel--users,
+html.is-mobile-viewport .shell[data-mobile-view="create"] .panel--rankings {
   display: none;
 }
 
@@ -651,6 +659,7 @@ html.is-mobile-viewport .shell[data-mobile-view="chat"] .panel--rankings {
 }
 
 html.is-mobile-viewport .shell[data-mobile-view="browse"] .panel--topics,
+html.is-mobile-viewport .shell[data-mobile-view="create"] .panel--create,
 html.is-mobile-viewport .shell[data-mobile-view="chat"] .panel--chat {
   display: flex;
 }
@@ -659,21 +668,25 @@ html.is-mobile-viewport .shell[data-mobile-view="browse"] .panel--chat {
   min-height: 0;
 }
 
-html.is-mobile-viewport .shell[data-mobile-create="open"] .panel--create {
+html.is-mobile-viewport .shell[data-mobile-view="create"] .panel--topics {
+  display: none;
+}
+
+html.is-mobile-viewport .shell[data-mobile-view="create"] .panel--create {
   display: flex;
-  position: fixed;
+  position: static;
   inset: auto;
-  left: 50%;
-  top: 50%;
-  transform: translate(-50%, -50%);
-  z-index: 30;
+  left: auto;
+  top: auto;
+  transform: none;
+  z-index: auto;
   margin: 0;
-  background: var(--surface-strong);
-  overflow: auto;
-  width: min(calc(100vw - 24px), 520px);
-  max-height: calc(100vh - var(--topbar-offset, var(--topbar-height)) - 24px);
-  border-radius: 22px;
-  box-shadow: var(--shadow);
+  background: var(--surface);
+  overflow: hidden;
+  width: 100%;
+  max-height: none;
+  border-radius: inherit;
+  box-shadow: inherit;
 }
 
 html.is-mobile-viewport .panel--chat {

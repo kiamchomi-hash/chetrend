@@ -230,7 +230,7 @@ function syncResponsiveView() {
     return;
   }
 
-  if (state.mobileView !== "chat" && state.mobileView !== "browse") {
+  if (state.mobileView !== "chat" && state.mobileView !== "browse" && state.mobileView !== "create") {
     state.mobileView = "browse";
   }
 
@@ -245,7 +245,6 @@ function renderTitles() {
   document.getElementById("chatTopicDescription").textContent = topic.subtitle;
   document.getElementById("rankingMode").textContent =
     state.rankingMode === "global" ? "Global" : `Particular: ${topic.title}`;
-  document.getElementById("topicCountMeta").textContent = "20 visibles";
 }
 
 function renderTopics(targetId = "topicList") {
@@ -483,6 +482,8 @@ function toggleMobileCreate() {
 
   state.mobileCreateOpen = !state.mobileCreateOpen;
   if (state.mobileCreateOpen) {
+    state.mobileView = "create";
+  } else {
     state.mobileView = "browse";
   }
   syncResponsiveView();
@@ -491,7 +492,9 @@ function toggleMobileCreate() {
 
 function closeMobileCreate() {
   state.mobileCreateOpen = false;
+  state.mobileView = "browse";
   syncResponsiveView();
+  render();
 }
 
 function isMobileViewport() {
