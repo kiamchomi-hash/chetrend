@@ -608,7 +608,7 @@ html.is-mobile-viewport .topbar__title {
 
 html.is-mobile-viewport .mobile-create-toggle {
   display: flex;
-  width: auto;
+  width: 100%;
   justify-content: center;
   padding: 0.92rem 1rem;
   margin: 0;
@@ -653,7 +653,7 @@ html.is-mobile-viewport #closeMobileCreateMobile {
 }
 
 html.is-mobile-viewport .panel__header--topics {
-  justify-content: flex-end;
+  width: 100%;
 }
 
 html.is-mobile-viewport .shell[data-mobile-view="create"] .mobile-create-toggle {
