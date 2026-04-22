@@ -355,6 +355,9 @@ function renderTopics(targetId = "topicList") {
     const button = document.createElement("button");
     button.type = "button";
     button.className = `topic-item${topic.id === state.selectedTopicId ? " is-active" : ""}`;
+    const topicCommentCount = topic.messages.filter((message) => message.kind === "user").length;
+    const lastCommentAuthor = [...topic.messages].reverse().find((message) => message.kind === "user");
+    const lastCommenterName = lastCommentAuthor ? getUser(lastCommentAuthor.authorId)?.name ?? "Anónimo" : "Sin actividad";
     button.innerHTML = `
       <span class="topic-item__avatar" aria-hidden="true">
         <svg viewBox="0 0 48 48" fill="none" aria-hidden="true">
@@ -365,7 +368,7 @@ function renderTopics(targetId = "topicList") {
       </span>
       <span class="topic-item__content">
         <span class="topic-item__title">${index + 1}. ${escapeHtml(topic.title)}</span>
-        <span class="topic-item__meta">${topic.messages.length} mensajes · ${escapeHtml(topic.subtitle)}</span>
+        <span class="topic-item__meta">${topicCommentCount} comentarios - ${escapeHtml(lastCommenterName)}</span>
       </span>
     `;
     button.addEventListener("click", () => {
