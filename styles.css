@@ -581,7 +581,7 @@ html[data-theme="dark"] .theme-icon--sun {
 html.is-mobile-viewport .topbar {
   min-height: var(--topbar-height);
   height: auto;
-  grid-template-columns: auto minmax(0, 1fr) auto;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
   gap: 10px;
   align-items: start;
   padding: 12px;
