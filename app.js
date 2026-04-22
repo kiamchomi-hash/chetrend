@@ -232,7 +232,6 @@ function render() {
   renderRankings("drawerRankingList");
   renderTitles();
   syncMobileStageAccessibility();
-  syncTopicAvatarSizes();
   updateLayoutMetrics();
 }
 
@@ -339,20 +338,6 @@ function renderTopics(targetId = "topicList") {
   });
 }
 
-function syncTopicAvatarSizes(targetId = null) {
-  const targets = targetId ? [document.getElementById(targetId)] : [
-    document.getElementById("topicList"),
-    document.getElementById("leftDrawerTopics")
-  ];
-  const maxSize = isMobileViewport() ? 56 : 64;
-
-  targets.filter(Boolean).forEach((target) => {
-    target.querySelectorAll(".topic-item").forEach((item) => {
-      const size = Math.min(Math.ceil(item.getBoundingClientRect().height), maxSize);
-      item.style.setProperty("--topic-avatar-size", `${size}px`);
-    });
-  });
-}
 function renderChat() {
   const topic = getSelectedTopic();
   const stream = document.getElementById("messageStream");
@@ -665,6 +650,7 @@ function escapeHtml(value) {
 }
 
 bootstrap();
+
 
 
 

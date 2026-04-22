@@ -464,15 +464,14 @@ html.is-desktop-viewport .message-stream::-webkit-scrollbar-thumb {
 
 .topic-item {
   display: flex;
-  align-items: stretch;
+  align-items: center;
   text-align: left;
 }
 
 .topic-item__avatar {
-  width: auto;
-  height: 100%;
-  aspect-ratio: 1 / 1;
-  align-self: stretch;
+  width: 52px;
+  height: 52px;
+  align-self: center;
   border-radius: 0;
   overflow: hidden;
   background: linear-gradient(180deg, color-mix(in srgb, var(--surface-strong) 72%, var(--bg) 28%), color-mix(in srgb, var(--surface-strong) 58%, var(--bg) 42%));
