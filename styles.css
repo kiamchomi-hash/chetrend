@@ -782,10 +782,13 @@ html.is-mobile-viewport .topbar__group--right {
 }
 
 html.is-mobile-viewport .topbar__title {
-  gap: 8px;
+  gap: 10px;
   align-self: center;
-  flex-direction: column;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
   line-height: 0.95;
+  max-width: min(100%, 170px);
 }
 
 html.is-mobile-viewport .mobile-create-toggle {
@@ -863,7 +866,8 @@ html.is-mobile-viewport .brand-mark {
   font-size: 0.68rem;
   letter-spacing: 0.05em;
   line-height: 1;
-  justify-items: center;
+  justify-items: start;
+  text-align: left;
 }
 
 html.is-mobile-viewport .brand-mark__che,
@@ -872,12 +876,12 @@ html.is-mobile-viewport .brand-mark__trend {
 }
 
 html.is-mobile-viewport .brand-mark__icon {
-  width: 1.25rem;
-  height: 1.25rem;
+  width: 1.9rem;
+  height: 1.9rem;
 }
 
 html.is-mobile-viewport .topbar__title {
-  gap: 3px;
+  gap: 10px;
 }
 
 html.is-mobile-viewport .workspace {
