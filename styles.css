@@ -472,7 +472,7 @@ html.is-desktop-viewport .message-stream::-webkit-scrollbar-thumb {
 .topic-item__avatar {
   flex: 0 0 84px;
   width: 84px;
-  height: 84px;
+  height: calc(100% - 1px);
   align-self: stretch;
   border-radius: 0;
   overflow: hidden;
