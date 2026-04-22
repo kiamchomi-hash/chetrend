@@ -768,6 +768,28 @@ html.is-mobile-viewport .shell[data-mobile-view="create"] .mobile-topic-stage__v
 
 html.is-mobile-viewport .mobile-topic-stage__view--list .scroll-list {
   height: 100%;
+  scrollbar-gutter: stable;
+  scrollbar-width: thin;
+  scrollbar-color: color-mix(in srgb, var(--accent) 60%, var(--bg) 40%) transparent;
+}
+
+html.is-mobile-viewport .mobile-topic-stage__view--list .scroll-list::-webkit-scrollbar {
+  width: 6px;
+}
+
+html.is-mobile-viewport .mobile-topic-stage__view--list .scroll-list::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+html.is-mobile-viewport .mobile-topic-stage__view--list .scroll-list::-webkit-scrollbar-thumb {
+  background: color-mix(in srgb, var(--accent) 60%, var(--bg) 40%);
+  border-radius: 999px;
+  border: 1.5px solid transparent;
+  background-clip: content-box;
+}
+
+html.is-mobile-viewport .mobile-topic-stage__view--list .scroll-list::-webkit-scrollbar-thumb:hover {
+  background: color-mix(in srgb, var(--accent-strong) 74%, var(--bg) 26%);
 }
 
 html.is-mobile-viewport .mobile-create-card {
