@@ -110,8 +110,10 @@ function bindEvents() {
   document.getElementById("refreshButton").addEventListener("click", refreshCurrentTopic);
   document.getElementById("messageForm").addEventListener("submit", submitMessage);
   document.getElementById("createTopicForm").addEventListener("submit", createTopic);
+  document.getElementById("mobileCreateTopicForm").addEventListener("submit", createTopic);
   document.getElementById("openMobileCreate").addEventListener("click", toggleMobileCreate);
   document.getElementById("closeMobileCreate").addEventListener("click", closeMobileCreate);
+  document.getElementById("closeMobileCreateMobile").addEventListener("click", closeMobileCreate);
   document.getElementById("rankingPrev").addEventListener("click", () => setRankingMode("global"));
   document.getElementById("rankingNext").addEventListener("click", () => setRankingMode("topic"));
   document.getElementById("openLeftDrawer").addEventListener("click", () => openDrawer("left"));
@@ -128,6 +130,7 @@ function bindEvents() {
 
   document.getElementById("backToTopics").addEventListener("click", () => {
     state.mobileView = "browse";
+    state.mobileCreateOpen = false;
     syncResponsiveView();
     render();
   });
@@ -210,6 +213,7 @@ function render() {
   renderRankings();
   renderRankings("drawerRankingList");
   renderTitles();
+  syncMobileStageAccessibility();
   updateLayoutMetrics();
 }
 
@@ -225,8 +229,10 @@ function syncResponsiveView() {
 
   if (!mobile) {
     state.mobileCreateOpen = false;
+    state.mobileView = "browse";
     shell.dataset.mobileView = "desktop";
     shell.dataset.mobileCreate = "closed";
+    syncMobileStageAccessibility();
     return;
   }
 
@@ -236,6 +242,25 @@ function syncResponsiveView() {
 
   shell.dataset.mobileView = state.mobileView;
   shell.dataset.mobileCreate = state.mobileCreateOpen ? "open" : "closed";
+  syncMobileStageAccessibility();
+}
+
+function syncMobileStageAccessibility() {
+  const listView = document.querySelector(".mobile-topic-stage__view--list");
+  const createView = document.querySelector(".mobile-topic-stage__view--create");
+  const toggle = document.getElementById("openMobileCreate");
+
+  if (toggle) {
+    toggle.setAttribute("aria-expanded", state.mobileView === "create" ? "true" : "false");
+  }
+
+  if (listView) {
+    listView.setAttribute("aria-hidden", state.mobileView === "create" ? "true" : "false");
+  }
+
+  if (createView) {
+    createView.setAttribute("aria-hidden", state.mobileView === "create" ? "false" : "true");
+  }
 }
 
 function renderTitles() {
@@ -415,10 +440,9 @@ function submitMessage(event) {
 
 function createTopic(event) {
   event.preventDefault();
-  const titleInput = document.getElementById("topicTitleInput");
-  const seedInput = document.getElementById("topicSeedInput");
+  const { titleInput, descriptionInput } = getCreateInputs();
   const title = titleInput.value.trim();
-  const seed = seedInput.value.trim() || "Nuevo espacio abierto para conversar.";
+  const description = descriptionInput.value.trim() || "Nuevo espacio abierto para conversar.";
 
   if (!title) {
     return;
@@ -427,9 +451,9 @@ function createTopic(event) {
   const topic = {
     id: `topic-${Date.now()}`,
     title,
-    subtitle: seed,
+    subtitle: description,
     messages: [
-      createMessage(state.currentUserId, seed, 0),
+      createMessage(state.currentUserId, description, 0),
       createMessage("u2", "Tema creado. Seguimos de cerca este hilo.", 1, "system")
     ]
   };
@@ -437,8 +461,7 @@ function createTopic(event) {
   state.topics.unshift(topic);
   trimTopicList();
   state.selectedTopicId = topic.id;
-  titleInput.value = "";
-  seedInput.value = "";
+  clearCreateInputs();
   state.rankingMode = "topic";
   closeMobileCreate();
   render();
@@ -495,6 +518,33 @@ function closeMobileCreate() {
   state.mobileView = "browse";
   syncResponsiveView();
   render();
+}
+
+function getCreateInputs() {
+  if (isMobileViewport() && state.mobileView === "create") {
+    return {
+      titleInput: document.getElementById("mobileTopicTitleInput"),
+      descriptionInput: document.getElementById("mobileTopicDescriptionInput")
+    };
+  }
+
+  return {
+    titleInput: document.getElementById("topicTitleInput"),
+    descriptionInput: document.getElementById("topicDescriptionInput")
+  };
+}
+
+function clearCreateInputs() {
+  [
+    document.getElementById("topicTitleInput"),
+    document.getElementById("topicDescriptionInput"),
+    document.getElementById("mobileTopicTitleInput"),
+    document.getElementById("mobileTopicDescriptionInput")
+  ].forEach((input) => {
+    if (input) {
+      input.value = "";
+    }
+  });
 }
 
 function isMobileViewport() {

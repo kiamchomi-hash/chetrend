@@ -77,17 +77,42 @@
 
       <main class="workspace" aria-label="Chat social">
         <section class="panel panel--topics" aria-labelledby="topicsTitle">
-          <div class="panel__header">
+          <div class="panel__header panel__header--topics">
             <div>
               <p class="panel__kicker">Panel 1</p>
               <h2 id="topicsTitle">Temas</h2>
             </div>
-            <div class="panel__header-actions">
-              <span class="panel__meta" id="topicCountMeta">20 visibles</span>
-              <button class="text-button text-button--accent mobile-create-toggle" id="openMobileCreate" type="button">Crear nuevo tema</button>
+            <button class="text-button text-button--accent mobile-create-toggle" id="openMobileCreate" type="button">Crear nuevo tema</button>
+          </div>
+          <div class="mobile-topic-stage">
+            <div class="mobile-topic-stage__view mobile-topic-stage__view--list">
+              <div class="scroll-list" id="topicList"></div>
+            </div>
+            <div class="mobile-topic-stage__view mobile-topic-stage__view--create" aria-hidden="true">
+              <div class="mobile-create-card">
+                <div class="mobile-create-card__header">
+                  <div>
+                    <p class="panel__kicker">Panel 2</p>
+                    <h2>Nuevo tema</h2>
+                  </div>
+                  <button class="icon-button icon-button--compact mobile-create-close" id="closeMobileCreateMobile" type="button" aria-label="Volver a temas">
+                    <span aria-hidden="true">×</span>
+                  </button>
+                </div>
+                <form class="create-form create-form--mobile" id="mobileCreateTopicForm">
+                  <label class="field">
+                    <span>Título</span>
+                    <input id="mobileTopicTitleInput" type="text" maxlength="48" placeholder="Taller nocturno" required />
+                  </label>
+                  <label class="field">
+                    <span>Descripción</span>
+                    <textarea id="mobileTopicDescriptionInput" rows="4" maxlength="220" placeholder="Abro este hilo para..."></textarea>
+                  </label>
+                  <button class="primary-button" type="submit">Crear nuevo tema</button>
+                </form>
+              </div>
             </div>
           </div>
-          <div class="scroll-list" id="topicList"></div>
         </section>
 
         <section class="panel panel--create" aria-labelledby="createTitle">
@@ -106,8 +131,8 @@
               <input id="topicTitleInput" type="text" maxlength="48" placeholder="Taller nocturno" required />
             </label>
             <label class="field">
-              <span>Mensaje inicial</span>
-              <textarea id="topicSeedInput" rows="4" maxlength="220" placeholder="Abro este hilo para..."></textarea>
+              <span>Descripción</span>
+              <textarea id="topicDescriptionInput" rows="4" maxlength="220" placeholder="Abro este hilo para..."></textarea>
             </label>
             <button class="primary-button" type="submit">Crear nuevo tema</button>
           </form>

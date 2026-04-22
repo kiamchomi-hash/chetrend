@@ -260,6 +260,14 @@ button {
   justify-content: space-between;
 }
 
+.mobile-topic-stage {
+  display: block;
+}
+
+.mobile-topic-stage__view--create {
+  display: none;
+}
+
 .panel--chat {
   background:
     linear-gradient(180deg, color-mix(in srgb, var(--surface) 96%, transparent) 0%, var(--surface) 100%);
@@ -596,7 +604,7 @@ html.is-mobile-viewport .mobile-create-toggle {
 }
 
 html.is-mobile-viewport .mobile-create-close {
-  display: inline-flex;
+  display: none;
 }
 
 html.is-mobile-viewport .button-label,
@@ -620,6 +628,14 @@ html.is-mobile-viewport #openMobileCreate {
   padding: 0.92rem 1rem;
 }
 
+html.is-mobile-viewport .shell[data-mobile-view="create"] .mobile-create-toggle {
+  display: none;
+}
+
+html.is-mobile-viewport .shell[data-mobile-view="create"] .mobile-create-close {
+  display: inline-flex;
+}
+
 html.is-mobile-viewport .topbar__title h1 {
   font-size: 1rem;
 }
@@ -637,56 +653,91 @@ html.is-mobile-viewport .panel {
   min-height: auto;
 }
 
+html.is-mobile-viewport .panel--create {
+  display: none;
+}
+
 html.is-mobile-viewport .shell[data-mobile-view="browse"] .panel--chat,
-html.is-mobile-viewport .shell[data-mobile-view="browse"] .panel--create,
 html.is-mobile-viewport .shell[data-mobile-view="browse"] .panel--users,
 html.is-mobile-viewport .shell[data-mobile-view="browse"] .panel--rankings {
   display: none;
 }
 
-html.is-mobile-viewport .shell[data-mobile-view="create"] .panel--topics,
-html.is-mobile-viewport .shell[data-mobile-view="create"] .panel--chat,
-html.is-mobile-viewport .shell[data-mobile-view="create"] .panel--users,
-html.is-mobile-viewport .shell[data-mobile-view="create"] .panel--rankings {
-  display: none;
-}
-
 html.is-mobile-viewport .shell[data-mobile-view="chat"] .panel--topics,
-html.is-mobile-viewport .shell[data-mobile-view="chat"] .panel--create,
 html.is-mobile-viewport .shell[data-mobile-view="chat"] .panel--users,
 html.is-mobile-viewport .shell[data-mobile-view="chat"] .panel--rankings {
   display: none;
 }
 
 html.is-mobile-viewport .shell[data-mobile-view="browse"] .panel--topics,
-html.is-mobile-viewport .shell[data-mobile-view="create"] .panel--create,
 html.is-mobile-viewport .shell[data-mobile-view="chat"] .panel--chat {
   display: flex;
 }
 
-html.is-mobile-viewport .shell[data-mobile-view="browse"] .panel--chat {
+html.is-mobile-viewport .shell[data-mobile-view="chat"] .panel--topics {
   min-height: 0;
 }
 
-html.is-mobile-viewport .shell[data-mobile-view="create"] .panel--topics {
-  display: none;
+html.is-mobile-viewport .panel--topics {
+  position: relative;
 }
 
-html.is-mobile-viewport .shell[data-mobile-view="create"] .panel--create {
-  display: flex;
-  position: static;
-  inset: auto;
-  left: auto;
-  top: auto;
-  transform: none;
-  z-index: auto;
-  margin: 0;
-  background: var(--surface);
+html.is-mobile-viewport .mobile-topic-stage {
+  display: grid;
+}
+
+html.is-mobile-viewport .mobile-topic-stage__view {
+  grid-area: 1 / 1;
   overflow: hidden;
-  width: 100%;
-  max-height: none;
-  border-radius: inherit;
-  box-shadow: inherit;
+  transition:
+    opacity 220ms ease,
+    transform 220ms ease,
+    max-height 220ms ease;
+}
+
+html.is-mobile-viewport .mobile-topic-stage__view--list {
+  max-height: 3000px;
+  opacity: 1;
+  transform: translateY(0);
+}
+
+html.is-mobile-viewport .mobile-topic-stage__view--create {
+  max-height: 0;
+  opacity: 0;
+  transform: translateY(12px);
+  pointer-events: none;
+}
+
+html.is-mobile-viewport .shell[data-mobile-view="create"] .mobile-topic-stage__view--list {
+  max-height: 0;
+  opacity: 0;
+  transform: translateY(-12px);
+  pointer-events: none;
+}
+
+html.is-mobile-viewport .shell[data-mobile-view="create"] .mobile-topic-stage__view--create {
+  display: block;
+  max-height: 3000px;
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+
+html.is-mobile-viewport .mobile-create-card {
+  display: grid;
+  gap: 12px;
+  padding: 12px;
+  background: color-mix(in srgb, var(--surface-strong) 80%, transparent);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  box-shadow: none;
+}
+
+html.is-mobile-viewport .mobile-create-card__header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
 }
 
 html.is-mobile-viewport .panel--chat {
@@ -722,6 +773,15 @@ html.is-mobile-viewport .icon-button--drawer {
 html.is-mobile-viewport .icon-button,
 html.is-mobile-viewport .text-button {
   padding: 0.58rem;
+}
+
+html.is-mobile-viewport .create-form--mobile {
+  padding: 0;
+}
+
+html.is-mobile-viewport .create-form--mobile .primary-button {
+  width: 100%;
+  justify-self: stretch;
 }
 
 html.is-mobile-viewport .panel__header,
