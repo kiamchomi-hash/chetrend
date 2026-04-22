@@ -557,27 +557,52 @@ html.is-mobile-viewport .topbar {
 }
 
 html.is-mobile-viewport .topbar__group {
-  flex-wrap: wrap;
-  align-content: flex-start;
+  display: grid;
   gap: 8px;
 }
 
 html.is-mobile-viewport .topbar__group--left {
-  justify-content: flex-start;
+  grid-template-columns: auto auto;
+  grid-template-areas:
+    "drawer profile"
+    "drawer theme";
+  justify-content: start;
+  align-items: start;
 }
 
 html.is-mobile-viewport .topbar__group--right {
-  justify-content: flex-end;
+  grid-template-columns: auto auto;
+  grid-template-areas:
+    "contact drawer"
+    "store drawer";
+  justify-content: end;
+  align-items: start;
 }
 
-html.is-mobile-viewport .topbar__group--left > :not(:first-child),
-html.is-mobile-viewport .topbar__group--right > :not(:last-child) {
-  flex: 1 1 calc(50% - 4px);
-  min-width: 110px;
+html.is-mobile-viewport #openLeftDrawer {
+  grid-area: drawer;
 }
 
-html.is-mobile-viewport .topbar__group--right > :last-child {
-  order: -1;
+html.is-mobile-viewport #profileButton {
+  grid-area: profile;
+}
+
+html.is-mobile-viewport #themeToggle {
+  grid-area: theme;
+}
+
+html.is-mobile-viewport #contactAdminButton {
+  grid-area: contact;
+}
+
+html.is-mobile-viewport #storeButton {
+  grid-area: store;
+}
+
+html.is-mobile-viewport #openRightDrawer {
+  grid-area: drawer;
+  justify-self: end;
+  align-self: start;
 }
 
 html.is-mobile-viewport .topbar__title h1 {
