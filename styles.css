@@ -864,9 +864,8 @@ html.is-mobile-viewport .drawer--left {
 html.is-mobile-viewport .drawer--right {
   display: grid;
   grid-template-rows: auto minmax(0, 1fr) minmax(0, 1fr);
-  gap: 12px;
-  padding: 12px;
-  padding-top: calc(var(--topbar-offset, 70px) + 12px);
+  gap: 10px;
+  padding: 10px 12px 12px;
   left: 0;
   right: 0;
 }
@@ -882,17 +881,34 @@ html.is-mobile-viewport .drawer--right.is-closing {
 }
 
 html.is-mobile-viewport .drawer__header {
+  align-items: center;
+  min-height: 70px;
   padding-bottom: 0;
   border-bottom: 0;
 }
 
 html.is-mobile-viewport .drawer__header .icon-button {
-  position: fixed;
-  top: 14px;
-  right: 12px;
+  width: 42px;
+  height: 42px;
+  position: static;
   z-index: 26;
+  margin-left: auto;
+  transition: transform 180ms ease;
+}
+
+html.is-mobile-viewport .drawer__header .icon-button:hover {
+  transform: scale(1.05);
 }
 
 html.is-mobile-viewport .drawer__section--half {
   min-height: 0;
+  padding-top: 0;
+}
+
+html.is-mobile-viewport .drawer--right .drawer__section {
+  align-content: start;
+}
+
+html.is-mobile-viewport .drawer__section--half:first-of-type {
+  margin-top: 0;
 }
