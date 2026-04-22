@@ -839,11 +839,12 @@ html.is-mobile-viewport .topbar__group--right {
 html.is-mobile-viewport .topbar__title {
   gap: 10px;
   align-self: center;
+  justify-self: center;
   flex-direction: row;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start;
   line-height: 0.95;
-  max-width: min(100%, 170px);
+  max-width: min(100%, 190px);
 }
 
 html.is-mobile-viewport .mobile-create-toggle {
@@ -931,8 +932,8 @@ html.is-mobile-viewport .brand-mark__trend {
 }
 
 html.is-mobile-viewport .brand-mark__icon {
-  width: 1.9rem;
-  height: 1.9rem;
+  width: 2rem;
+  height: 2rem;
 }
 
 html.is-mobile-viewport .topbar__title {
@@ -1212,7 +1213,7 @@ html.is-mobile-viewport .drawer__brand {
   inset: 0 56px 0 56px;
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start;
   gap: 8px;
   pointer-events: none;
 }
@@ -1225,6 +1226,8 @@ html.is-mobile-viewport .drawer__brand-icon {
 html.is-mobile-viewport .drawer__brand .brand-mark {
   font-size: 0.8rem;
   letter-spacing: 0.05em;
+  justify-items: start;
+  text-align: left;
 }
 
 html.is-mobile-viewport .drawer__header .icon-button {
