@@ -272,6 +272,10 @@ button {
   scrollbar-width: thin;
 }
 
+html.is-desktop-viewport .panel--topics {
+  border-radius: 0;
+}
+
 .panel--topics .panel__header {
   position: sticky;
   top: 0;
