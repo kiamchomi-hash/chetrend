@@ -238,12 +238,6 @@ button {
   border-bottom: 1px solid var(--line);
 }
 
-.panel__header-actions {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
 .panel__header h2,
 .drawer__header h2,
 .drawer__section h3 {
@@ -593,23 +587,12 @@ html.is-mobile-viewport .topbar__title {
   display: none;
 }
 
-html.is-mobile-viewport .panel--topics .panel__header {
-  align-items: center;
-}
-
-html.is-mobile-viewport .panel__header-actions {
-  margin-left: auto;
-  gap: 8px;
-}
-
-html.is-mobile-viewport .topic-count-meta,
-html.is-mobile-viewport #topicCountMeta {
-  display: none;
-}
-
 html.is-mobile-viewport .mobile-create-toggle {
-  display: inline-flex;
-  width: auto;
+  display: flex;
+  width: 100%;
+  justify-content: center;
+  padding: 0.92rem 1rem;
+  margin: 0;
 }
 
 html.is-mobile-viewport .mobile-create-close {
@@ -628,8 +611,13 @@ html.is-mobile-viewport .text-button {
 
 html.is-mobile-viewport .text-button {
   justify-content: center;
-  width: 42px;
   padding-inline: 0;
+}
+
+html.is-mobile-viewport #openMobileCreate {
+  width: 100%;
+  min-width: 0;
+  padding: 0.92rem 1rem;
 }
 
 html.is-mobile-viewport .topbar__title h1 {
