@@ -607,6 +607,15 @@ html.is-mobile-viewport .mobile-create-close {
   display: none;
 }
 
+html.is-mobile-viewport .mobile-create-close--header {
+  width: auto;
+  min-width: 162px;
+  justify-content: center;
+  padding: 0.92rem 1rem;
+  margin: 0;
+  white-space: nowrap;
+}
+
 html.is-mobile-viewport .button-label,
 html.is-mobile-viewport .theme-toggle__label {
   display: none;
@@ -624,6 +633,12 @@ html.is-mobile-viewport .text-button {
 
 html.is-mobile-viewport #openMobileCreate {
   padding: 0.92rem 1rem;
+}
+
+html.is-mobile-viewport #closeMobileCreateMobile {
+  padding: 0.92rem 1rem;
+  min-width: 162px;
+  white-space: nowrap;
 }
 
 html.is-mobile-viewport .panel__header--topics {
