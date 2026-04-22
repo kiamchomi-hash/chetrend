@@ -356,6 +356,28 @@ button {
   background: color-mix(in srgb, var(--accent-strong) 72%, var(--bg) 28%);
 }
 
+html.is-desktop-viewport .scroll-list,
+html.is-desktop-viewport .message-stream {
+  scrollbar-gutter: stable both-edges;
+}
+
+html.is-desktop-viewport .panel--topics .scroll-list {
+  padding-right: 16px;
+  padding-bottom: 16px;
+}
+
+html.is-desktop-viewport .scroll-list::-webkit-scrollbar,
+html.is-desktop-viewport .message-stream::-webkit-scrollbar {
+  width: 11px;
+  height: 11px;
+}
+
+html.is-desktop-viewport .scroll-list::-webkit-scrollbar-thumb,
+html.is-desktop-viewport .message-stream::-webkit-scrollbar-thumb {
+  border: 3px solid transparent;
+  background-clip: content-box;
+}
+
 .topic-list,
 .user-list,
 .ranking-list {
