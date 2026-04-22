@@ -469,7 +469,14 @@ textarea:focus {
 
 .ranking-switch {
   display: flex;
+  align-items: stretch;
   gap: 8px;
+}
+
+.ranking-switch__button {
+  min-width: 96px;
+  justify-content: center;
+  flex: 1 1 0;
 }
 
 .ranking-mode {
@@ -968,6 +975,11 @@ html.is-mobile-viewport .drawer-ranking__switch {
 
 html.is-mobile-viewport .drawer-ranking__switch .icon-button {
   flex: 0 0 auto;
+}
+
+html.is-mobile-viewport .drawer-ranking__switch .ranking-switch__button {
+  min-width: 0;
+  width: calc(50% - 3px);
 }
 
 html.is-mobile-viewport .drawer--right .ranking-mode {

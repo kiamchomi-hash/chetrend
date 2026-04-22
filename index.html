@@ -174,13 +174,30 @@
                 <h2 id="rankingsTitle">Ranking global</h2>
               </div>
               <div class="ranking-switch">
-                <button class="icon-button icon-button--compact" id="rankingPrev" type="button" aria-label="Ver ranking global">
-                  <span aria-hidden="true">↑</span>
+                <button class="icon-button icon-button--compact ranking-switch__button" id="rankingPrev" type="button" aria-label="Ver ranking global">
+                  <span class="icon-button__icon" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M12 3c3.866 0 7 3.134 7 7 0 4.6-4.2 8.8-7 11-2.8-2.2-7-6.4-7-11 0-3.866 3.134-7 7-7Z"></path>
+                      <path d="M9.2 10.2h5.6"></path>
+                      <path d="M9.2 13.8h5.6"></path>
+                      <path d="M12 7.3v6.8"></path>
+                    </svg>
+                  </span>
+                  <span class="button-label">Global</span>
                 </button>
-              <button class="icon-button icon-button--compact" id="rankingNext" type="button" aria-label="Ver ranking del tema">
-                <span aria-hidden="true">↓</span>
-              </button>
-            </div>
+                <button class="icon-button icon-button--compact ranking-switch__button" id="rankingNext" type="button" aria-label="Ver ranking del tema">
+                  <span class="icon-button__icon" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M7 4h10v16H7z"></path>
+                      <path d="M9 7h6"></path>
+                      <path d="M9 10h6"></path>
+                      <path d="M9 13h4"></path>
+                      <path d="M12 16c-1.3-1.1-2.4-2.5-2.4-3.9a2.4 2.4 0 1 1 4.8 0c0 1.4-1.1 2.8-2.4 3.9Z"></path>
+                    </svg>
+                  </span>
+                  <span class="button-label">Tema</span>
+                </button>
+              </div>
             </div>
             <div class="scroll-list" id="rankingList"></div>
           </section>
@@ -216,11 +233,28 @@
         <div class="drawer-ranking__header">
           <h3 id="drawerRankingsTitle">Ranking global</h3>
           <div class="drawer-ranking__switch" aria-label="Cambiar modo de ranking">
-            <button class="icon-button icon-button--compact" id="drawerRankingPrev" type="button" aria-label="Ver ranking global">
-              <span aria-hidden="true">↑</span>
+            <button class="icon-button icon-button--compact ranking-switch__button" id="drawerRankingPrev" type="button" aria-label="Ver ranking global">
+              <span class="icon-button__icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M12 3c3.866 0 7 3.134 7 7 0 4.6-4.2 8.8-7 11-2.8-2.2-7-6.4-7-11 0-3.866 3.134-7 7-7Z"></path>
+                  <path d="M9.2 10.2h5.6"></path>
+                  <path d="M9.2 13.8h5.6"></path>
+                  <path d="M12 7.3v6.8"></path>
+                </svg>
+              </span>
+              <span class="button-label">Global</span>
             </button>
-            <button class="icon-button icon-button--compact" id="drawerRankingNext" type="button" aria-label="Ver ranking del tema">
-              <span aria-hidden="true">↓</span>
+            <button class="icon-button icon-button--compact ranking-switch__button" id="drawerRankingNext" type="button" aria-label="Ver ranking del tema">
+              <span class="icon-button__icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M7 4h10v16H7z"></path>
+                  <path d="M9 7h6"></path>
+                  <path d="M9 10h6"></path>
+                  <path d="M9 13h4"></path>
+                  <path d="M12 16c-1.3-1.1-2.4-2.5-2.4-3.9a2.4 2.4 0 1 1 4.8 0c0 1.4-1.1 2.8-2.4 3.9Z"></path>
+                </svg>
+              </span>
+              <span class="button-label">Tema</span>
             </button>
           </div>
         </div>
