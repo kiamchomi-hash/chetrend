@@ -740,13 +740,13 @@ html.is-mobile-viewport .mobile-topic-stage__view--list .scroll-list {
 
 html.is-mobile-viewport .mobile-create-card {
   display: grid;
-  gap: 12px;
+  gap: 8px;
   width: 100%;
   min-height: 100%;
-  padding: 12px;
-  background: color-mix(in srgb, var(--surface-strong) 80%, transparent);
-  border: 1px solid var(--line);
-  border-radius: var(--radius-sm);
+  padding: 8px 0 0;
+  background: transparent;
+  border: 0;
+  border-radius: 0;
   box-shadow: none;
 }
 
@@ -754,8 +754,9 @@ html.is-mobile-viewport .mobile-create-card__header {
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
-  gap: 12px;
-  padding: 0;
+  gap: 10px;
+  padding: 0 0 4px;
+  border-bottom: 1px solid var(--line);
 }
 
 html.is-mobile-viewport .panel--chat {
@@ -794,12 +795,22 @@ html.is-mobile-viewport .text-button {
 }
 
 html.is-mobile-viewport .create-form--mobile {
-  padding: 0;
+  padding: 8px 0 0;
+  gap: 10px;
 }
 
 html.is-mobile-viewport .create-form--mobile .primary-button {
   width: 100%;
   justify-self: stretch;
+}
+
+html.is-mobile-viewport .create-form--mobile .field {
+  gap: 4px;
+}
+
+html.is-mobile-viewport .create-form--mobile input,
+html.is-mobile-viewport .create-form--mobile textarea {
+  padding: 0.82rem 0.92rem;
 }
 
 html.is-mobile-viewport .panel__header,
