@@ -154,6 +154,8 @@ function bindEvents() {
     syncResponsiveView();
     render();
   });
+
+  document.addEventListener("wheel", handleScrollableWheel, { passive: false, capture: true });
 }
 
 function flashTitle(text) {
@@ -545,6 +547,31 @@ function closeMobileCreate() {
   state.mobileView = "browse";
   syncResponsiveView();
   render();
+}
+
+function handleScrollableWheel(event) {
+  const target = event.target instanceof Element ? event.target : null;
+  if (!target) {
+    return;
+  }
+
+  const container = target.closest(".scroll-list, .message-stream");
+  if (!container) {
+    return;
+  }
+
+  const delta = event.deltaY;
+  if (!delta) {
+    return;
+  }
+
+  const canScroll = container.scrollHeight > container.clientHeight + 1;
+  if (!canScroll) {
+    return;
+  }
+
+  event.preventDefault();
+  container.scrollTop += delta;
 }
 
 function getCreateInputs() {

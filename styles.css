@@ -266,6 +266,20 @@ button {
   min-width: 0;
 }
 
+.panel--topics {
+  min-height: 0;
+  overflow: auto;
+  scrollbar-width: thin;
+}
+
+.panel--topics .panel__header {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  background: color-mix(in srgb, var(--surface-strong) 94%, transparent);
+  backdrop-filter: blur(18px);
+}
+
 .panel--create {
   justify-content: space-between;
 }
@@ -306,6 +320,7 @@ button {
   overflow: auto;
   padding: 12px;
   scrollbar-width: thin;
+  min-height: 0;
 }
 
 .topic-list,
@@ -434,6 +449,31 @@ textarea:focus {
   overflow: auto;
   min-height: 0;
   flex: 1;
+}
+
+.panel--topics .mobile-topic-stage {
+  display: flex;
+  flex: 1;
+  min-height: 0;
+}
+
+.panel--topics .mobile-topic-stage__view {
+  position: relative;
+  inset: auto;
+  flex: 1;
+  min-height: 0;
+}
+
+.panel--topics .mobile-topic-stage__view--list,
+.panel--topics .mobile-topic-stage__view--create {
+  width: 100%;
+  height: 100%;
+}
+
+.panel--topics #topicList {
+  flex: 1;
+  min-height: 0;
+  height: 100%;
 }
 
 .message {
