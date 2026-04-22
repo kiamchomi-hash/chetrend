@@ -774,9 +774,19 @@ html.is-mobile-viewport .shell[data-mobile-view="create"] .mobile-topic-stage__v
 
 html.is-mobile-viewport .mobile-topic-stage__view--list .scroll-list {
   height: 100%;
-  scrollbar-gutter: stable;
+  padding-right: 2px;
   scrollbar-width: thin;
   scrollbar-color: color-mix(in srgb, var(--accent) 60%, var(--bg) 40%) transparent;
+}
+
+html.is-mobile-viewport .mobile-topic-stage__view--list .topic-list {
+  width: 100%;
+  grid-template-columns: minmax(0, 1fr);
+}
+
+html.is-mobile-viewport .mobile-topic-stage__view--list .topic-item {
+  width: 100%;
+  min-width: 0;
 }
 
 html.is-mobile-viewport .mobile-topic-stage__view--list .scroll-list::-webkit-scrollbar {
