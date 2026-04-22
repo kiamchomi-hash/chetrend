@@ -184,18 +184,33 @@ function setRankingMode(mode) {
 function openDrawer(side) {
   const drawer = document.getElementById(side === "left" ? "leftDrawer" : "rightDrawer");
   const backdrop = document.getElementById("drawerBackdrop");
+  drawer.classList.remove("is-closing");
   drawer.classList.add("is-open");
   drawer.setAttribute("aria-hidden", "false");
   backdrop.hidden = false;
 }
 
 function closeDrawers() {
-  ["leftDrawer", "rightDrawer"].forEach((id) => {
-    const drawer = document.getElementById(id);
-    drawer.classList.remove("is-open");
-    drawer.setAttribute("aria-hidden", "true");
-  });
-  document.getElementById("drawerBackdrop").hidden = true;
+  const leftDrawer = document.getElementById("leftDrawer");
+  const rightDrawer = document.getElementById("rightDrawer");
+  const backdrop = document.getElementById("drawerBackdrop");
+
+  leftDrawer.classList.remove("is-open", "is-closing");
+  leftDrawer.setAttribute("aria-hidden", "true");
+
+  if (isMobileViewport() && rightDrawer.classList.contains("is-open")) {
+    rightDrawer.classList.add("is-closing");
+    rightDrawer.setAttribute("aria-hidden", "true");
+    window.setTimeout(() => {
+      rightDrawer.classList.remove("is-open", "is-closing");
+      backdrop.hidden = true;
+    }, 220);
+    return;
+  }
+
+  rightDrawer.classList.remove("is-open", "is-closing");
+  rightDrawer.setAttribute("aria-hidden", "true");
+  backdrop.hidden = true;
 }
 
 function getSelectedTopic() {

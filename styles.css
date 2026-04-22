@@ -873,6 +873,11 @@ html.is-mobile-viewport .drawer--right.is-open {
   pointer-events: auto;
 }
 
+html.is-mobile-viewport .drawer--right.is-closing {
+  transform: translateX(105%) scale(0.98);
+  pointer-events: none;
+}
+
 html.is-mobile-viewport .drawer__header {
   padding-bottom: 0;
   border-bottom: 0;
