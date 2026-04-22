@@ -45,5 +45,5 @@ function servePreview(port, mode) {
     });
 }
 
-servePreview(4173, "desktop");
+servePreview(4173, "responsive");
 servePreview(4174, "mobile");
