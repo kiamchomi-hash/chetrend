@@ -864,8 +864,8 @@ html.is-mobile-viewport .drawer--left {
 html.is-mobile-viewport .drawer--right {
   display: grid;
   grid-template-rows: auto minmax(0, 1fr) minmax(0, 1fr);
-  gap: 10px;
-  padding: 10px 12px 12px;
+  gap: 0;
+  padding: 0;
   left: 0;
   right: 0;
 }
@@ -883,16 +883,22 @@ html.is-mobile-viewport .drawer--right.is-closing {
 html.is-mobile-viewport .drawer__header {
   align-items: center;
   min-height: 70px;
-  padding-bottom: 0;
+  padding: 12px 12px 10px;
   border-bottom: 0;
 }
 
 html.is-mobile-viewport .drawer__header .icon-button {
+  display: grid;
+  place-items: center;
   width: 42px;
   height: 42px;
   position: static;
   z-index: 26;
   margin-left: auto;
+  padding: 0;
+  font-size: 1.2rem;
+  line-height: 1;
+  justify-content: center;
   transition: transform 180ms ease;
 }
 
@@ -903,6 +909,8 @@ html.is-mobile-viewport .drawer__header .icon-button:hover {
 html.is-mobile-viewport .drawer__section--half {
   min-height: 0;
   padding-top: 0;
+  padding-left: 12px;
+  padding-right: 12px;
 }
 
 html.is-mobile-viewport .drawer--right .drawer__section {
