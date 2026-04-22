@@ -79,6 +79,7 @@
         <section class="panel panel--topics" aria-label="Temas">
           <div class="panel__header panel__header--topics">
             <button class="text-button text-button--accent mobile-create-toggle" id="openMobileCreate" type="button">Crear nuevo tema</button>
+            <button class="text-button text-button--accent mobile-create-close mobile-create-close--header" id="closeMobileCreateMobile" type="button">Volver atrás</button>
           </div>
           <div class="mobile-topic-stage">
             <div class="mobile-topic-stage__view mobile-topic-stage__view--list">
@@ -86,9 +87,6 @@
             </div>
             <div class="mobile-topic-stage__view mobile-topic-stage__view--create" aria-hidden="true">
               <div class="mobile-create-card">
-                <div class="mobile-create-card__header">
-                  <button class="text-button mobile-create-close" id="closeMobileCreateMobile" type="button">Volver atrás</button>
-                </div>
                 <form class="create-form create-form--mobile" id="mobileCreateTopicForm">
                   <label class="field">
                     <input id="mobileTopicTitleInput" type="text" maxlength="48" placeholder="Título" required />
