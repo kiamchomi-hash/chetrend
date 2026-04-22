@@ -169,24 +169,23 @@
         </section>
 
         <section class="panel panel--rankings" aria-labelledby="rankingsTitle">
-          <div class="panel__header">
-            <div>
-              <h2 id="rankingsTitle">Rankings</h2>
-            </div>
-            <div class="ranking-switch">
-              <button class="icon-button icon-button--compact" id="rankingPrev" type="button" aria-label="Ver ranking global">
-                <span aria-hidden="true">↑</span>
-              </button>
+            <div class="panel__header">
+              <div>
+                <h2 id="rankingsTitle">Ranking global</h2>
+              </div>
+              <div class="ranking-switch">
+                <button class="icon-button icon-button--compact" id="rankingPrev" type="button" aria-label="Ver ranking global">
+                  <span aria-hidden="true">↑</span>
+                </button>
               <button class="icon-button icon-button--compact" id="rankingNext" type="button" aria-label="Ver ranking del tema">
                 <span aria-hidden="true">↓</span>
               </button>
             </div>
-          </div>
-            <div class="ranking-mode" id="rankingMode">Ranking -global-</div>
-          <div class="scroll-list" id="rankingList"></div>
-        </section>
-      </main>
-    </div>
+            </div>
+            <div class="scroll-list" id="rankingList"></div>
+          </section>
+        </main>
+      </div>
 
     <div class="drawer-backdrop" id="drawerBackdrop" hidden></div>
 
@@ -215,7 +214,7 @@
       </section>
       <section class="drawer__section drawer__section--half">
         <div class="drawer-ranking__header">
-          <h3>Ranking</h3>
+          <h3 id="drawerRankingsTitle">Ranking global</h3>
           <div class="drawer-ranking__switch" aria-label="Cambiar modo de ranking">
             <button class="icon-button icon-button--compact" id="drawerRankingPrev" type="button" aria-label="Ver ranking global">
               <span aria-hidden="true">↑</span>
@@ -225,7 +224,6 @@
             </button>
           </div>
         </div>
-        <div class="ranking-mode" id="drawerRankingMode">Ranking -global-</div>
         <div class="scroll-list" id="drawerRankingList"></div>
       </section>
     </aside>

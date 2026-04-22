@@ -285,15 +285,18 @@ function renderTitles() {
   document.getElementById("chatTopicName").textContent = topic.title;
   document.getElementById("chatTopicDescription").textContent = topic.subtitle;
   const rankingLabel = getRankingModeLabel(topic.title);
-  document.getElementById("rankingMode").textContent = rankingLabel;
-  const drawerRankingMode = document.getElementById("drawerRankingMode");
-  if (drawerRankingMode) {
-    drawerRankingMode.textContent = rankingLabel;
+  const rankingsTitle = document.getElementById("rankingsTitle");
+  if (rankingsTitle) {
+    rankingsTitle.textContent = rankingLabel;
+  }
+  const drawerRankingsTitle = document.getElementById("drawerRankingsTitle");
+  if (drawerRankingsTitle) {
+    drawerRankingsTitle.textContent = rankingLabel;
   }
 }
 
 function getRankingModeLabel(topicTitle) {
-  return state.rankingMode === "global" ? "Ranking -global-" : `Ranking -${topicTitle}-`;
+  return state.rankingMode === "global" ? "Ranking global" : `Ranking ${topicTitle}`;
 }
 
 function renderTopics(targetId = "topicList") {
