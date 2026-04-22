@@ -883,8 +883,8 @@ html.is-mobile-viewport .drawer--right.is-closing {
 
 html.is-mobile-viewport .drawer__header {
   align-items: center;
-  min-height: 70px;
-  padding: 12px 12px 16px;
+  min-height: 64px;
+  padding: 10px 10px 14px;
   border-bottom: 1px solid color-mix(in srgb, var(--accent-soft) 65%, var(--line));
   background: color-mix(in srgb, var(--surface-strong) 98%, var(--bg) 2%);
 }
@@ -911,29 +911,30 @@ html.is-mobile-viewport .drawer__header .icon-button:hover {
 
 html.is-mobile-viewport .drawer__section--half {
   min-height: 0;
-  padding-top: 8px;
-  padding-left: 12px;
-  padding-right: 12px;
+  padding: 6px 10px 10px;
 }
 
 html.is-mobile-viewport .drawer--right .drawer__section {
   align-content: start;
-  background: color-mix(in srgb, var(--surface-strong) 90%, var(--bg) 10%);
+  background: color-mix(in srgb, var(--surface-strong) 86%, var(--bg) 14%);
 }
 
 html.is-mobile-viewport .drawer--right .drawer__section h3 {
-  font-size: 0.8rem;
-  letter-spacing: 0.08em;
+  margin-bottom: 6px;
+  font-size: 0.74rem;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
 }
 
 html.is-mobile-viewport .drawer--right .scroll-list {
+  padding: 6px 8px 8px 6px;
+  scrollbar-gutter: stable;
   scrollbar-width: thin;
-  scrollbar-color: color-mix(in srgb, var(--accent) 72%, var(--bg) 28%) transparent;
+  scrollbar-color: color-mix(in srgb, var(--accent) 60%, var(--bg) 40%) transparent;
 }
 
 html.is-mobile-viewport .drawer--right .scroll-list::-webkit-scrollbar {
-  width: 8px;
+  width: 6px;
 }
 
 html.is-mobile-viewport .drawer--right .scroll-list::-webkit-scrollbar-track {
@@ -941,16 +942,31 @@ html.is-mobile-viewport .drawer--right .scroll-list::-webkit-scrollbar-track {
 }
 
 html.is-mobile-viewport .drawer--right .scroll-list::-webkit-scrollbar-thumb {
-  background: color-mix(in srgb, var(--accent) 72%, var(--bg) 28%);
+  background: color-mix(in srgb, var(--accent) 60%, var(--bg) 40%);
   border-radius: 999px;
-  border: 2px solid transparent;
+  border: 1.5px solid transparent;
   background-clip: content-box;
 }
 
 html.is-mobile-viewport .drawer--right .scroll-list::-webkit-scrollbar-thumb:hover {
-  background: color-mix(in srgb, var(--accent-strong) 82%, var(--bg) 18%);
+  background: color-mix(in srgb, var(--accent-strong) 74%, var(--bg) 26%);
 }
 
 html.is-mobile-viewport .drawer__section--half:first-of-type {
   margin-top: 0;
+}
+
+html.is-mobile-viewport .drawer--right .user-list,
+html.is-mobile-viewport .drawer--right .ranking-list {
+  gap: 8px;
+}
+
+html.is-mobile-viewport .drawer--right .user-item,
+html.is-mobile-viewport .drawer--right .ranking-item {
+  padding: 10px;
+}
+
+html.is-mobile-viewport .drawer--right .user-item__meta,
+html.is-mobile-viewport .drawer--right .ranking-item__meta {
+  font-size: 0.8rem;
 }
