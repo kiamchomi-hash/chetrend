@@ -647,7 +647,8 @@ textarea:focus {
   justify-content: center;
   gap: 10px;
   flex: 1 1 0;
-  padding-inline: 0.85rem;
+  position: relative;
+  padding: 0.72rem 0.85rem 0.72rem 3rem;
   text-align: center;
 }
 
@@ -668,6 +669,10 @@ textarea:focus {
 }
 
 .ranking-switch__button .icon-button__icon {
+  position: absolute;
+  left: 0.85rem;
+  top: 50%;
+  transform: translateY(-50%);
   width: 1.7rem;
   height: 1.7rem;
   border-radius: 999px;
@@ -680,6 +685,16 @@ textarea:focus {
   width: 1rem;
   height: 1rem;
   margin: auto;
+}
+
+.ranking-switch__button .button-label {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  width: calc(100% - 5rem);
+  justify-content: center;
+  text-align: center;
+  pointer-events: none;
 }
 
 .ranking-mode {
@@ -1300,6 +1315,10 @@ html.is-mobile-viewport .drawer-ranking__switch .ranking-switch__button {
 html.is-mobile-viewport .drawer-ranking__switch .button-label,
 html.is-mobile-viewport .panel--rankings .button-label {
   display: inline-flex;
+}
+
+html.is-mobile-viewport .drawer-ranking__switch .ranking-switch__button {
+  padding-left: 3rem;
 }
 
 html.is-mobile-viewport .drawer--right .ranking-mode {
