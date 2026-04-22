@@ -229,7 +229,8 @@ button {
 .panel {
   display: flex;
   flex-direction: column;
-  min-height: calc(100vh - var(--topbar-offset, var(--topbar-height)) - 32px);
+  min-height: 0;
+  height: calc(100dvh - var(--topbar-offset, var(--topbar-height)) - 32px);
   background: var(--surface);
   border: 1px solid var(--line);
   border-radius: var(--radius);
@@ -580,6 +581,10 @@ html[data-theme="dark"] .theme-icon--sun {
 
   .panel--rankings {
     grid-area: rankings;
+  }
+
+  .workspace {
+    overflow: hidden;
   }
 }
 
