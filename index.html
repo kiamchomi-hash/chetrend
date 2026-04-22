@@ -82,7 +82,10 @@
               <p class="panel__kicker">Panel 1</p>
               <h2 id="topicsTitle">Temas</h2>
             </div>
-            <span class="panel__meta" id="topicCountMeta">20 visibles</span>
+            <div class="panel__header-actions">
+              <span class="panel__meta" id="topicCountMeta">20 visibles</span>
+              <button class="text-button text-button--accent mobile-create-toggle" id="openMobileCreate" type="button">Crear nuevo tema</button>
+            </div>
           </div>
           <div class="scroll-list" id="topicList"></div>
         </section>
@@ -93,6 +96,9 @@
               <p class="panel__kicker">Panel 2</p>
               <h2 id="createTitle">Nuevo tema</h2>
             </div>
+            <button class="icon-button icon-button--compact mobile-create-close" id="closeMobileCreate" type="button" aria-label="Cerrar creación">
+              <span aria-hidden="true">×</span>
+            </button>
           </div>
           <form class="create-form" id="createTopicForm">
             <label class="field">

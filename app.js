@@ -4,6 +4,7 @@ const state = {
   rankingMode: "global",
   refreshCount: 0,
   mobileView: "browse",
+  mobileCreateOpen: false,
   currentUserId: "u1",
   topics: [],
   users: []
@@ -109,6 +110,8 @@ function bindEvents() {
   document.getElementById("refreshButton").addEventListener("click", refreshCurrentTopic);
   document.getElementById("messageForm").addEventListener("submit", submitMessage);
   document.getElementById("createTopicForm").addEventListener("submit", createTopic);
+  document.getElementById("openMobileCreate").addEventListener("click", toggleMobileCreate);
+  document.getElementById("closeMobileCreate").addEventListener("click", closeMobileCreate);
   document.getElementById("rankingPrev").addEventListener("click", () => setRankingMode("global"));
   document.getElementById("rankingNext").addEventListener("click", () => setRankingMode("topic"));
   document.getElementById("openLeftDrawer").addEventListener("click", () => openDrawer("left"));
@@ -163,6 +166,7 @@ function toggleTheme() {
 
 function focusTopic(topicId) {
   state.selectedTopicId = topicId;
+  state.mobileCreateOpen = false;
   if (isMobileViewport()) {
     state.mobileView = "chat";
     syncResponsiveView();
@@ -220,7 +224,9 @@ function syncResponsiveView() {
   document.documentElement.classList.toggle("is-desktop-viewport", !mobile);
 
   if (!mobile) {
+    state.mobileCreateOpen = false;
     shell.dataset.mobileView = "desktop";
+    shell.dataset.mobileCreate = "closed";
     return;
   }
 
@@ -229,6 +235,7 @@ function syncResponsiveView() {
   }
 
   shell.dataset.mobileView = state.mobileView;
+  shell.dataset.mobileCreate = state.mobileCreateOpen ? "open" : "closed";
 }
 
 function renderTitles() {
@@ -434,6 +441,7 @@ function createTopic(event) {
   titleInput.value = "";
   seedInput.value = "";
   state.rankingMode = "topic";
+  closeMobileCreate();
   render();
 }
 
@@ -466,6 +474,24 @@ function refreshCurrentTopic() {
   renderChat();
   renderRankings();
   renderTitles();
+}
+
+function toggleMobileCreate() {
+  if (!isMobileViewport()) {
+    return;
+  }
+
+  state.mobileCreateOpen = !state.mobileCreateOpen;
+  if (state.mobileCreateOpen) {
+    state.mobileView = "browse";
+  }
+  syncResponsiveView();
+  render();
+}
+
+function closeMobileCreate() {
+  state.mobileCreateOpen = false;
+  syncResponsiveView();
 }
 
 function isMobileViewport() {

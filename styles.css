@@ -238,6 +238,12 @@ button {
   border-bottom: 1px solid var(--line);
 }
 
+.panel__header-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
 .panel__header h2,
 .drawer__header h2,
 .drawer__section h3 {
@@ -400,6 +406,11 @@ textarea:focus {
 }
 
 .chat-hero__back {
+  display: none;
+}
+
+.mobile-create-toggle,
+.mobile-create-close {
   display: none;
 }
 
@@ -582,6 +593,29 @@ html.is-mobile-viewport .topbar__title {
   display: none;
 }
 
+html.is-mobile-viewport .panel--topics .panel__header {
+  align-items: center;
+}
+
+html.is-mobile-viewport .panel__header-actions {
+  margin-left: auto;
+  gap: 8px;
+}
+
+html.is-mobile-viewport .topic-count-meta,
+html.is-mobile-viewport #topicCountMeta {
+  display: none;
+}
+
+html.is-mobile-viewport .mobile-create-toggle {
+  display: inline-flex;
+  width: auto;
+}
+
+html.is-mobile-viewport .mobile-create-close {
+  display: inline-flex;
+}
+
 html.is-mobile-viewport .button-label,
 html.is-mobile-viewport .theme-toggle__label {
   display: none;
@@ -615,6 +649,7 @@ html.is-mobile-viewport .panel {
 }
 
 html.is-mobile-viewport .shell[data-mobile-view="browse"] .panel--chat,
+html.is-mobile-viewport .shell[data-mobile-view="browse"] .panel--create,
 html.is-mobile-viewport .shell[data-mobile-view="browse"] .panel--users,
 html.is-mobile-viewport .shell[data-mobile-view="browse"] .panel--rankings {
   display: none;
@@ -628,13 +663,22 @@ html.is-mobile-viewport .shell[data-mobile-view="chat"] .panel--rankings {
 }
 
 html.is-mobile-viewport .shell[data-mobile-view="browse"] .panel--topics,
-html.is-mobile-viewport .shell[data-mobile-view="browse"] .panel--create,
 html.is-mobile-viewport .shell[data-mobile-view="chat"] .panel--chat {
   display: flex;
 }
 
 html.is-mobile-viewport .shell[data-mobile-view="browse"] .panel--chat {
   min-height: 0;
+}
+
+html.is-mobile-viewport .shell[data-mobile-create="open"] .panel--create {
+  display: flex;
+  position: fixed;
+  inset: calc(var(--topbar-offset, var(--topbar-height)) + 12px) 12px 12px;
+  z-index: 30;
+  margin: 0;
+  background: var(--surface-strong);
+  overflow: auto;
 }
 
 html.is-mobile-viewport .panel--chat {
