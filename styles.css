@@ -663,6 +663,13 @@ html.is-mobile-viewport .shell[data-mobile-view="browse"] .panel--rankings {
   display: none;
 }
 
+html.is-mobile-viewport .shell[data-mobile-view="create"] .panel--create,
+html.is-mobile-viewport .shell[data-mobile-view="create"] .panel--chat,
+html.is-mobile-viewport .shell[data-mobile-view="create"] .panel--users,
+html.is-mobile-viewport .shell[data-mobile-view="create"] .panel--rankings {
+  display: none;
+}
+
 html.is-mobile-viewport .shell[data-mobile-view="chat"] .panel--topics,
 html.is-mobile-viewport .shell[data-mobile-view="chat"] .panel--users,
 html.is-mobile-viewport .shell[data-mobile-view="chat"] .panel--rankings {
