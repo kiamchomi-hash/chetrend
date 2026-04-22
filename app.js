@@ -368,7 +368,7 @@ function renderTopics(targetId = "topicList") {
       </span>
       <span class="topic-item__content">
         <span class="topic-item__title">${index + 1}. ${escapeHtml(topic.title)}</span>
-        <span class="topic-item__meta">${topicCommentCount} comentarios - ${escapeHtml(lastCommenterName)}</span>
+        <span class="topic-item__meta">${topicCommentCount}, ${escapeHtml(lastCommenterName)}</span>
       </span>
     `;
     button.addEventListener("click", () => {
