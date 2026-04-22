@@ -457,26 +457,25 @@ html.is-desktop-viewport .message-stream::-webkit-scrollbar-thumb {
 .user-item,
 .ranking-item {
   border: 1px solid var(--line);
-  border-radius: var(--radius-sm);
+  border-radius: 0;
   background: color-mix(in srgb, var(--surface-strong) 80%, transparent);
-  padding: 12px;
+  padding: 0;
 }
 
 .topic-item {
   display: flex;
   align-items: center;
-  gap: 12px;
   text-align: left;
 }
 
 .topic-item__avatar {
-  width: 44px;
-  height: 44px;
+  width: 52px;
+  align-self: stretch;
   flex: none;
-  border-radius: 10px;
+  border-radius: 0;
   overflow: hidden;
   background: linear-gradient(180deg, color-mix(in srgb, var(--surface-strong) 72%, var(--bg) 28%), color-mix(in srgb, var(--surface-strong) 58%, var(--bg) 42%));
-  border: 1px solid color-mix(in srgb, var(--line-strong) 70%, transparent);
+  border-right: 1px solid color-mix(in srgb, var(--line-strong) 70%, transparent);
   color: color-mix(in srgb, var(--text-soft) 72%, var(--bg) 28%);
 }
 
@@ -496,6 +495,7 @@ html.is-desktop-viewport .message-stream::-webkit-scrollbar-thumb {
   gap: 6px;
   min-width: 0;
   flex: 1;
+  padding: 12px;
 }
 
 .topic-item__title,
