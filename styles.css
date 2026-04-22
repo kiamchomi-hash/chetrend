@@ -648,6 +648,22 @@ textarea:focus {
   flex: 1 1 0;
 }
 
+.panel--rankings .panel__header {
+  flex-direction: column;
+  align-items: stretch;
+}
+
+.panel--rankings .ranking-switch {
+  width: 100%;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.panel--rankings .ranking-switch__button {
+  min-width: 0;
+  width: 100%;
+}
+
 .ranking-mode {
   padding: 0 16px 6px;
   font-weight: 600;
@@ -1217,8 +1233,9 @@ html.is-mobile-viewport .drawer--right .drawer__section h3 {
 
 html.is-mobile-viewport .drawer-ranking__header {
   display: flex;
-  align-items: center;
-  justify-content: space-between;
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: flex-start;
   gap: 10px;
   margin-bottom: 8px;
 }
@@ -1244,18 +1261,20 @@ html.is-mobile-viewport .drawer__section--half:first-of-type h3::after {
 }
 
 html.is-mobile-viewport .drawer-ranking__switch {
-  display: flex;
-  align-items: center;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 6px;
+  width: 100%;
 }
 
 html.is-mobile-viewport .drawer-ranking__switch .icon-button {
   flex: 0 0 auto;
+  width: 100%;
 }
 
 html.is-mobile-viewport .drawer-ranking__switch .ranking-switch__button {
   min-width: 0;
-  width: calc(50% - 3px);
+  width: 100%;
 }
 
 html.is-mobile-viewport .drawer--right .ranking-mode {
