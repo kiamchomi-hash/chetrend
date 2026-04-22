@@ -233,7 +233,6 @@ function render() {
   renderTitles();
   syncMobileStageAccessibility();
   updateLayoutMetrics();
-  scheduleTopicAvatarSync();
 }
 
 
