@@ -644,8 +644,11 @@ textarea:focus {
 
 .ranking-switch__button {
   min-width: 96px;
-  justify-content: center;
+  justify-content: flex-start;
+  gap: 10px;
   flex: 1 1 0;
+  padding-inline: 0.85rem;
+  text-align: left;
 }
 
 .panel--rankings .panel__header {
@@ -662,6 +665,21 @@ textarea:focus {
 .panel--rankings .ranking-switch__button {
   min-width: 0;
   width: 100%;
+}
+
+.ranking-switch__button .icon-button__icon {
+  width: 1.7rem;
+  height: 1.7rem;
+  border-radius: 999px;
+  background: linear-gradient(135deg, var(--accent), var(--accent-strong));
+  color: #fff;
+  flex: none;
+}
+
+.ranking-switch__button .icon-button__icon svg {
+  width: 1rem;
+  height: 1rem;
+  margin: auto;
 }
 
 .ranking-mode {
@@ -1270,11 +1288,18 @@ html.is-mobile-viewport .drawer-ranking__switch {
 html.is-mobile-viewport .drawer-ranking__switch .icon-button {
   flex: 0 0 auto;
   width: 100%;
+  justify-content: flex-start;
+  text-align: left;
 }
 
 html.is-mobile-viewport .drawer-ranking__switch .ranking-switch__button {
   min-width: 0;
   width: 100%;
+}
+
+html.is-mobile-viewport .drawer-ranking__switch .button-label,
+html.is-mobile-viewport .panel--rankings .button-label {
+  display: inline-flex;
 }
 
 html.is-mobile-viewport .drawer--right .ranking-mode {
