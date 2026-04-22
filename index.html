@@ -25,7 +25,7 @@
                   <circle cx="12" cy="12" r="3.2"></circle>
                 </svg>
               </span>
-              <span>Perfil</span>
+              <span class="button-label">Perfil</span>
             </button>
           <button class="icon-button icon-button--ghost" id="themeToggle" type="button" aria-label="Cambiar tema">
             <span class="icon-button__icon" aria-hidden="true">
@@ -47,8 +47,24 @@
         </div>
 
         <div class="topbar__group topbar__group--right">
-          <button class="text-button" id="contactAdminButton" type="button">Contacto admin</button>
-          <button class="text-button text-button--accent" id="storeButton" type="button">Tienda</button>
+          <button class="text-button" id="contactAdminButton" type="button" aria-label="Contacto admin">
+            <span class="icon-button__icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M4 6h16v12H4z"></path>
+                <path d="m4 7 8 6 8-6"></path>
+              </svg>
+            </span>
+            <span class="button-label">Contacto admin</span>
+          </button>
+          <button class="text-button text-button--accent" id="storeButton" type="button" aria-label="Tienda">
+            <span class="icon-button__icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M5 9h14l-1 11H6L5 9Z"></path>
+                <path d="M9 9V7a3 3 0 0 1 6 0v2"></path>
+              </svg>
+            </span>
+            <span class="button-label">Tienda</span>
+          </button>
           <button class="icon-button icon-button--drawer" id="openRightDrawer" type="button" aria-label="Abrir usuarios y rankings">
             <span class="icon-button__icon" aria-hidden="true">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">

@@ -174,6 +174,10 @@ button {
   background: var(--surface-muted);
 }
 
+.button-label {
+  display: inline-flex;
+}
+
 .icon-button--drawer {
   width: 44px;
   justify-content: center;
@@ -186,6 +190,9 @@ button {
 
 .text-button {
   background: transparent;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
 }
 
 .text-button--accent,
@@ -557,52 +564,38 @@ html.is-mobile-viewport .topbar {
 }
 
 html.is-mobile-viewport .topbar__group {
-  display: grid;
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: center;
   gap: 8px;
 }
 
 html.is-mobile-viewport .topbar__group--left {
-  grid-template-columns: auto auto;
-  grid-template-areas:
-    "drawer profile"
-    "drawer theme";
-  justify-content: start;
-  align-items: start;
+  justify-content: flex-start;
 }
 
 html.is-mobile-viewport .topbar__group--right {
-  grid-template-columns: auto auto;
-  grid-template-areas:
-    "contact drawer"
-    "store drawer";
-  justify-content: end;
-  align-items: start;
+  justify-content: flex-end;
 }
 
-html.is-mobile-viewport #openLeftDrawer {
-  grid-area: drawer;
+html.is-mobile-viewport .topbar__title {
+  display: none;
 }
 
-html.is-mobile-viewport #profileButton {
-  grid-area: profile;
+html.is-mobile-viewport .button-label,
+html.is-mobile-viewport .theme-toggle__label {
+  display: none;
 }
 
-html.is-mobile-viewport #themeToggle {
-  grid-area: theme;
+html.is-mobile-viewport .icon-button,
+html.is-mobile-viewport .text-button {
+  gap: 0;
 }
 
-html.is-mobile-viewport #contactAdminButton {
-  grid-area: contact;
-}
-
-html.is-mobile-viewport #storeButton {
-  grid-area: store;
-}
-
-html.is-mobile-viewport #openRightDrawer {
-  grid-area: drawer;
-  justify-self: end;
-  align-self: start;
+html.is-mobile-viewport .text-button {
+  justify-content: center;
+  width: 42px;
+  padding-inline: 0;
 }
 
 html.is-mobile-viewport .topbar__title h1 {
@@ -669,14 +662,14 @@ html.is-mobile-viewport .topbar__eyebrow {
   display: none;
 }
 
-html.is-mobile-viewport .icon-button,
-html.is-mobile-viewport .text-button {
-  padding: 0.58rem 0.82rem;
-}
-
 html.is-mobile-viewport .icon-button--drawer {
   width: 42px;
   padding-inline: 0;
+}
+
+html.is-mobile-viewport .icon-button,
+html.is-mobile-viewport .text-button {
+  padding: 0.58rem;
 }
 
 html.is-mobile-viewport .panel__header,
