@@ -463,16 +463,16 @@ html.is-desktop-viewport .message-stream::-webkit-scrollbar-thumb {
 }
 
 .topic-item {
-  position: relative;
-  display: block;
+  display: flex;
+  align-items: stretch;
   text-align: left;
 }
 
 .topic-item__avatar {
-  position: absolute;
-  inset: 0 auto 0 0;
-  width: var(--topic-avatar-size, 52px);
-  height: var(--topic-avatar-size, 52px);
+  width: auto;
+  height: 100%;
+  aspect-ratio: 1 / 1;
+  align-self: stretch;
   border-radius: 0;
   overflow: hidden;
   background: linear-gradient(180deg, color-mix(in srgb, var(--surface-strong) 72%, var(--bg) 28%), color-mix(in srgb, var(--surface-strong) 58%, var(--bg) 42%));
@@ -495,9 +495,9 @@ html.is-desktop-viewport .message-stream::-webkit-scrollbar-thumb {
   display: grid;
   gap: 6px;
   min-width: 0;
-  margin-left: var(--topic-avatar-size, 52px);
   padding: 12px;
   align-content: center;
+  flex: 1;
 }
 
 .topic-item__title,
