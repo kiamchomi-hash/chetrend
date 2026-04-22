@@ -463,15 +463,19 @@ html.is-desktop-viewport .message-stream::-webkit-scrollbar-thumb {
 }
 
 .topic-item {
+  position: relative;
   display: flex;
-  align-items: center;
+  align-items: stretch;
   text-align: left;
+  overflow: hidden;
+  --topic-avatar-size: 52px;
 }
 
 .topic-item__avatar {
-  width: 52px;
-  height: 52px;
-  align-self: center;
+  position: absolute;
+  inset: -1px auto -1px 0;
+  width: var(--topic-avatar-size);
+  height: var(--topic-avatar-size);
   border-radius: 0;
   overflow: hidden;
   background: linear-gradient(180deg, color-mix(in srgb, var(--surface-strong) 72%, var(--bg) 28%), color-mix(in srgb, var(--surface-strong) 58%, var(--bg) 42%));
@@ -496,6 +500,7 @@ html.is-desktop-viewport .message-stream::-webkit-scrollbar-thumb {
   min-width: 0;
   padding: 12px;
   align-content: center;
+  margin-left: var(--topic-avatar-size);
   flex: 1;
 }
 

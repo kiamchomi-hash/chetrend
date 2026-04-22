@@ -233,6 +233,45 @@ function render() {
   renderTitles();
   syncMobileStageAccessibility();
   updateLayoutMetrics();
+  scheduleTopicAvatarSync();
+}
+
+
+let topicAvatarSyncFrame = 0;
+
+function scheduleTopicAvatarSync() {
+  window.cancelAnimationFrame(topicAvatarSyncFrame);
+  topicAvatarSyncFrame = window.requestAnimationFrame(() => {
+    syncTopicAvatarSizes();
+  });
+}
+
+function syncTopicAvatarSizes() {
+  const items = document.querySelectorAll(".topic-item");
+  if (!items.length) {
+    return;
+  }
+
+  for (let pass = 0; pass < 3; pass += 1) {
+    let changed = false;
+
+    items.forEach((item) => {
+      const nextSize = Math.max(0, Math.round(item.getBoundingClientRect().height));
+      if (!nextSize) {
+        return;
+      }
+
+      const currentSize = Number.parseFloat(item.style.getPropertyValue("--topic-avatar-size")) || 0;
+      if (Math.abs(nextSize - currentSize) > 1) {
+        item.style.setProperty("--topic-avatar-size", `${nextSize}px`);
+        changed = true;
+      }
+    });
+
+    if (!changed) {
+      break;
+    }
+  }
 }
 
 function syncResponsiveView() {
