@@ -184,6 +184,10 @@ button {
   padding-inline: 0;
 }
 
+.mobile-right-drawer {
+  display: none;
+}
+
 .icon-button--compact {
   padding: 0.55rem 0.75rem;
 }
@@ -798,6 +802,10 @@ html.is-mobile-viewport .topbar__eyebrow {
 html.is-mobile-viewport .icon-button--drawer {
   width: 42px;
   padding-inline: 0;
+}
+
+html.is-mobile-viewport .mobile-right-drawer {
+  display: inline-flex;
 }
 
 html.is-mobile-viewport .icon-button,

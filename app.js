@@ -116,6 +116,7 @@ function bindEvents() {
   document.getElementById("closeMobileCreateMobile").addEventListener("click", closeMobileCreate);
   document.getElementById("rankingPrev").addEventListener("click", () => setRankingMode("global"));
   document.getElementById("rankingNext").addEventListener("click", () => setRankingMode("topic"));
+  document.getElementById("openRightDrawer").addEventListener("click", () => openDrawer("right"));
   document.getElementById("drawerBackdrop").addEventListener("click", closeDrawers);
 
   document.querySelectorAll("[data-close-drawer]").forEach((button) => {
