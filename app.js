@@ -283,7 +283,10 @@ function syncMobileStageAccessibility() {
 
 function renderTitles() {
   const topic = getSelectedTopic();
-  document.getElementById("currentTopicTitle").textContent = topic.title;
+  const currentTopicTitle = document.getElementById("currentTopicTitle");
+  if (currentTopicTitle) {
+    currentTopicTitle.textContent = topic.title;
+  }
   document.getElementById("chatTopicName").textContent = topic.title;
   document.getElementById("chatTopicDescription").textContent = topic.subtitle;
   const rankingLabel = getRankingModeLabel(topic.title);

@@ -114,8 +114,36 @@ button {
 
 .topbar__title {
   justify-self: center;
-  text-align: center;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
   min-width: 0;
+}
+
+.brand-mark__icon {
+  width: 2rem;
+  height: 2rem;
+  flex: none;
+}
+
+.brand-mark {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0;
+  font-size: clamp(1.05rem, 1.8vw, 1.65rem);
+  line-height: 1;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  font-weight: 900;
+}
+
+.brand-mark__che {
+  color: var(--text);
+}
+
+.brand-mark__trend {
+  color: var(--accent);
 }
 
 .topbar__eyebrow,
@@ -712,7 +740,7 @@ html.is-mobile-viewport .topbar__group--right {
 }
 
 html.is-mobile-viewport .topbar__title {
-  display: none;
+  gap: 8px;
 }
 
 html.is-mobile-viewport .mobile-create-toggle {
@@ -782,6 +810,16 @@ html.is-mobile-viewport .shell[data-mobile-view="create"] .mobile-create-close {
 
 html.is-mobile-viewport .topbar__title h1 {
   font-size: 1rem;
+}
+
+html.is-mobile-viewport .brand-mark {
+  font-size: 0.95rem;
+  letter-spacing: 0.06em;
+}
+
+html.is-mobile-viewport .brand-mark__icon {
+  width: 1.55rem;
+  height: 1.55rem;
 }
 
 html.is-mobile-viewport .workspace {
