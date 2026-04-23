@@ -18,7 +18,6 @@ export function bootstrap() {
   }
 
   document.documentElement.dataset.theme = state.theme;
-  document.documentElement.dataset.previewMode = getPreviewMode();
 
   Object.assign(dom, cacheDom());
 
@@ -46,9 +45,10 @@ export function bootstrap() {
 
   bindPageEvents(dom, {
     toggleTheme: actions.toggleTheme,
+    toggleRankingScope: actions.toggleRankingScope,
     refreshCurrentTopic: actions.refreshCurrentTopic,
     submitMessage: actions.submitMessage,
-    setRankingMode: actions.setRankingMode,
+    setRankingStep: actions.setRankingStep,
     openDrawer: (side) => openDrawer(side, dom, closeTimerRef),
     closeDrawers: actions.closeDrawers,
     flashTitle: actions.flashTitle,
@@ -62,6 +62,9 @@ export function bootstrap() {
       responsive.syncResponsiveView();
       responsive.updateLayoutMetrics();
       const isMobile = document.documentElement.classList.contains("is-mobile-viewport");
+      if (wasMobile && !isMobile) {
+        actions.closeDrawers();
+      }
       if (wasMobile !== isMobile) {
         renderers.render();
       }
@@ -78,8 +81,4 @@ function nowLabel() {
     hour: "2-digit",
     minute: "2-digit"
   });
-}
-
-function getPreviewMode() {
-  return window.CHTREND_PREVIEW_MODE || "responsive";
 }
