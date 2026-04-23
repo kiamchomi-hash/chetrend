@@ -1,15 +1,55 @@
 import { createRankingItem } from "../components.js";
-import { buildGlobalRankingEntries, buildTopicRankingEntries, getSelectedTopic } from "../model.js";
+import { buildPostRankingEntries, buildUserRankingEntries } from "../model.js";
 import { renderIntoTargets } from "./render-utils.js";
+import { resetRankingScroll, showRankingEmpty, showRankingList } from "./ranking-panel-state.js";
 
 export function renderRankings(state, dom) {
-  const topic = getSelectedTopic(state.topics, state.selectedTopicId) ?? { messages: [] };
+  const showTopicEmpty = state.rankingScope === "topic" && !state.selectedTopicId;
+  const showTopicSelected = state.rankingScope === "topic" && !!state.selectedTopicId;
+
+  if (dom.rankingsBody) {
+    dom.rankingsBody.classList.toggle("is-topic-selected", showTopicSelected);
+  }
+  if (dom.drawerRankingsBody) {
+    dom.drawerRankingsBody.classList.toggle("is-topic-selected", showTopicSelected);
+  }
+
+  if (showTopicEmpty) {
+    showRankingEmpty(
+      dom,
+      `
+    <div class="ranking-empty">
+      <div class="ranking-empty__text">Selecciona un tema para ver las estadísticas</div>
+    </div>
+  `
+    );
+    renderIntoTargets([dom.rankingList, dom.drawerRankingList], "scroll-list ranking-list", () => []);
+    return;
+  }
+
   const rankings =
-    state.rankingMode === "global"
-      ? buildGlobalRankingEntries(state.topics, state.users, state.currentUserId)
-      : buildTopicRankingEntries(topic, state.users, state.currentUserId);
+    state.rankingScope === "topic" || state.rankingType === "users"
+      ? buildUserRankingEntries(
+          state.topics,
+          state.users,
+          state.currentUserId,
+          state.rankingMetric,
+          state.selectedTopicId,
+          state.rankingScope
+        )
+      : buildPostRankingEntries(
+          state.topics,
+          state.users,
+          state.currentUserId,
+          state.rankingMetric,
+          state.selectedTopicId,
+          state.rankingScope
+        );
+
+  showRankingList(dom);
 
   renderIntoTargets([dom.rankingList, dom.drawerRankingList], "scroll-list ranking-list", () =>
-    rankings.map((entry, index) => createRankingItem(entry, index))
+    rankings.map((entry, index) => createRankingItem(entry, index, state.rankingScope))
   );
+  resetRankingScroll(dom);
 }
