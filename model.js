@@ -8,6 +8,7 @@ export function createMessage(authorId, text, minutesAgo, kind = "user", now = D
     authorId,
     text,
     kind,
+    likes: 0,
     timestamp: new Date(now - minutesAgo * 60 * 1000)
   };
 }
@@ -15,7 +16,8 @@ export function createMessage(authorId, text, minutesAgo, kind = "user", now = D
 export function buildUsers(seedUsers) {
   return seedUsers.map((user, index) => ({
     ...user,
-    online: index < 6,
+    online: true,
+    connectedOrder: index,
     initials: user.name
       .split(" ")
       .map((part) => part[0])
@@ -27,85 +29,50 @@ export function buildUsers(seedUsers) {
 
 export function buildTopics(topicSeedData, users, now = Date.now()) {
   const authorIds = users.map((user) => user.id);
+  const authorIndexById = new Map(users.map((user, index) => [user.id, index]));
+  const topicAuthorPattern = [0, 1, 2, 0, 3, 0, 1, 4, 0, 5, 0, 2, 6, 0, 1, 7, 0, 8, 9, 0];
+  const messageTemplates = [
+    (title) => `${title} quedó abierto para coordinar sin ruido.`,
+    (subtitle) => subtitle,
+    (index) => `Dejo un aporte para el hilo ${index + 1}.`,
+    () => "Si hace falta, lo seguimos acá mismo.",
+    (index) => `Suma otro comentario para mover el ranking ${index + 1}.`,
+    () => "Cierro con una nota más para variar la lista."
+  ];
 
-  return topicSeedData.map(([title, subtitle], index) => ({
-    id: `topic-${index + 1}`,
-    title,
-    subtitle,
-    visible: true,
-    messages: [
-      createMessage(authorIds[index % authorIds.length], `${title} quedó abierto para coordinar sin ruido.`, 48, "user", now),
-      createMessage(authorIds[(index + 1) % authorIds.length], subtitle, 34, "user", now),
-      createMessage(authorIds[(index + 2) % authorIds.length], `Dejo un aporte para el hilo ${index + 1}.`, 21, "user", now),
-      createMessage(authorIds[(index + 3) % authorIds.length], `Si hace falta, lo seguimos acá mismo.`, 8, "user", now)
-    ]
-  }));
+  return topicSeedData.map(([title, subtitle], index) => {
+    const topicAuthorId = authorIds[topicAuthorPattern[index % topicAuthorPattern.length] % authorIds.length];
+    const messageCount = 10;
+
+    const minutesAgo = [48, 44, 39, 34, 29, 24, 19, 14, 9, 4];
+    const messages = Array.from({ length: messageCount }, (_, messageIndex) => {
+      const authorId = authorIds[(index + messageIndex) % authorIds.length];
+      const textFactory = messageTemplates[messageIndex] ?? messageTemplates[messageTemplates.length - 1];
+      const message = createMessage(authorId, textFactory(title, subtitle, index), minutesAgo[messageIndex] ?? 1, "user", now);
+      const authorIndex = authorIndexById.get(message.authorId) ?? 0;
+      message.likes = 1 + ((index * 3 + messageIndex + authorIndex) % 5);
+      return message;
+    });
+
+    return {
+      id: `topic-${index + 1}`,
+      title,
+      subtitle,
+      authorId: topicAuthorId,
+      visible: true,
+      messages
+    };
+  });
 }
 
 export function getSelectedTopic(topics, selectedTopicId) {
-  return topics.find((topic) => topic.id === selectedTopicId) ?? topics[0] ?? null;
+  if (!selectedTopicId) {
+    return null;
+  }
+
+  return topics.find((topic) => topic.id === selectedTopicId) ?? null;
 }
 
 export function trimMessages(messages, limit = 30) {
   return messages.length > limit ? messages.slice(-limit) : messages;
-}
-
-function countMessagesByAuthor(messages) {
-  const counts = new Map();
-  messages.forEach((message) => {
-    if (message.kind !== "user") {
-      return;
-    }
-    counts.set(message.authorId, (counts.get(message.authorId) ?? 0) + 1);
-  });
-  return counts;
-}
-
-function buildRankingEntries(counts, users, currentUserId, emptyTitle, emptyMeta, limit = Infinity) {
-  const entries = [...counts.entries()]
-    .map(([authorId, count]) => ({
-      id: authorId,
-      title: users.find((user) => user.id === authorId)?.name ?? "Anónimo",
-      meta: formatCommentCount(count),
-      count,
-      active: authorId === currentUserId
-    }))
-    .sort((a, b) => b.count - a.count)
-    .slice(0, limit);
-
-  if (!entries.length) {
-    return [
-      {
-        id: "empty",
-        title: emptyTitle,
-        meta: emptyMeta,
-        active: false
-      }
-    ];
-  }
-
-  return entries;
-}
-
-export function buildGlobalRankingEntries(topics, users, currentUserId) {
-  const counts = new Map();
-
-  topics.forEach((topic) => {
-    countMessagesByAuthor(topic.messages).forEach((count, authorId) => {
-      counts.set(authorId, (counts.get(authorId) ?? 0) + count);
-    });
-  });
-
-  return buildRankingEntries(counts, users, currentUserId, "Sin actividad", "Todavía no hay participación.", 3);
-}
-
-export function buildTopicRankingEntries(topic, users, currentUserId) {
-  const counts = countMessagesByAuthor(topic.messages);
-  return buildRankingEntries(
-    counts,
-    users,
-    currentUserId,
-    "Sin actividad",
-    "Todavía no hay participación en este tema."
-  );
 }

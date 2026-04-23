@@ -1,5 +1,5 @@
 import { createRankingItem } from "../components.js";
-import { buildPostRankingEntries, buildUserRankingEntries } from "../model.js";
+import { buildPostRankingEntries, buildUserRankingEntries } from "./ranking-data.js";
 import { renderIntoTargets } from "./render-utils.js";
 import { resetRankingScroll, showRankingEmpty, showRankingList } from "./ranking-panel-state.js";
 

@@ -5,15 +5,17 @@ import { fileURLToPath } from "node:url";
 
 import { initialUsers, topicSeedData } from "../data.js";
 import {
-  buildGlobalRankingEntries,
-  buildTopicRankingEntries,
   buildTopics,
   buildUsers,
   createMessage,
-  formatCommentCount,
   getSelectedTopic,
   trimMessages
 } from "../model.js";
+import {
+  buildPostRankingEntries,
+  buildUserRankingEntries
+} from "../ui/ranking-data.js";
+import { formatCommentCount } from "../model.js";
 
 const rootDir = path.dirname(fileURLToPath(new URL("../app.js", import.meta.url)));
 
@@ -37,7 +39,7 @@ await (async () => {
 
     assert.equal(users.length, initialUsers.length);
     assert.equal(users[0].online, true);
-    assert.equal(users[6].online, false);
+    assert.equal(users[6].online, true);
     assert.equal(users[0].initials, "CM");
   });
 
@@ -46,17 +48,19 @@ await (async () => {
     const topics = buildTopics(topicSeedData, users, 1_700_000_000_000);
 
     assert.equal(topics.length, topicSeedData.length);
-    assert.equal(topics[0].messages.length, 4);
+    assert.equal(topics[0].messages.length, 10);
     assert.equal(topics[0].messages[0].authorId, "u1");
     assert.equal(topics[0].messages[1].authorId, "u2");
     assert.equal(topics[0].messages[0].timestamp instanceof Date, true);
+    assert.equal(typeof topics[0].authorId, "string");
   });
 
-  test("getSelectedTopic falls back to the first topic", () => {
+  test("getSelectedTopic returns null when no topic is selected", () => {
     const users = buildUsers(initialUsers);
     const topics = buildTopics(topicSeedData, users, 1_700_000_000_000);
 
-    assert.equal(getSelectedTopic(topics, "missing").id, topics[0].id);
+    assert.equal(getSelectedTopic(topics, "missing"), null);
+    assert.equal(getSelectedTopic(topics, null), null);
   });
 
   test("trimMessages keeps the latest 30 messages", () => {
@@ -72,21 +76,19 @@ await (async () => {
     const users = buildUsers(initialUsers);
     const topics = buildTopics(topicSeedData, users, 1_700_000_000_000);
 
-    const globalRanking = buildGlobalRankingEntries(topics, users, "u1");
-    assert.equal(globalRanking.length, 3);
-    assert.ok(globalRanking[0].count >= globalRanking[1].count);
-    assert.ok(globalRanking[1].count >= globalRanking[2].count);
+    const postComments = buildPostRankingEntries(topics, users, "u1", "comments");
+    const postLikes = buildPostRankingEntries(topics, users, "u1", "likes");
+    const userComments = buildUserRankingEntries(topics, users, "u1", "comments");
+    const userLikes = buildUserRankingEntries(topics, users, "u1", "likes");
 
-    const customTopic = {
-      messages: [
-        createMessage("u1", "uno", 5),
-        createMessage("u1", "dos", 4),
-        createMessage("u2", "tres", 3)
-      ]
-    };
-
-    const topicRanking = buildTopicRankingEntries(customTopic, users, "u1");
-    assert.equal(topicRanking[0].active, true);
+    assert.equal(postComments.length, 3);
+    assert.equal(postLikes.length, 3);
+    assert.equal(userComments.length, 3);
+    assert.equal(userLikes.length, 3);
+    assert.ok(postComments[0].count >= postComments[1].count);
+    assert.ok(postLikes[0].count >= postLikes[1].count);
+    assert.ok(userComments[0].count >= userComments[1].count);
+    assert.ok(userLikes[0].count >= userLikes[1].count);
     assert.equal(formatCommentCount(1), "1 comentario");
     assert.equal(formatCommentCount(2), "2 comentarios");
   });
@@ -112,7 +114,17 @@ await (async () => {
 
     assert.match(html, /id="topicList"/);
     assert.match(html, /id="leftDrawerTopics"/);
-    assert.doesNotMatch(html, /createTopicForm|mobileCreateTopicForm|Nuevo tema/);
+    assert.match(html, /<p class="chat-hero__label">Tema<\/p>/);
+    assert.match(html, /id="rankingPrev"/);
+    assert.match(html, /id="rankingCurrent"/);
+    assert.match(html, /id="rankingNext"/);
+    assert.match(html, /id="drawerRankingPrev"/);
+    assert.match(html, /id="drawerRankingCurrent"/);
+    assert.match(html, /id="drawerRankingNext"/);
+    assert.match(html, /<h2 id="usersTitle">Usuarios conectados<\/h2>/);
+    assert.match(html, /<h2 id="rankingsTitle">Ranking<\/h2>/);
+    assert.match(html, /<h3 id="drawerRankingsTitle">Ranking<\/h3>/);
+    assert.doesNotMatch(html, /createTopicForm|mobileCreateTopicForm|Nuevo tema|Ordenados por presencia/);
     assert.match(app, /from "\.\/controller\.js"/);
     assert.match(controller, /from "\.\/app-store\.js"/);
     assert.match(controller, /from "\.\/ui\/dom\.js"/);
