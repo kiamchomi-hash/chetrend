@@ -12,14 +12,14 @@
       <header class="topbar" role="banner">
         <div class="topbar__group topbar__group--left">
           <button class="icon-button" id="profileButton" type="button" aria-label="Perfil">
-              <span class="icon-button__icon" aria-hidden="true">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-                  <path d="M10.7 3.4h2.6l.5 2.3a7.7 7.7 0 0 1 1.3.5l2-1.2 1.8 1.8-1.2 2a7.7 7.7 0 0 1 .5 1.3l2.3.5v2.6l-2.3.5a7.7 7.7 0 0 1-.5 1.3l1.2 2-1.8 1.8-2-1.2a7.7 7.7 0 0 1-1.3.5l-.5 2.3h-2.6l-.5-2.3a7.7 7.7 0 0 1-1.3-.5l-2 1.2-1.8-1.8 1.2-2a7.7 7.7 0 0 1-.5-1.3l-2.3-.5v-2.6l2.3-.5a7.7 7.7 0 0 1 .5-1.3l-1.2-2 1.8-1.8 2 1.2a7.7 7.7 0 0 1 1.3-.5l.5-2.3Z"></path>
-                  <circle cx="12" cy="12" r="3.2"></circle>
-                </svg>
-              </span>
-              <span class="button-label">Perfil</span>
-            </button>
+            <span class="icon-button__icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M10.7 3.4h2.6l.5 2.3a7.7 7.7 0 0 1 1.3.5l2-1.2 1.8 1.8-1.2 2a7.7 7.7 0 0 1 .5 1.3l2.3.5v2.6l-2.3.5a7.7 7.7 0 0 1-.5 1.3l1.2 2-1.8 1.8-2-1.2a7.7 7.7 0 0 1-1.3.5l-.5 2.3h-2.6l-.5-2.3a7.7 7.7 0 0 1-1.3-.5l-2 1.2-1.8-1.8 1.2-2a7.7 7.7 0 0 1-.5-1.3l-2.3-.5v-2.6l2.3-.5a7.7 7.7 0 0 1 .5-1.3l-1.2-2 1.8-1.8 2 1.2a7.7 7.7 0 0 1 1.3-.5l.5-2.3Z"></path>
+                <circle cx="12" cy="12" r="3.2"></circle>
+              </svg>
+            </span>
+            <span class="button-label">Perfil</span>
+          </button>
           <button class="icon-button icon-button--ghost" id="themeToggle" type="button" aria-label="Cambiar tema">
             <span class="icon-button__icon" aria-hidden="true">
               <svg class="theme-icon theme-icon--sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
@@ -83,50 +83,11 @@
 
       <main class="workspace" aria-label="Chat social">
         <section class="panel panel--topics" aria-label="Temas">
-          <div class="panel__header panel__header--topics">
-            <button class="text-button text-button--accent mobile-create-toggle" id="openMobileCreate" type="button">Crear nuevo tema</button>
-            <button class="text-button text-button--accent mobile-create-close mobile-create-close--header" id="closeMobileCreateMobile" type="button">Volver atrás</button>
-          </div>
           <div class="mobile-topic-stage">
             <div class="mobile-topic-stage__view mobile-topic-stage__view--list">
               <div class="scroll-list" id="topicList"></div>
             </div>
-            <div class="mobile-topic-stage__view mobile-topic-stage__view--create" aria-hidden="true">
-              <div class="mobile-create-card">
-                <form class="create-form create-form--mobile" id="mobileCreateTopicForm">
-                  <label class="field">
-                    <input id="mobileTopicTitleInput" type="text" maxlength="48" placeholder="Título" required />
-                  </label>
-                  <label class="field">
-                    <textarea id="mobileTopicDescriptionInput" rows="4" maxlength="220" placeholder="Descripción"></textarea>
-                  </label>
-                  <button class="primary-button" type="submit">Crear nuevo tema</button>
-                </form>
-              </div>
-            </div>
           </div>
-        </section>
-
-        <section class="panel panel--create" aria-labelledby="createTitle">
-          <div class="panel__header">
-            <div>
-              <h2 id="createTitle">Nuevo tema</h2>
-            </div>
-            <button class="icon-button icon-button--compact mobile-create-close" id="closeMobileCreate" type="button" aria-label="Cerrar creación">
-              <span aria-hidden="true">×</span>
-            </button>
-          </div>
-          <form class="create-form" id="createTopicForm">
-            <label class="field">
-              <span>Título</span>
-              <input id="topicTitleInput" type="text" maxlength="48" placeholder="Título" required />
-            </label>
-            <label class="field">
-              <span>Descripción</span>
-              <textarea id="topicDescriptionInput" rows="4" maxlength="220" placeholder="Abro este hilo para..."></textarea>
-            </label>
-            <button class="primary-button" type="submit">Crear nuevo tema</button>
-          </form>
         </section>
 
         <section class="panel panel--chat" aria-labelledby="chatTitle">
@@ -182,41 +143,41 @@
         </section>
 
         <section class="panel panel--rankings" aria-labelledby="rankingsTitle">
-            <div class="panel__header">
-              <div>
-                <h2 id="rankingsTitle">Ranking global</h2>
-              </div>
-              <div class="ranking-switch">
-                <button class="icon-button icon-button--compact ranking-switch__button" id="rankingPrev" type="button" aria-label="Ver ranking global">
-                  <span class="icon-button__icon" aria-hidden="true">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-                      <circle cx="12" cy="12" r="8.5"></circle>
-                      <path d="M3.7 12h16.6"></path>
-                      <path d="M12 3.5c2.6 2.2 4 5 4 8.5s-1.4 6.3-4 8.5c-2.6-2.2-4-5-4-8.5s1.4-6.3 4-8.5Z"></path>
-                      <path d="M8.2 6.5h7.6"></path>
-                      <path d="M8.2 17.5h7.6"></path>
-                    </svg>
-                  </span>
-                  <span class="button-label">Global</span>
-                </button>
-                <button class="icon-button icon-button--compact ranking-switch__button" id="rankingNext" type="button" aria-label="Ver ranking del tema">
-                  <span class="icon-button__icon" aria-hidden="true">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-                      <path d="M18 8h1a4 4 0 0 1 0 8h-1"></path>
-                      <path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"></path>
-                      <path d="M6 1v3"></path>
-                      <path d="M10 1v3"></path>
-                      <path d="M14 1v3"></path>
-                    </svg>
-                  </span>
-                  <span class="button-label">Este tema</span>
-                </button>
-              </div>
+          <div class="panel__header">
+            <div>
+              <h2 id="rankingsTitle">Ranking global</h2>
             </div>
-            <div class="scroll-list" id="rankingList"></div>
-          </section>
-        </main>
-      </div>
+            <div class="ranking-switch">
+              <button class="icon-button icon-button--compact ranking-switch__button" id="rankingPrev" type="button" aria-label="Ver ranking global">
+                <span class="icon-button__icon" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="8.5"></circle>
+                    <path d="M3.7 12h16.6"></path>
+                    <path d="M12 3.5c2.6 2.2 4 5 4 8.5s-1.4 6.3-4 8.5c-2.6-2.2-4-5-4-8.5s1.4-6.3 4-8.5Z"></path>
+                    <path d="M8.2 6.5h7.6"></path>
+                    <path d="M8.2 17.5h7.6"></path>
+                  </svg>
+                </span>
+                <span class="button-label">Global</span>
+              </button>
+              <button class="icon-button icon-button--compact ranking-switch__button" id="rankingNext" type="button" aria-label="Ver ranking del tema">
+                <span class="icon-button__icon" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M18 8h1a4 4 0 0 1 0 8h-1"></path>
+                    <path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"></path>
+                    <path d="M6 1v3"></path>
+                    <path d="M10 1v3"></path>
+                    <path d="M14 1v3"></path>
+                  </svg>
+                </span>
+                <span class="button-label">Este tema</span>
+              </button>
+            </div>
+          </div>
+          <div class="scroll-list" id="rankingList"></div>
+        </section>
+      </main>
+    </div>
 
     <div class="drawer-backdrop" id="drawerBackdrop" hidden></div>
 
@@ -231,22 +192,22 @@
         </button>
       </div>
       <div class="scroll-list" id="leftDrawerTopics"></div>
-      </aside>
+    </aside>
 
     <aside class="drawer drawer--right" id="rightDrawer" aria-label="Usuarios y rankings" aria-hidden="true">
-        <div class="drawer__header">
-          <div class="drawer__brand" aria-hidden="true">
-            <img class="drawer__brand-icon" src="./favicon.svg" alt="" />
-            <span class="brand-mark">
-              <span class="brand-mark__che">CHE</span><span class="brand-mark__trend">TREND</span>
-            </span>
-          </div>
-          <button class="icon-button icon-button--compact" data-close-drawer="right" type="button" aria-label="Cerrar usuarios y rankings">
-            <span aria-hidden="true">×</span>
-          </button>
+      <div class="drawer__header">
+        <div class="drawer__brand" aria-hidden="true">
+          <img class="drawer__brand-icon" src="./favicon.svg" alt="" />
+          <span class="brand-mark">
+            <span class="brand-mark__che">CHE</span><span class="brand-mark__trend">TREND</span>
+          </span>
         </div>
+        <button class="icon-button icon-button--compact" data-close-drawer="right" type="button" aria-label="Cerrar usuarios y rankings">
+          <span aria-hidden="true">×</span>
+        </button>
+      </div>
       <section class="drawer__section drawer__section--half">
-        <h3>Ultimos usuarios activos</h3>
+        <h3>Últimos usuarios activos</h3>
         <div class="scroll-list" id="drawerUserList"></div>
       </section>
       <section class="drawer__section drawer__section--half">
@@ -283,6 +244,6 @@
       </section>
     </aside>
 
-    <script src="./app.js"></script>
+    <script type="module" src="./app.js"></script>
   </body>
 </html>

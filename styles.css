@@ -282,7 +282,11 @@ button {
 
 .workspace {
   display: grid;
-  grid-template-columns: 1.05fr 0.92fr 1.7fr 1.05fr 0.95fr;
+  grid-template-columns: minmax(210px, 0.82fr) minmax(0, 2.3fr) minmax(210px, 0.82fr);
+  grid-template-rows: minmax(0, 1fr) minmax(0, 1fr);
+  grid-template-areas:
+    "topics chat users"
+    "topics chat rankings";
   gap: 14px;
   padding: calc(var(--topbar-offset, var(--topbar-height)) + 18px) 14px 14px;
   height: 100dvh;
@@ -294,7 +298,7 @@ button {
   display: flex;
   flex-direction: column;
   min-height: 0;
-  height: calc(100dvh - var(--topbar-offset, var(--topbar-height)) - 32px);
+  height: 100%;
   background: var(--surface);
   border: 1px solid var(--line);
   border-radius: var(--radius);
@@ -332,12 +336,34 @@ button {
 
 .panel--topics {
   min-height: 0;
-  overflow: auto;
+  overflow: hidden;
   scrollbar-width: thin;
+}
+
+.panel--topics {
+  grid-area: topics;
+}
+
+.panel--chat {
+  grid-area: chat;
+}
+
+.panel--users {
+  grid-area: users;
+}
+
+.panel--rankings {
+  grid-area: rankings;
 }
 
 html.is-desktop-viewport .panel--topics {
   border-radius: 0;
+}
+
+html.is-desktop-viewport .panel--topics .scroll-list,
+html.is-desktop-viewport .panel--users .scroll-list,
+html.is-desktop-viewport .panel--rankings .scroll-list {
+  padding-inline: 10px;
 }
 
 .panel--topics .panel__header {
@@ -352,16 +378,33 @@ html.is-desktop-viewport .panel--topics {
   display: none;
 }
 
-.panel--create {
-  justify-content: space-between;
-}
-
 .mobile-topic-stage {
   display: block;
 }
 
-.mobile-topic-stage__view--create {
-  display: none;
+html.is-desktop-viewport .panel--topics .mobile-topic-stage {
+  display: flex;
+  flex: 1;
+  min-height: 0;
+}
+
+html.is-desktop-viewport .panel--topics .mobile-topic-stage__view--list {
+  display: flex;
+  flex: 1;
+  min-height: 0;
+}
+
+html.is-desktop-viewport .panel--topics #topicList {
+  flex: 1;
+  min-height: 0;
+}
+
+html.is-desktop-viewport .panel--chat {
+  border-width: 1px;
+}
+
+html.is-desktop-viewport .panel--chat .message-stream {
+  padding-inline: 18px;
 }
 
 .panel--chat {
@@ -524,26 +567,15 @@ html.is-desktop-viewport .message-stream::-webkit-scrollbar-thumb {
   background: linear-gradient(180deg, color-mix(in srgb, var(--accent-soft) 76%, transparent), var(--surface-strong));
 }
 
-.create-form,
 .composer {
   display: grid;
   gap: 12px;
   padding: 16px;
 }
 
-.panel--create .create-form {
-  margin-top: auto;
-}
-
-.field,
 .composer__field {
   display: grid;
   gap: 6px;
-}
-
-.field span {
-  font-size: 0.82rem;
-  color: var(--text-soft);
 }
 
 input,
@@ -592,11 +624,6 @@ textarea:focus {
   display: none;
 }
 
-.mobile-create-toggle,
-.mobile-create-close {
-  display: none;
-}
-
 .message-stream {
   display: grid;
   align-content: start;
@@ -620,8 +647,7 @@ textarea:focus {
   min-height: 0;
 }
 
-.panel--topics .mobile-topic-stage__view--list,
-.panel--topics .mobile-topic-stage__view--create {
+.panel--topics .mobile-topic-stage__view--list {
   width: 100%;
   height: 100%;
 }
@@ -813,34 +839,7 @@ html[data-theme="dark"] #themeToggle .theme-icon--sun {
 
 @media (max-width: 1280px) {
   .workspace {
-    grid-template-columns: 1fr 1fr 1.35fr;
-    grid-template-areas:
-      "topics create chat"
-      "users rankings chat";
-  }
-
-  .panel--topics {
-    grid-area: topics;
-  }
-
-  .panel--create {
-    grid-area: create;
-  }
-
-  .panel--chat {
-    grid-area: chat;
-  }
-
-  .panel--users {
-    grid-area: users;
-  }
-
-  .panel--rankings {
-    grid-area: rankings;
-  }
-
-  .workspace {
-    overflow: hidden;
+    grid-template-columns: minmax(240px, 1fr) minmax(0, 1.35fr) minmax(250px, 0.9fr);
   }
 }
 
@@ -880,30 +879,6 @@ html.is-mobile-viewport .topbar__title {
   max-width: min(100%, 190px);
 }
 
-html.is-mobile-viewport .mobile-create-toggle {
-  display: flex;
-  width: 100%;
-  flex: 1 1 0;
-  min-width: 0;
-  align-self: stretch;
-  justify-content: center;
-  padding: 0.92rem 1rem;
-  margin: 0;
-}
-
-html.is-mobile-viewport .mobile-create-close {
-  display: none;
-}
-
-html.is-mobile-viewport .mobile-create-close--header {
-  width: auto;
-  min-width: 162px;
-  justify-content: center;
-  padding: 0.92rem 1rem;
-  margin-left: auto;
-  white-space: nowrap;
-}
-
 html.is-mobile-viewport .button-label,
 html.is-mobile-viewport .theme-toggle__label {
   display: none;
@@ -919,30 +894,9 @@ html.is-mobile-viewport .text-button {
   padding-inline: 0;
 }
 
-html.is-mobile-viewport #openMobileCreate {
-  width: 100%;
-  flex: 1 1 0;
-  min-width: 0;
-  padding: 0.92rem 1rem;
-}
-
-html.is-mobile-viewport #closeMobileCreateMobile {
-  padding: 0.92rem 1rem;
-  min-width: 162px;
-  white-space: nowrap;
-}
-
 html.is-mobile-viewport .panel__header--topics {
   display: flex;
   width: 100%;
-}
-
-html.is-mobile-viewport .shell[data-mobile-view="create"] .mobile-create-toggle {
-  display: none;
-}
-
-html.is-mobile-viewport .shell[data-mobile-view="create"] .mobile-create-close {
-  display: inline-flex;
 }
 
 html.is-mobile-viewport .topbar__title h1 {
@@ -988,20 +942,9 @@ html.is-mobile-viewport .panel {
   min-height: 0;
 }
 
-html.is-mobile-viewport .panel--create {
-  display: none;
-}
-
 html.is-mobile-viewport .shell[data-mobile-view="browse"] .panel--chat,
 html.is-mobile-viewport .shell[data-mobile-view="browse"] .panel--users,
 html.is-mobile-viewport .shell[data-mobile-view="browse"] .panel--rankings {
-  display: none;
-}
-
-html.is-mobile-viewport .shell[data-mobile-view="create"] .panel--create,
-html.is-mobile-viewport .shell[data-mobile-view="create"] .panel--chat,
-html.is-mobile-viewport .shell[data-mobile-view="create"] .panel--users,
-html.is-mobile-viewport .shell[data-mobile-view="create"] .panel--rankings {
   display: none;
 }
 
@@ -1054,27 +997,6 @@ html.is-mobile-viewport .mobile-topic-stage__view--list {
   box-sizing: border-box;
 }
 
-html.is-mobile-viewport .mobile-topic-stage__view--create {
-  display: flex;
-  align-items: stretch;
-  justify-content: stretch;
-  opacity: 0;
-  transform: translateY(12px);
-  pointer-events: none;
-}
-
-html.is-mobile-viewport .shell[data-mobile-view="create"] .mobile-topic-stage__view--list {
-  opacity: 0;
-  transform: translateY(-12px);
-  pointer-events: none;
-}
-
-html.is-mobile-viewport .shell[data-mobile-view="create"] .mobile-topic-stage__view--create {
-  opacity: 1;
-  transform: translateY(0);
-  pointer-events: auto;
-}
-
 html.is-mobile-viewport .mobile-topic-stage__view--list .scroll-list {
   height: calc(100% - 16px);
   margin-bottom: 16px;
@@ -1113,21 +1035,6 @@ html.is-mobile-viewport .mobile-topic-stage__view--list .scroll-list::-webkit-sc
 
 html.is-mobile-viewport .mobile-topic-stage__view--list .scroll-list::-webkit-scrollbar-thumb:hover {
   background: color-mix(in srgb, var(--accent-strong) 74%, var(--bg) 26%);
-}
-
-html.is-mobile-viewport .mobile-create-card {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-  width: 100%;
-  max-width: 100%;
-  min-height: 0;
-  align-self: stretch;
-  padding: 4px 0 0;
-  background: transparent;
-  border: 0;
-  border-radius: 0;
-  box-shadow: none;
 }
 
 html.is-mobile-viewport .panel--chat {
@@ -1170,33 +1077,8 @@ html.is-mobile-viewport .text-button {
   padding: 0.58rem;
 }
 
-html.is-mobile-viewport .create-form--mobile {
-  padding: 4px 0 0;
-  gap: 8px;
-  flex: 0 0 auto;
-}
-
-html.is-mobile-viewport .create-form--mobile .primary-button {
-  width: 100%;
-  justify-self: stretch;
-}
-
-html.is-mobile-viewport .create-form--mobile .field {
-  gap: 0;
-}
-
-html.is-mobile-viewport .create-form--mobile .field span {
-  display: none;
-}
-
-html.is-mobile-viewport .create-form--mobile input,
-html.is-mobile-viewport .create-form--mobile textarea {
-  padding: 0.74rem 0.92rem;
-}
-
 html.is-mobile-viewport .panel__header,
 html.is-mobile-viewport .chat-hero,
-html.is-mobile-viewport .create-form,
 html.is-mobile-viewport .composer {
   padding-inline: 12px;
 }
