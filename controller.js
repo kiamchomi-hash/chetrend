@@ -7,17 +7,12 @@ import { createActionHandlers } from "./controller-actions.js";
 import { createResponsiveHelpers } from "./controller-responsive.js";
 import { createRenderers } from "./controller-render.js";
 import { closeTimerRef, dom, state } from "./app-store.js";
+import { applyStoredTheme, createBackToTopicsHandler, createResizeHandler } from "./controller-runtime.js";
 
 export function bootstrap() {
   state.users = buildUsers(initialUsers);
   state.topics = buildTopics(topicSeedData, state.users);
-
-  const rootTheme = localStorage.getItem("chetrend-theme");
-  if (rootTheme === "dark" || rootTheme === "light") {
-    state.theme = rootTheme;
-  }
-
-  document.documentElement.dataset.theme = state.theme;
+  applyStoredTheme(state);
 
   Object.assign(dom, cacheDom());
 
@@ -43,6 +38,13 @@ export function bootstrap() {
 
   renderRef.current = renderers.render;
 
+  const backToTopics = createBackToTopicsHandler(state, responsive, renderers.render);
+  const handleResize = createResizeHandler({
+    responsive,
+    render: renderers.render,
+    actions
+  });
+
   bindPageEvents(dom, {
     toggleTheme: actions.toggleTheme,
     toggleRankingScope: actions.toggleRankingScope,
@@ -52,23 +54,8 @@ export function bootstrap() {
     openDrawer: (side) => openDrawer(side, dom, closeTimerRef),
     closeDrawers: actions.closeDrawers,
     flashTitle: actions.flashTitle,
-    backToTopics: () => {
-      state.mobileView = "browse";
-      responsive.syncResponsiveView();
-      renderers.render();
-    },
-    onResize: () => {
-      const wasMobile = document.documentElement.classList.contains("is-mobile-viewport");
-      responsive.syncResponsiveView();
-      responsive.updateLayoutMetrics();
-      const isMobile = document.documentElement.classList.contains("is-mobile-viewport");
-      if (wasMobile && !isMobile) {
-        actions.closeDrawers();
-      }
-      if (wasMobile !== isMobile) {
-        renderers.render();
-      }
-    },
+    backToTopics,
+    onResize: handleResize,
     onWheel: responsive.handleScrollableWheel
   });
 
