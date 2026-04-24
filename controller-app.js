@@ -1,6 +1,6 @@
 import { initialUsers, topicSeedData } from "./data.js";
 import { buildTopics, buildUsers } from "./model.js";
-import { getTransitionDurationMs, openDrawer, closeDrawers } from "./ui/drawers.js";
+import { openDrawer, closeDrawers } from "./ui/drawers.js";
 import { bindPageEvents } from "./ui/events.js";
 import { cacheDom } from "./ui/dom.js";
 import { createActionHandlers } from "./controller-actions.js";
@@ -8,6 +8,7 @@ import { createResponsiveHelpers } from "./controller-responsive.js";
 import { createRenderers } from "./controller-render.js";
 import { closeTimerRef, dom, state } from "./app-store.js";
 import { applyStoredTheme, createBackToTopicsHandler, createResizeHandler } from "./controller-runtime.js";
+import { getTransitionDurationMs } from "./ui/transition-utils.js";
 
 export function bootstrap() {
   state.users = buildUsers(initialUsers);

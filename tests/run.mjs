@@ -98,6 +98,8 @@ await (async () => {
     const app = await read("app.js");
     const controller = await read("controller.js");
     const controllerApp = await read("controller-app.js");
+    const controllerTheme = await read("controller-theme.js");
+    const controllerViewport = await read("controller-viewport.js");
     const actions = await read("controller-actions.js");
     const responsiveController = await read("controller-responsive.js");
     const renderController = await read("controller-render.js");
@@ -131,6 +133,10 @@ await (async () => {
     assert.doesNotMatch(html, /createTopicForm|mobileCreateTopicForm|Nuevo tema|Ordenados por presencia/);
     assert.match(app, /from "\.\/controller\.js"/);
     assert.match(controller, /export \{ bootstrap \} from "\.\/controller-app\.js";/);
+    assert.match(controllerApp, /from "\.\/ui\/transition-utils\.js"/);
+    assert.match(controllerTheme, /export function applyStoredTheme/);
+    assert.match(controllerViewport, /export function createBackToTopicsHandler/);
+    assert.match(controllerViewport, /export function createResizeHandler/);
     assert.match(controllerApp, /from "\.\/app-store\.js"/);
     assert.match(controllerApp, /from "\.\/ui\/dom\.js"/);
     assert.match(controllerApp, /from "\.\/ui\/events\.js"/);
