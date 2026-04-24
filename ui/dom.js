@@ -1,13 +1,68 @@
+const REQUIRED_DOM_KEYS = [
+  "shell",
+  "topbar",
+  "themeToggle",
+  "refreshButton",
+  "chatTitle",
+  "messageForm",
+  "rankingPrev",
+  "rankingCurrent",
+  "rankingNext",
+  "drawerRankingPrev",
+  "drawerRankingCurrent",
+  "drawerRankingNext",
+  "openRightDrawer",
+  "drawerBackdrop",
+  "profileButton",
+  "backToTopics",
+  "contactAdminButton",
+  "storeButton",
+  "paletteButton",
+  "chatTopicName",
+  "chatTopicDescription",
+  "rankingsTitle",
+  "rankingsGlyph",
+  "rankingScopeButton",
+  "rankingScopeIcon",
+  "rankingsEmpty",
+  "rankingsBody",
+  "rankingsPanel",
+  "rankingCarousel",
+  "drawerRankingsTitle",
+  "drawerRankingsGlyph",
+  "drawerRankingScopeButton",
+  "drawerRankingScopeIcon",
+  "drawerRankingsEmpty",
+  "drawerRankingsBody",
+  "drawerRankingsSection",
+  "drawerRankingSwitch",
+  "topicTitleInput",
+  "messageInput",
+  "messageStream",
+  "topicList",
+  "createTopicButton",
+  "leftDrawerTopics",
+  "userList",
+  "drawerUserList",
+  "rankingList",
+  "drawerRankingList",
+  "leftDrawer",
+  "rightDrawer"
+];
+
 export function cacheDom() {
-  return {
+  const cached = {
     shell: document.querySelector(".shell"),
     topbar: document.querySelector(".topbar"),
     themeToggle: document.getElementById("themeToggle"),
     refreshButton: document.getElementById("refreshButton"),
+    chatTitle: document.getElementById("chatTitle"),
     messageForm: document.getElementById("messageForm"),
     rankingPrev: document.getElementById("rankingPrev"),
+    rankingCurrent: document.getElementById("rankingCurrent"),
     rankingNext: document.getElementById("rankingNext"),
     drawerRankingPrev: document.getElementById("drawerRankingPrev"),
+    drawerRankingCurrent: document.getElementById("drawerRankingCurrent"),
     drawerRankingNext: document.getElementById("drawerRankingNext"),
     openRightDrawer: document.getElementById("openRightDrawer"),
     drawerBackdrop: document.getElementById("drawerBackdrop"),
@@ -16,14 +71,27 @@ export function cacheDom() {
     contactAdminButton: document.getElementById("contactAdminButton"),
     storeButton: document.getElementById("storeButton"),
     paletteButton: document.getElementById("paletteButton"),
-    refreshState: document.getElementById("refreshState"),
     chatTopicName: document.getElementById("chatTopicName"),
     chatTopicDescription: document.getElementById("chatTopicDescription"),
     rankingsTitle: document.getElementById("rankingsTitle"),
+    rankingsGlyph: document.getElementById("rankingsGlyph"),
+    rankingScopeButton: document.getElementById("rankingScopeButton"),
+    rankingScopeIcon: document.getElementById("rankingScopeIcon"),
+    rankingsEmpty: document.getElementById("rankingsEmpty"),
+    rankingsBody: document.querySelector(".panel__body--rankings"),
+    rankingsPanel: document.getElementById("rankingsTitle")?.closest(".panel--rankings"),
+    rankingCarousel: document.getElementById("rankingPrev")?.closest(".ranking-carousel"),
     drawerRankingsTitle: document.getElementById("drawerRankingsTitle"),
+    drawerRankingsGlyph: document.getElementById("drawerRankingsGlyph"),
+    drawerRankingScopeButton: document.getElementById("drawerRankingScopeButton"),
+    drawerRankingScopeIcon: document.getElementById("drawerRankingScopeIcon"),
+    drawerRankingsEmpty: document.getElementById("drawerRankingsEmpty"),
+    drawerRankingsBody: document.querySelector(".panel__body--drawer-rankings"),
+    topicTitleInput: document.getElementById("topicTitleInput"),
     messageInput: document.getElementById("messageInput"),
     messageStream: document.getElementById("messageStream"),
     topicList: document.getElementById("topicList"),
+    createTopicButton: document.getElementById("createTopicButton"),
     leftDrawerTopics: document.getElementById("leftDrawerTopics"),
     userList: document.getElementById("userList"),
     drawerUserList: document.getElementById("drawerUserList"),
@@ -33,4 +101,21 @@ export function cacheDom() {
     rightDrawer: document.getElementById("rightDrawer"),
     drawerCloseButtons: Array.from(document.querySelectorAll("[data-close-drawer]"))
   };
+
+  cached.drawerRankingsSection = cached.drawerRankingList?.closest(".drawer__section") ?? null;
+  cached.drawerRankingSwitch = cached.drawerRankingPrev?.closest(".drawer-ranking__switch") ?? null;
+
+  assertRequiredDom(cached);
+  return cached;
+}
+
+function assertRequiredDom(cached) {
+  const missing = REQUIRED_DOM_KEYS.filter((key) => !cached[key]);
+  if (!cached.drawerCloseButtons.length) {
+    missing.push("drawerCloseButtons");
+  }
+
+  if (missing.length) {
+    throw new Error(`Missing required DOM nodes: ${missing.join(", ")}`);
+  }
 }

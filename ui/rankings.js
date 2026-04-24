@@ -1,9 +1,11 @@
 import { createRankingItem } from "../components.js";
+import { getActiveRankingStep } from "../ranking-state.js";
 import { buildPostRankingEntries, buildUserRankingEntries } from "./ranking-data.js";
 import { renderIntoTargets } from "./render-utils.js";
 import { resetRankingScroll, showRankingEmpty, showRankingList } from "./ranking-panel-state.js";
 
 export function renderRankings(state, dom) {
+  const activeRankingStep = getActiveRankingStep(state);
   const showTopicEmpty = state.rankingScope === "topic" && !state.selectedTopicId;
   const showTopicSelected = state.rankingScope === "topic" && !!state.selectedTopicId;
 
@@ -28,12 +30,12 @@ export function renderRankings(state, dom) {
   }
 
   const rankings =
-    state.rankingScope === "topic" || state.rankingType === "users"
+    state.rankingScope === "topic" || activeRankingStep.type === "users"
       ? buildUserRankingEntries(
           state.topics,
           state.users,
           state.currentUserId,
-          state.rankingMetric,
+          activeRankingStep.metric,
           state.selectedTopicId,
           state.rankingScope
         )
@@ -41,7 +43,7 @@ export function renderRankings(state, dom) {
           state.topics,
           state.users,
           state.currentUserId,
-          state.rankingMetric,
+          activeRankingStep.metric,
           state.selectedTopicId,
           state.rankingScope
         );

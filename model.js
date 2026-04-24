@@ -13,6 +13,29 @@ export function createMessage(authorId, text, minutesAgo, kind = "user", now = D
   };
 }
 
+export function summarizeTopicMessage(text, limit = 96) {
+  const normalized = text.trim().replace(/\s+/g, " ");
+  if (normalized.length <= limit) {
+    return normalized;
+  }
+
+  return `${normalized.slice(0, limit - 1).trimEnd()}…`;
+}
+
+export function createTopic(authorId, title, messageText, now = Date.now()) {
+  const normalizedTitle = title.trim().replace(/\s+/g, " ");
+  const normalizedMessage = messageText.trim();
+
+  return {
+    id: `topic-${crypto.randomUUID()}`,
+    title: normalizedTitle,
+    subtitle: summarizeTopicMessage(normalizedMessage),
+    authorId,
+    visible: true,
+    messages: [createMessage(authorId, normalizedMessage, 0, "user", now)]
+  };
+}
+
 export function buildUsers(seedUsers) {
   return seedUsers.map((user, index) => ({
     ...user,

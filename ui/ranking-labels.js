@@ -1,3 +1,4 @@
+import { getActiveRankingStep } from "../ranking-state.js";
 import { getMetricIcon } from "./ranking-icons.js";
 
 const RANKING_TITLES = {
@@ -24,9 +25,11 @@ export function renderRankingLabel(label) {
 }
 
 export function getCurrentRankingLabel(state) {
+  const { type, metric } = getActiveRankingStep(state);
+
   if (state.rankingScope === "topic") {
-    return state.rankingMetric === "likes" ? "LIKES" : "COMENTARIOS";
+    return metric === "likes" ? "LIKES" : "COMENTARIOS";
   }
 
-  return RANKING_TITLES[state.rankingType]?.[state.rankingMetric] ?? "Ranking";
+  return RANKING_TITLES[type]?.[metric] ?? "Ranking";
 }

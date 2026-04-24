@@ -25,8 +25,7 @@ export function bootstrap() {
     renderRef,
     syncResponsiveView: responsive.syncResponsiveView,
     isMobileViewport: responsive.isMobileViewport,
-    closeDrawers: () => closeDrawers(dom, responsive.isMobileViewport, getTransitionDurationMs, closeTimerRef),
-    nowLabel
+    closeDrawers: () => closeDrawers(dom, responsive.isMobileViewport, getTransitionDurationMs, closeTimerRef)
   });
   const renderers = createRenderers({
     state,
@@ -50,6 +49,7 @@ export function bootstrap() {
     toggleTheme: actions.toggleTheme,
     toggleRankingScope: actions.toggleRankingScope,
     refreshCurrentTopic: actions.refreshCurrentTopic,
+    createNewTopic: actions.createNewTopic,
     submitMessage: actions.submitMessage,
     setRankingStep: actions.setRankingStep,
     openDrawer: (side) => openDrawer(side, dom, closeTimerRef),
@@ -62,11 +62,4 @@ export function bootstrap() {
 
   responsive.syncResponsiveView();
   renderers.render();
-}
-
-function nowLabel() {
-  return new Date().toLocaleTimeString("es-AR", {
-    hour: "2-digit",
-    minute: "2-digit"
-  });
 }

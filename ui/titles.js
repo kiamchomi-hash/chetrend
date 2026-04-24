@@ -4,14 +4,22 @@ import { getRankingGlyph, getScopeIcon } from "./ranking-icons.js";
 
 export function renderTitles(state, dom) {
   const topic = getSelectedTopic(state.topics, state.selectedTopicId);
+  const chatTitleWrapper = dom.chatTitle?.parentElement ?? null;
+
+  if (dom.chatTitle) {
+    dom.chatTitle.textContent = topic ? topic.title : "";
+  }
+  if (chatTitleWrapper) {
+    chatTitleWrapper.hidden = !topic;
+  }
 
   if (dom.chatTopicName) {
-    dom.chatTopicName.textContent = topic ? topic.title : "Tema";
+    dom.chatTopicName.textContent = topic ? topic.title : "Crear un tema";
   }
   if (dom.chatTopicDescription) {
     dom.chatTopicDescription.textContent = topic
       ? topic.subtitle
-      : "Selecciona un tema para empezar a chatear.";
+      : "Escribe un título y el primer mensaje para abrir un tema nuevo.";
   }
 
   if (dom.rankingsTitle) {

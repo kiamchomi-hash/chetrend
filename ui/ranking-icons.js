@@ -1,9 +1,13 @@
+import { getActiveRankingStep } from "../ranking-state.js";
+
 export function getRankingGlyph(state) {
-  if (state.rankingType === "users" && state.rankingMetric === "likes") {
+  const { type, metric } = getActiveRankingStep(state);
+
+  if (type === "users" && metric === "likes") {
     return `
       <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-user-heart"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M8 7a4 4 0 1 0 8 0a4 4 0 0 0 -8 0" /><path d="M6 21v-2a4 4 0 0 1 4 -4h.5" /><path d="M18 22l3.35 -3.284a2.143 2.143 0 0 0 .005 -3.071a2.242 2.242 0 0 0 -3.129 -.006l-.224 .22l-.223 -.22a2.242 2.242 0 0 0 -3.128 -.006a2.143 2.143 0 0 0 -.006 3.071l3.355 3.296" /></svg>`;
   }
-  if (state.rankingType === "users" && state.rankingMetric === "comments") {
+  if (type === "users" && metric === "comments") {
     return `
       <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-message-user">
         <path stroke="none" d="M0 0h24v24H0z" fill="none" />
@@ -12,7 +16,7 @@ export function getRankingGlyph(state) {
         <path d="M22 22a2 2 0 0 0 -2 -2h-2a2 2 0 0 0 -2 2" />
       </svg>`;
   }
-  if (state.rankingType === "posts" && state.rankingMetric === "likes") {
+  if (type === "posts" && metric === "likes") {
     return `
       <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-heart"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M19.5 12.572l-7.5 7.428l-7.5 -7.428a5 5 0 1 1 7.5 -6.566a5 5 0 1 1 7.5 6.572" /></svg>`;
   }

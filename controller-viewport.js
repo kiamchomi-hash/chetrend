@@ -8,10 +8,10 @@ export function createBackToTopicsHandler(state, responsive, render) {
 
 export function createResizeHandler({ responsive, render, actions }) {
   return function handleResize() {
-    const wasMobile = document.documentElement.classList.contains("is-mobile-viewport");
+    const wasMobile = responsive.isMobileViewport();
     responsive.syncResponsiveView();
     responsive.updateLayoutMetrics();
-    const isMobile = document.documentElement.classList.contains("is-mobile-viewport");
+    const isMobile = responsive.isMobileViewport();
     if (wasMobile && !isMobile) {
       actions.closeDrawers();
     }

@@ -28,5 +28,8 @@ export const initialUsers = [
   { id: "u4", name: "Mara", role: "Diseño", score: 103 },
   { id: "u5", name: "Tano", role: "Explorador", score: 98 },
   { id: "u6", name: "Luna", role: "Soporte", score: 91 },
-  { id: "u7", name: "Ivo", role: "Clan", score: 84 }
+  { id: "u7", name: "Ivo", role: "Clan", score: 84 },
+  { id: "u8", name: "Santi", role: "Edición", score: 80 },
+  { id: "u9", name: "Vale", role: "Eventos", score: 77 },
+  { id: "u10", name: "Nico", role: "Pruebas", score: 73 }
 ];

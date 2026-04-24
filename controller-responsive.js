@@ -1,17 +1,6 @@
 export function createResponsiveHelpers({ state, dom }) {
   function isMobileViewport() {
-    const previewMode = getPreviewMode();
-    if (previewMode === "mobile") {
-      return true;
-    }
-    if (previewMode === "desktop") {
-      return false;
-    }
     return window.matchMedia("(max-width: 960px)").matches;
-  }
-
-  function getPreviewMode() {
-    return window.CHTREND_PREVIEW_MODE || "responsive";
   }
 
   function syncResponsiveView() {

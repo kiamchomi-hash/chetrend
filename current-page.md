@@ -1,0 +1,469 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e2]:
+    - banner [ref=e3]:
+      - generic [ref=e4]:
+        - button "Perfil" [ref=e5] [cursor=pointer]:
+          - img [ref=e7]
+          - generic [ref=e10]: Perfil
+        - button "Cambiar tema" [ref=e11] [cursor=pointer]:
+          - img [ref=e13]
+          - generic [ref=e16]: Tema
+        - button "Paletas" [ref=e17] [cursor=pointer]:
+          - generic [ref=e23]: Paletas
+      - generic "Chetrend" [ref=e24]:
+        - img [ref=e25]
+        - generic [ref=e26]:
+          - generic [ref=e27]: CHE
+          - generic [ref=e28]: TREND
+      - generic [ref=e29]:
+        - button "Contacto admin" [ref=e30] [cursor=pointer]:
+          - img [ref=e32]
+          - generic [ref=e35]: Contacto admin
+        - button "Tienda" [ref=e36] [cursor=pointer]:
+          - img [ref=e38]
+          - generic [ref=e41]: Tienda
+    - main "Chat social" [ref=e42]:
+      - region "Temas" [ref=e43]:
+        - generic [ref=e44]:
+          - generic [ref=e48]:
+            - button "Café de madrugada 10 comentarios, Nico" [ref=e49] [cursor=pointer]:
+              - img [ref=e51]
+              - generic [ref=e55]:
+                - generic [ref=e56]: Café de madrugada
+                - generic [ref=e57]: 10 comentarios, Nico
+            - button "Balance del clan 10 comentarios, Coco Mora" [ref=e58] [cursor=pointer]:
+              - img [ref=e60]
+              - generic [ref=e64]:
+                - generic [ref=e65]: Balance del clan
+                - generic [ref=e66]: 10 comentarios, Coco Mora
+            - button "Eventos del domingo 10 comentarios, Nadia" [ref=e67] [cursor=pointer]:
+              - img [ref=e69]
+              - generic [ref=e73]:
+                - generic [ref=e74]: Eventos del domingo
+                - generic [ref=e75]: 10 comentarios, Nadia
+            - button "Memes internos 10 comentarios, Rulo" [ref=e76] [cursor=pointer]:
+              - img [ref=e78]
+              - generic [ref=e82]:
+                - generic [ref=e83]: Memes internos
+                - generic [ref=e84]: 10 comentarios, Rulo
+            - button "Guías y rutas 10 comentarios, Mara" [ref=e85] [cursor=pointer]:
+              - img [ref=e87]
+              - generic [ref=e91]:
+                - generic [ref=e92]: Guías y rutas
+                - generic [ref=e93]: 10 comentarios, Mara
+            - button "Mercado local 10 comentarios, Tano" [ref=e94] [cursor=pointer]:
+              - img [ref=e96]
+              - generic [ref=e100]:
+                - generic [ref=e101]: Mercado local
+                - generic [ref=e102]: 10 comentarios, Tano
+            - button "Encuentros RP 10 comentarios, Luna" [ref=e103] [cursor=pointer]:
+              - img [ref=e105]
+              - generic [ref=e109]:
+                - generic [ref=e110]: Encuentros RP
+                - generic [ref=e111]: 10 comentarios, Luna
+            - button "Ajustes del HUD 10 comentarios, Ivo" [ref=e112] [cursor=pointer]:
+              - img [ref=e114]
+              - generic [ref=e118]:
+                - generic [ref=e119]: Ajustes del HUD
+                - generic [ref=e120]: 10 comentarios, Ivo
+            - button "Arte y capturas 10 comentarios, Santi" [ref=e121] [cursor=pointer]:
+              - img [ref=e123]
+              - generic [ref=e127]:
+                - generic [ref=e128]: Arte y capturas
+                - generic [ref=e129]: 10 comentarios, Santi
+            - button "Combate y builds 10 comentarios, Vale" [ref=e130] [cursor=pointer]:
+              - img [ref=e132]
+              - generic [ref=e136]:
+                - generic [ref=e137]: Combate y builds
+                - generic [ref=e138]: 10 comentarios, Vale
+            - button "Preguntas rápidas 10 comentarios, Nico" [ref=e139] [cursor=pointer]:
+              - img [ref=e141]
+              - generic [ref=e145]:
+                - generic [ref=e146]: Preguntas rápidas
+                - generic [ref=e147]: 10 comentarios, Nico
+            - button "Buzón de ideas 10 comentarios, Coco Mora" [ref=e148] [cursor=pointer]:
+              - img [ref=e150]
+              - generic [ref=e154]:
+                - generic [ref=e155]: Buzón de ideas
+                - generic [ref=e156]: 10 comentarios, Coco Mora
+            - button "Historias del server 10 comentarios, Nadia" [ref=e157] [cursor=pointer]:
+              - img [ref=e159]
+              - generic [ref=e163]:
+                - generic [ref=e164]: Historias del server
+                - generic [ref=e165]: 10 comentarios, Nadia
+            - button "Música de fondo 10 comentarios, Rulo" [ref=e166] [cursor=pointer]:
+              - img [ref=e168]
+              - generic [ref=e172]:
+                - generic [ref=e173]: Música de fondo
+                - generic [ref=e174]: 10 comentarios, Rulo
+            - button "Alianzas 10 comentarios, Mara" [ref=e175] [cursor=pointer]:
+              - img [ref=e177]
+              - generic [ref=e181]:
+                - generic [ref=e182]: Alianzas
+                - generic [ref=e183]: 10 comentarios, Mara
+            - button "Torneo semanal 10 comentarios, Tano" [ref=e184] [cursor=pointer]:
+              - img [ref=e186]
+              - generic [ref=e190]:
+                - generic [ref=e191]: Torneo semanal
+                - generic [ref=e192]: 10 comentarios, Tano
+            - button "Novedades 10 comentarios, Luna" [ref=e193] [cursor=pointer]:
+              - img [ref=e195]
+              - generic [ref=e199]:
+                - generic [ref=e200]: Novedades
+                - generic [ref=e201]: 10 comentarios, Luna
+            - button "Códigos y macros 10 comentarios, Ivo" [ref=e202] [cursor=pointer]:
+              - img [ref=e204]
+              - generic [ref=e208]:
+                - generic [ref=e209]: Códigos y macros
+                - generic [ref=e210]: 10 comentarios, Ivo
+            - button "Radio interna 10 comentarios, Santi" [ref=e211] [cursor=pointer]:
+              - img [ref=e213]
+              - generic [ref=e217]:
+                - generic [ref=e218]: Radio interna
+                - generic [ref=e219]: 10 comentarios, Santi
+            - button "Cocina del café 10 comentarios, Vale" [ref=e220] [cursor=pointer]:
+              - img [ref=e222]
+              - generic [ref=e226]:
+                - generic [ref=e227]: Cocina del café
+                - generic [ref=e228]: 10 comentarios, Vale
+          - button "Crear nuevo tema" [ref=e230] [cursor=pointer]
+      - region [ref=e231]:
+        - button "Actualizar contenido manualmente" [disabled] [ref=e234]:
+          - generic [ref=e244]: Actualizar
+        - generic [ref=e245]:
+          - generic [ref=e246]:
+            - generic [ref=e247]: Título
+            - textbox "Título" [ref=e248]
+          - generic [ref=e249]:
+            - generic [ref=e250]: Mensaje
+            - textbox "Mensaje" [ref=e251]
+          - button "Enviar" [ref=e252] [cursor=pointer]
+      - region "Usuarios conectados" [ref=e253]:
+        - heading "Usuarios conectados" [level=2] [ref=e256]
+        - generic [ref=e257]:
+          - article [ref=e258]:
+            - paragraph [ref=e260]: Coco Mora
+            - generic [ref=e261]:
+              - button "Ver perfil" [ref=e262] [cursor=pointer]:
+                - img [ref=e263]
+              - button "Mensaje directo" [ref=e266] [cursor=pointer]:
+                - img [ref=e267]
+          - article [ref=e269]:
+            - paragraph [ref=e271]: Nico
+            - generic [ref=e272]:
+              - button "Ver perfil" [ref=e273] [cursor=pointer]:
+                - img [ref=e274]
+              - button "Mensaje directo" [ref=e277] [cursor=pointer]:
+                - img [ref=e278]
+          - article [ref=e280]:
+            - paragraph [ref=e282]: Vale
+            - generic [ref=e283]:
+              - button "Ver perfil" [ref=e284] [cursor=pointer]:
+                - img [ref=e285]
+              - button "Mensaje directo" [ref=e288] [cursor=pointer]:
+                - img [ref=e289]
+          - article [ref=e291]:
+            - paragraph [ref=e293]: Santi
+            - generic [ref=e294]:
+              - button "Ver perfil" [ref=e295] [cursor=pointer]:
+                - img [ref=e296]
+              - button "Mensaje directo" [ref=e299] [cursor=pointer]:
+                - img [ref=e300]
+          - article [ref=e302]:
+            - paragraph [ref=e304]: Ivo
+            - generic [ref=e305]:
+              - button "Ver perfil" [ref=e306] [cursor=pointer]:
+                - img [ref=e307]
+              - button "Mensaje directo" [ref=e310] [cursor=pointer]:
+                - img [ref=e311]
+          - article [ref=e313]:
+            - paragraph [ref=e315]: Luna
+            - generic [ref=e316]:
+              - button "Ver perfil" [ref=e317] [cursor=pointer]:
+                - img [ref=e318]
+              - button "Mensaje directo" [ref=e321] [cursor=pointer]:
+                - img [ref=e322]
+          - article [ref=e324]:
+            - paragraph [ref=e326]: Tano
+            - generic [ref=e327]:
+              - button "Ver perfil" [ref=e328] [cursor=pointer]:
+                - img [ref=e329]
+              - button "Mensaje directo" [ref=e332] [cursor=pointer]:
+                - img [ref=e333]
+          - article [ref=e335]:
+            - paragraph [ref=e337]: Mara
+            - generic [ref=e338]:
+              - button "Ver perfil" [ref=e339] [cursor=pointer]:
+                - img [ref=e340]
+              - button "Mensaje directo" [ref=e343] [cursor=pointer]:
+                - img [ref=e344]
+          - article [ref=e346]:
+            - paragraph [ref=e348]: Rulo
+            - generic [ref=e349]:
+              - button "Ver perfil" [ref=e350] [cursor=pointer]:
+                - img [ref=e351]
+              - button "Mensaje directo" [ref=e354] [cursor=pointer]:
+                - img [ref=e355]
+          - article [ref=e357]:
+            - paragraph [ref=e359]: Nadia
+            - generic [ref=e360]:
+              - button "Ver perfil" [ref=e361] [cursor=pointer]:
+                - img [ref=e362]
+              - button "Mensaje directo" [ref=e365] [cursor=pointer]:
+                - img [ref=e366]
+      - region "Ranking" [ref=e368]:
+        - generic [ref=e369]:
+          - generic [ref=e370]:
+            - img [ref=e372]
+            - heading "Ranking" [level=2] [ref=e376]
+          - button "Cambiar a ranking por tema" [ref=e377] [cursor=pointer]:
+            - img [ref=e379]
+        - generic [ref=e386]:
+          - generic "Cambiar ranking" [ref=e387]:
+            - button "Ranking anterior" [ref=e388] [cursor=pointer]:
+              - img [ref=e390]
+            - 'button "Modo actual: TEMA | COMENTARIOS" [ref=e392] [cursor=pointer]':
+              - generic:
+                - generic: TEMA
+                - generic:
+                  - img
+            - button "Ranking siguiente" [ref=e393] [cursor=pointer]:
+              - img [ref=e395]
+          - generic [ref=e398]:
+            - article [ref=e399]:
+              - generic [ref=e400]: "1"
+              - generic [ref=e401]:
+                - paragraph [ref=e402]: Café de madrugada
+                - paragraph [ref=e403]: 10 comentarios
+            - article [ref=e404]:
+              - generic [ref=e405]: "2"
+              - generic [ref=e406]:
+                - paragraph [ref=e407]: Balance del clan
+                - paragraph [ref=e408]: 10 comentarios
+            - article [ref=e409]:
+              - generic [ref=e410]: "3"
+              - generic [ref=e411]:
+                - paragraph [ref=e412]: Eventos del domingo
+                - paragraph [ref=e413]: 10 comentarios
+  - complementary [ref=e414]:
+    - generic [ref=e415]:
+      - generic [ref=e416]:
+        - paragraph [ref=e417]: Menú
+        - heading [level=2] [ref=e418]: Temas
+      - button [ref=e419] [cursor=pointer]:
+        - generic [ref=e420]: ×
+    - generic [ref=e421]:
+      - button [ref=e422] [cursor=pointer]:
+        - img [ref=e424]
+        - generic [ref=e428]:
+          - generic [ref=e429]: Café de madrugada
+          - generic [ref=e430]: 10 comentarios, Nico
+      - button [ref=e431] [cursor=pointer]:
+        - img [ref=e433]
+        - generic [ref=e437]:
+          - generic [ref=e438]: Balance del clan
+          - generic [ref=e439]: 10 comentarios, Coco Mora
+      - button [ref=e440] [cursor=pointer]:
+        - img [ref=e442]
+        - generic [ref=e446]:
+          - generic [ref=e447]: Eventos del domingo
+          - generic [ref=e448]: 10 comentarios, Nadia
+      - button [ref=e449] [cursor=pointer]:
+        - img [ref=e451]
+        - generic [ref=e455]:
+          - generic [ref=e456]: Memes internos
+          - generic [ref=e457]: 10 comentarios, Rulo
+      - button [ref=e458] [cursor=pointer]:
+        - img [ref=e460]
+        - generic [ref=e464]:
+          - generic [ref=e465]: Guías y rutas
+          - generic [ref=e466]: 10 comentarios, Mara
+      - button [ref=e467] [cursor=pointer]:
+        - img [ref=e469]
+        - generic [ref=e473]:
+          - generic [ref=e474]: Mercado local
+          - generic [ref=e475]: 10 comentarios, Tano
+      - button [ref=e476] [cursor=pointer]:
+        - img [ref=e478]
+        - generic [ref=e482]:
+          - generic [ref=e483]: Encuentros RP
+          - generic [ref=e484]: 10 comentarios, Luna
+      - button [ref=e485] [cursor=pointer]:
+        - img [ref=e487]
+        - generic [ref=e491]:
+          - generic [ref=e492]: Ajustes del HUD
+          - generic [ref=e493]: 10 comentarios, Ivo
+      - button [ref=e494] [cursor=pointer]:
+        - img [ref=e496]
+        - generic [ref=e500]:
+          - generic [ref=e501]: Arte y capturas
+          - generic [ref=e502]: 10 comentarios, Santi
+      - button [ref=e503] [cursor=pointer]:
+        - img [ref=e505]
+        - generic [ref=e509]:
+          - generic [ref=e510]: Combate y builds
+          - generic [ref=e511]: 10 comentarios, Vale
+      - button [ref=e512] [cursor=pointer]:
+        - img [ref=e514]
+        - generic [ref=e518]:
+          - generic [ref=e519]: Preguntas rápidas
+          - generic [ref=e520]: 10 comentarios, Nico
+      - button [ref=e521] [cursor=pointer]:
+        - img [ref=e523]
+        - generic [ref=e527]:
+          - generic [ref=e528]: Buzón de ideas
+          - generic [ref=e529]: 10 comentarios, Coco Mora
+      - button [ref=e530] [cursor=pointer]:
+        - img [ref=e532]
+        - generic [ref=e536]:
+          - generic [ref=e537]: Historias del server
+          - generic [ref=e538]: 10 comentarios, Nadia
+      - button [ref=e539] [cursor=pointer]:
+        - img [ref=e541]
+        - generic [ref=e545]:
+          - generic [ref=e546]: Música de fondo
+          - generic [ref=e547]: 10 comentarios, Rulo
+      - button [ref=e548] [cursor=pointer]:
+        - img [ref=e550]
+        - generic [ref=e554]:
+          - generic [ref=e555]: Alianzas
+          - generic [ref=e556]: 10 comentarios, Mara
+      - button [ref=e557] [cursor=pointer]:
+        - img [ref=e559]
+        - generic [ref=e563]:
+          - generic [ref=e564]: Torneo semanal
+          - generic [ref=e565]: 10 comentarios, Tano
+      - button [ref=e566] [cursor=pointer]:
+        - img [ref=e568]
+        - generic [ref=e572]:
+          - generic [ref=e573]: Novedades
+          - generic [ref=e574]: 10 comentarios, Luna
+      - button [ref=e575] [cursor=pointer]:
+        - img [ref=e577]
+        - generic [ref=e581]:
+          - generic [ref=e582]: Códigos y macros
+          - generic [ref=e583]: 10 comentarios, Ivo
+      - button [ref=e584] [cursor=pointer]:
+        - img [ref=e586]
+        - generic [ref=e590]:
+          - generic [ref=e591]: Radio interna
+          - generic [ref=e592]: 10 comentarios, Santi
+      - button [ref=e593] [cursor=pointer]:
+        - img [ref=e595]
+        - generic [ref=e599]:
+          - generic [ref=e600]: Cocina del café
+          - generic [ref=e601]: 10 comentarios, Vale
+  - complementary [ref=e602]:
+    - generic [ref=e603]:
+      - generic [ref=e605]:
+        - generic [ref=e606]: CHE
+        - generic [ref=e607]: TREND
+      - button [ref=e608] [cursor=pointer]:
+        - generic [ref=e609]: ×
+    - generic [ref=e610]:
+      - heading [level=3] [ref=e611]: Últimos usuarios activos
+      - generic [ref=e612]:
+        - article [ref=e613]:
+          - paragraph [ref=e615]: Coco Mora
+          - generic [ref=e616]:
+            - button [ref=e617] [cursor=pointer]:
+              - img [ref=e618]
+            - button [ref=e621] [cursor=pointer]:
+              - img [ref=e622]
+        - article [ref=e624]:
+          - paragraph [ref=e626]: Nico
+          - generic [ref=e627]:
+            - button [ref=e628] [cursor=pointer]:
+              - img [ref=e629]
+            - button [ref=e632] [cursor=pointer]:
+              - img [ref=e633]
+        - article [ref=e635]:
+          - paragraph [ref=e637]: Vale
+          - generic [ref=e638]:
+            - button [ref=e639] [cursor=pointer]:
+              - img [ref=e640]
+            - button [ref=e643] [cursor=pointer]:
+              - img [ref=e644]
+        - article [ref=e646]:
+          - paragraph [ref=e648]: Santi
+          - generic [ref=e649]:
+            - button [ref=e650] [cursor=pointer]:
+              - img [ref=e651]
+            - button [ref=e654] [cursor=pointer]:
+              - img [ref=e655]
+        - article [ref=e657]:
+          - paragraph [ref=e659]: Ivo
+          - generic [ref=e660]:
+            - button [ref=e661] [cursor=pointer]:
+              - img [ref=e662]
+            - button [ref=e665] [cursor=pointer]:
+              - img [ref=e666]
+        - article [ref=e668]:
+          - paragraph [ref=e670]: Luna
+          - generic [ref=e671]:
+            - button [ref=e672] [cursor=pointer]:
+              - img [ref=e673]
+            - button [ref=e676] [cursor=pointer]:
+              - img [ref=e677]
+        - article [ref=e679]:
+          - paragraph [ref=e681]: Tano
+          - generic [ref=e682]:
+            - button [ref=e683] [cursor=pointer]:
+              - img [ref=e684]
+            - button [ref=e687] [cursor=pointer]:
+              - img [ref=e688]
+        - article [ref=e690]:
+          - paragraph [ref=e692]: Mara
+          - generic [ref=e693]:
+            - button [ref=e694] [cursor=pointer]:
+              - img [ref=e695]
+            - button [ref=e698] [cursor=pointer]:
+              - img [ref=e699]
+        - article [ref=e701]:
+          - paragraph [ref=e703]: Rulo
+          - generic [ref=e704]:
+            - button [ref=e705] [cursor=pointer]:
+              - img [ref=e706]
+            - button [ref=e709] [cursor=pointer]:
+              - img [ref=e710]
+        - article [ref=e712]:
+          - paragraph [ref=e714]: Nadia
+          - generic [ref=e715]:
+            - button [ref=e716] [cursor=pointer]:
+              - img [ref=e717]
+            - button [ref=e720] [cursor=pointer]:
+              - img [ref=e721]
+    - generic [ref=e723]:
+      - generic [ref=e724]:
+        - generic [ref=e725]:
+          - img [ref=e727]
+          - heading [level=3] [ref=e731]: Ranking
+        - button [ref=e732] [cursor=pointer]:
+          - img [ref=e734]
+      - generic [ref=e741]:
+        - generic [ref=e742]:
+          - button [ref=e743] [cursor=pointer]:
+            - img [ref=e745]
+          - button [ref=e747] [cursor=pointer]:
+            - generic:
+              - generic: TEMA
+              - generic:
+                - img
+          - button [ref=e748] [cursor=pointer]:
+            - img [ref=e750]
+        - generic [ref=e753]:
+          - article [ref=e754]:
+            - generic [ref=e755]: "1"
+            - generic [ref=e756]:
+              - paragraph [ref=e757]: Café de madrugada
+              - paragraph [ref=e758]: 10 comentarios
+          - article [ref=e759]:
+            - generic [ref=e760]: "2"
+            - generic [ref=e761]:
+              - paragraph [ref=e762]: Balance del clan
+              - paragraph [ref=e763]: 10 comentarios
+          - article [ref=e764]:
+            - generic [ref=e765]: "3"
+            - generic [ref=e766]:
+              - paragraph [ref=e767]: Eventos del domingo
+              - paragraph [ref=e768]: 10 comentarios

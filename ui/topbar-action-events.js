@@ -15,4 +15,5 @@ export function bindTopbarActionEvents(dom, handlers) {
   dom.paletteButton.addEventListener("click", () => {
     handlers.flashTitle("Selector de paletas en preparación");
   });
+  dom.createTopicButton.addEventListener("click", handlers.createNewTopic);
 }

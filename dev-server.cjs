@@ -10,7 +10,7 @@ const mime = {
   ".svg": "image/svg+xml"
 };
 
-function servePreview(port, mode) {
+function servePreview(port) {
   http
     .createServer((req, res) => {
       const reqPath = decodeURIComponent((req.url || "/").split("?")[0]);
@@ -29,10 +29,6 @@ function servePreview(port, mode) {
         let contentType = mime[path.extname(filePath)] || "application/octet-stream";
 
         if (safePath === "/index.html") {
-          body = body.replace(
-            "</head>",
-            `<script>window.CHTREND_PREVIEW_MODE=${JSON.stringify(mode)};</script></head>`
-          );
           contentType = "text/html; charset=utf-8";
         }
 
@@ -41,9 +37,9 @@ function servePreview(port, mode) {
       });
     })
     .listen(port, "127.0.0.1", () => {
-      process.stdout.write(`${mode} preview listening on http://127.0.0.1:${port}\n`);
+      process.stdout.write(`preview listening on http://127.0.0.1:${port}\n`);
     });
 }
 
-servePreview(4173, "responsive");
-servePreview(4174, "mobile");
+servePreview(4173);
+servePreview(4174);

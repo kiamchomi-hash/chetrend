@@ -7,17 +7,14 @@ export function createActionHandlers({
   renderRef,
   syncResponsiveView,
   isMobileViewport,
-  closeDrawers,
-  nowLabel
+  closeDrawers
 }) {
   function render() {
     renderRef.current();
   }
 
   function flashTitle(text) {
-    if (dom.refreshState) {
-      dom.refreshState.textContent = text;
-    }
+    void text;
   }
 
   function toggleTheme() {
@@ -37,7 +34,6 @@ export function createActionHandlers({
   const chatActions = createChatActions({
     state,
     dom,
-    nowLabel,
     render
   });
 
@@ -47,6 +43,7 @@ export function createActionHandlers({
     toggleRankingScope: rankingActions.toggleRankingScope,
     focusTopic: rankingActions.focusTopic,
     setRankingStep: rankingActions.setRankingStep,
+    createNewTopic: chatActions.createNewTopic,
     submitMessage: chatActions.submitMessage,
     refreshCurrentTopic: chatActions.refreshCurrentTopic,
     closeDrawers

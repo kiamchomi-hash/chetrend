@@ -81,22 +81,69 @@ export function createMessageItem(message, users) {
 
 export function createUserItem(user, currentUserId) {
   const node = el("article", `user-item${user.id === currentUserId ? " is-current" : ""}`);
-  node.append(
-    el("p", "user-item__name", user.name),
-    el("div", "user-item__meta", `${user.role} · ${user.online ? "Conectado" : "Offline"} · ${user.score} pts`)
+  const info = el("div", "user-item__info");
+  info.append(el("p", "user-item__name", user.name));
+
+  const actions = el("div", "user-item__actions");
+  actions.append(
+    createUserActionButton("Ver perfil", "profile"),
+    createUserActionButton("Mensaje directo", "message")
   );
+
+  node.append(info, actions);
   return node;
 }
 
-export function createRankingItem(entry, index) {
-  const node = el("article", `ranking-item${entry.active ? " is-active" : ""}`);
+function createUserActionButton(label, kind) {
+  const button = el("button", "user-item__action");
+  button.type = "button";
+  button.setAttribute("aria-label", label);
+  button.title = label;
+
+  const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+  svg.setAttribute("viewBox", "0 0 24 24");
+  svg.setAttribute("fill", "none");
+  svg.setAttribute("aria-hidden", "true");
+
+  if (kind === "profile") {
+    const head = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+    head.setAttribute("cx", "12");
+    head.setAttribute("cy", "8.5");
+    head.setAttribute("r", "3.2");
+
+    const shoulders = document.createElementNS("http://www.w3.org/2000/svg", "path");
+    shoulders.setAttribute("d", "M5.5 19c1.4-3.6 4-5.4 6.5-5.4s5.1 1.8 6.5 5.4");
+
+    svg.append(head, shoulders);
+  } else {
+    const bubble = document.createElementNS("http://www.w3.org/2000/svg", "path");
+    bubble.setAttribute("d", "M5 6.5h14v8H9.2L6 17.5V14.5H5z");
+
+    const dot = document.createElementNS("http://www.w3.org/2000/svg", "path");
+    dot.setAttribute("d", "M9 10h6");
+
+    svg.append(bubble, dot);
+  }
+
+  button.appendChild(svg);
+  return button;
+}
+
+export function createRankingItem(entry, index, scope = "global") {
+  const node = el(
+    "article",
+    `ranking-item ranking-item--rank-${index + 1}${scope === "global" ? " ranking-item--global" : ""}${entry.active ? " is-active" : ""}`
+  );
   const badge = el("span", "ranking-item__badge", String(index + 1));
   badge.setAttribute("aria-hidden", "true");
+  if (scope === "topic") {
+    badge.classList.add("ranking-item__badge--topic");
+  }
 
   const content = el("div", "ranking-item__content");
   content.append(
     el("p", "ranking-item__title", entry.title),
-    el("div", "ranking-item__meta", entry.meta)
+    el("p", "ranking-item__meta", entry.meta)
   );
 
   node.append(badge, content);

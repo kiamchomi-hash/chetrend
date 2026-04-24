@@ -1,6 +1,6 @@
-import { createMessage, getSelectedTopic, trimMessages } from "./model.js";
+import { createMessage, createTopic, getSelectedTopic, trimMessages } from "./model.js";
 
-export function createChatActions({ state, dom, nowLabel, render }) {
+export function createChatActions({ state, dom, render }) {
   function submitMessage(event) {
     event.preventDefault();
     const input = dom.messageInput;
@@ -15,6 +15,21 @@ export function createChatActions({ state, dom, nowLabel, render }) {
 
     const topic = getSelectedTopic(state.topics, state.selectedTopicId);
     if (!topic) {
+      const titleInput = dom.topicTitleInput;
+      const title = titleInput?.value.trim() ?? "";
+      if (!title) {
+        titleInput?.focus();
+        return;
+      }
+
+      const createdTopic = createTopic(state.currentUserId, title, text);
+      state.topics = [createdTopic, ...state.topics];
+      state.selectedTopicId = createdTopic.id;
+      if (titleInput) {
+        titleInput.value = "";
+      }
+      input.value = "";
+      render();
       return;
     }
 
@@ -44,13 +59,30 @@ export function createChatActions({ state, dom, nowLabel, render }) {
       topic.messages = trimMessages(topic.messages);
     }
 
-    if (dom.refreshState) {
-      dom.refreshState.textContent = `Actualizado ${nowLabel()}`;
-    }
     render();
   }
 
+  function createNewTopic() {
+    state.selectedTopicId = null;
+    if (dom.topicTitleInput) {
+      dom.topicTitleInput.value = "";
+    }
+    if (dom.messageInput) {
+      dom.messageInput.value = "";
+    }
+    render();
+
+    if (dom.topicTitleInput) {
+      if (typeof requestAnimationFrame === "function") {
+        requestAnimationFrame(() => dom.topicTitleInput?.focus());
+      } else {
+        dom.topicTitleInput.focus();
+      }
+    }
+  }
+
   return {
+    createNewTopic,
     submitMessage,
     refreshCurrentTopic
   };

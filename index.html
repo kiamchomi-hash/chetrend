@@ -83,98 +83,112 @@
 
       <main class="workspace" aria-label="Chat social">
         <section class="panel panel--topics" aria-label="Temas">
-          <div class="mobile-topic-stage">
-            <div class="mobile-topic-stage__view mobile-topic-stage__view--list">
-              <div class="scroll-list" id="topicList"></div>
+          <div class="topics-panel__body">
+            <div class="topics-panel__list-frame">
+              <div class="mobile-topic-stage">
+                <div class="mobile-topic-stage__view mobile-topic-stage__view--list">
+                  <div class="scroll-list" id="topicList"></div>
+                </div>
+              </div>
+            </div>
+            <div class="topics-panel__footer">
+              <button class="primary-button topics-panel__create-button" id="createTopicButton" type="button">
+                Crear nuevo tema
+              </button>
             </div>
           </div>
         </section>
 
         <section class="panel panel--chat" aria-labelledby="chatTitle">
           <div class="panel__header panel__header--chat">
-            <div>
+            <div class="panel__header-title">
               <h2 id="chatTitle">Chat principal</h2>
             </div>
             <div class="chat-actions">
               <button class="icon-button icon-button--compact" id="refreshButton" type="button" aria-label="Actualizar contenido manualmente">
                 <span aria-hidden="true">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M4 4v6h6"></path>
-                    <path d="M20 20v-6h-6"></path>
-                    <path d="M20 10a8 8 0 0 0-14.5-4.5M4 14a8 8 0 0 0 14.5 4.5"></path>
+                  <svg class="refresh-button__wheel" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="3.1"></circle>
+                    <path d="M12 2.6v3.2"></path>
+                    <path d="M12 18.2v3.2"></path>
+                    <path d="m18.6 5.4-2.2 2.2"></path>
+                    <path d="m7.6 16.4-2.2 2.2"></path>
+                    <path d="M21.4 12h-3.2"></path>
+                    <path d="M5.8 12H2.6"></path>
+                    <path d="m18.6 18.6-2.2-2.2"></path>
+                    <path d="m7.6 7.6-2.2-2.2"></path>
                   </svg>
                 </span>
                 <span>Actualizar</span>
               </button>
-              <div class="refresh-state" id="refreshState">Sin actualizar</div>
             </div>
           </div>
 
           <div class="chat-hero">
-            <div>
-              <p class="chat-hero__label">Tema abierto</p>
-              <h3 id="chatTopicName">Sala general</h3>
-            </div>
+            <h3 id="chatTopicName" hidden>Selecciona un tema</h3>
             <div class="chat-hero__actions">
               <button class="text-button chat-hero__back" id="backToTopics" type="button">Volver a temas</button>
-              <p class="chat-hero__description" id="chatTopicDescription">Selecciona un tema para leer y escribir dentro de la sala.</p>
+              <p class="chat-hero__description" id="chatTopicDescription" hidden>Selecciona un tema para empezar a chatear.</p>
             </div>
           </div>
 
           <div class="message-stream" id="messageStream" aria-live="polite"></div>
 
           <form class="composer" id="messageForm">
+            <label class="composer__field" hidden>
+              <input id="topicTitleInput" type="text" maxlength="80" placeholder="Título" autocomplete="off" aria-label="Título del tema" />
+            </label>
             <label class="composer__field">
-              <span class="sr-only">Escribe tu mensaje</span>
-              <textarea id="messageInput" rows="2" maxlength="240" placeholder="Escribe aquí..." required></textarea>
+              <textarea id="messageInput" rows="2" maxlength="240" placeholder="Escribe aquí..." required aria-label="Mensaje"></textarea>
             </label>
             <button class="primary-button" type="submit">Enviar</button>
           </form>
         </section>
 
         <section class="panel panel--users" aria-labelledby="usersTitle">
-          <div class="panel__header">
+          <div class="panel__header panel__header--users">
             <div>
               <h2 id="usersTitle">Usuarios conectados</h2>
             </div>
-            <span class="panel__meta">Ordenados por presencia</span>
           </div>
           <div class="scroll-list" id="userList"></div>
         </section>
 
         <section class="panel panel--rankings" aria-labelledby="rankingsTitle">
-          <div class="panel__header">
-            <div>
-              <h2 id="rankingsTitle">Ranking global</h2>
+          <div class="panel__header panel__header--rankings">
+            <div class="panel__title-inline">
+              <span class="panel__title-glyph" id="rankingsGlyph" aria-hidden="true"></span>
+              <h2 id="rankingsTitle">Ranking</h2>
             </div>
-            <div class="ranking-switch">
-              <button class="icon-button icon-button--compact ranking-switch__button" id="rankingPrev" type="button" aria-label="Ver ranking global">
+            <button class="icon-button icon-button--drawer ranking-scope-toggle" id="rankingScopeButton" type="button" aria-label="Cambiar entre ranking global y por tema">
+              <span class="icon-button__icon" aria-hidden="true" id="rankingScopeIcon"></span>
+            </button>
+          </div>
+          <div class="panel__body panel__body--rankings">
+            <div class="ranking-carousel" aria-label="Cambiar ranking">
+              <button class="icon-button icon-button--compact ranking-carousel__nav" id="rankingPrev" type="button" aria-label="Ranking anterior">
                 <span class="icon-button__icon" aria-hidden="true">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-                    <circle cx="12" cy="12" r="8.5"></circle>
-                    <path d="M3.7 12h16.6"></path>
-                    <path d="M12 3.5c2.6 2.2 4 5 4 8.5s-1.4 6.3-4 8.5c-2.6-2.2-4-5-4-8.5s1.4-6.3 4-8.5Z"></path>
-                    <path d="M8.2 6.5h7.6"></path>
-                    <path d="M8.2 17.5h7.6"></path>
+                    <path d="m15 18-6-6 6-6"></path>
                   </svg>
                 </span>
-                <span class="button-label">Global</span>
               </button>
-              <button class="icon-button icon-button--compact ranking-switch__button" id="rankingNext" type="button" aria-label="Ver ranking del tema">
+              <button class="icon-button icon-button--compact ranking-carousel__current" id="rankingCurrent" type="button" aria-label="Modo actual">
+                <span class="button-label">TEMA COMENTARIOS</span>
+              </button>
+              <button class="icon-button icon-button--compact ranking-carousel__nav" id="rankingNext" type="button" aria-label="Ranking siguiente">
                 <span class="icon-button__icon" aria-hidden="true">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M18 8h1a4 4 0 0 1 0 8h-1"></path>
-                    <path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"></path>
-                    <path d="M6 1v3"></path>
-                    <path d="M10 1v3"></path>
-                    <path d="M14 1v3"></path>
+                    <path d="m9 18 6-6-6-6"></path>
                   </svg>
                 </span>
-                <span class="button-label">Este tema</span>
               </button>
+            </div>
+            <div class="ranking-content">
+              <div class="scroll-list" id="rankingList"></div>
+              <div class="panel__empty" id="rankingsEmpty" hidden></div>
             </div>
           </div>
-          <div class="scroll-list" id="rankingList"></div>
         </section>
       </main>
     </div>
@@ -212,35 +226,39 @@
       </section>
       <section class="drawer__section drawer__section--half">
         <div class="drawer-ranking__header">
-          <h3 id="drawerRankingsTitle">Ranking global</h3>
-          <div class="drawer-ranking__switch" aria-label="Cambiar modo de ranking">
-            <button class="icon-button icon-button--compact ranking-switch__button" id="drawerRankingPrev" type="button" aria-label="Ver ranking global">
+          <div class="panel__title-inline">
+            <span class="panel__title-glyph" id="drawerRankingsGlyph" aria-hidden="true"></span>
+            <h3 id="drawerRankingsTitle">Ranking</h3>
+          </div>
+          <button class="icon-button icon-button--drawer ranking-scope-toggle" id="drawerRankingScopeButton" type="button" aria-label="Cambiar entre ranking global y por tema">
+            <span class="icon-button__icon" aria-hidden="true" id="drawerRankingScopeIcon"></span>
+          </button>
+        </div>
+        <div class="panel__body panel__body--drawer-rankings">
+          <div class="drawer-ranking__switch">
+            <button class="icon-button icon-button--compact ranking-carousel__nav" id="drawerRankingPrev" type="button" aria-label="Ranking anterior">
               <span class="icon-button__icon" aria-hidden="true">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-                  <circle cx="12" cy="12" r="8.5"></circle>
-                  <path d="M3.7 12h16.6"></path>
-                  <path d="M12 3.5c2.6 2.2 4 5 4 8.5s-1.4 6.3-4 8.5c-2.6-2.2-4-5-4-8.5s1.4-6.3 4-8.5Z"></path>
-                  <path d="M8.2 6.5h7.6"></path>
-                  <path d="M8.2 17.5h7.6"></path>
+                  <path d="m15 18-6-6 6-6"></path>
                 </svg>
               </span>
-              <span class="button-label">Global</span>
             </button>
-            <button class="icon-button icon-button--compact ranking-switch__button" id="drawerRankingNext" type="button" aria-label="Ver ranking del tema">
+            <button class="icon-button icon-button--compact ranking-carousel__current" id="drawerRankingCurrent" type="button" aria-label="Modo actual">
+              <span class="button-label">TEMA COMENTARIOS</span>
+            </button>
+            <button class="icon-button icon-button--compact ranking-carousel__nav" id="drawerRankingNext" type="button" aria-label="Ranking siguiente">
               <span class="icon-button__icon" aria-hidden="true">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-                  <path d="M18 8h1a4 4 0 0 1 0 8h-1"></path>
-                  <path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"></path>
-                  <path d="M6 1v3"></path>
-                  <path d="M10 1v3"></path>
-                  <path d="M14 1v3"></path>
+                  <path d="m9 18 6-6-6-6"></path>
                 </svg>
               </span>
-              <span class="button-label">Este tema</span>
             </button>
           </div>
+          <div class="drawer-ranking-content">
+            <div class="scroll-list" id="drawerRankingList"></div>
+            <div class="panel__empty panel__empty--drawer" id="drawerRankingsEmpty" hidden></div>
+          </div>
         </div>
-        <div class="scroll-list" id="drawerRankingList"></div>
       </section>
     </aside>
 
