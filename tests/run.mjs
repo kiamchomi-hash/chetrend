@@ -101,6 +101,9 @@ await (async () => {
     const actions = await read("controller-actions.js");
     const responsiveController = await read("controller-responsive.js");
     const renderController = await read("controller-render.js");
+    const stateStore = await read("state-store.js");
+    const domStore = await read("dom-store.js");
+    const timerStore = await read("timer-store.js");
     const store = await read("app-store.js");
     const domModule = await read("ui/dom.js");
     const eventsModule = await read("ui/events.js");
@@ -149,8 +152,12 @@ await (async () => {
     assert.match(renderUtils, /renderIntoTargets/);
     assert.match(drawers, /getTransitionDurationMs/);
     assert.match(topbar, /bindTopbarEvents/);
-    assert.match(store, /export const state/);
-    assert.match(store, /export const dom/);
+    assert.match(store, /export \{ state \} from "\.\/state-store\.js";/);
+    assert.match(store, /export \{ dom \} from "\.\/dom-store\.js";/);
+    assert.match(store, /export \{ closeTimerRef \} from "\.\/timer-store\.js";/);
+    assert.match(stateStore, /export const state/);
+    assert.match(domStore, /export const dom/);
+    assert.match(timerStore, /export const closeTimerRef/);
     assert.doesNotMatch(app, /createTopicForm|mobileCreateTopicForm/);
   });
 
