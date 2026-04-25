@@ -11,10 +11,7 @@ import { applyStoredTheme, createBackToTopicsHandler, createResizeHandler } from
 import { getTransitionDurationMs } from "./ui/transition-utils.js";
 
 export function bootstrap() {
-  state.users = buildUsers(initialUsers);
-  state.topics = buildTopics(topicSeedData, state.users);
   applyStoredTheme(state);
-
   Object.assign(dom, cacheDom());
 
   const responsive = createResponsiveHelpers({ state, dom });
@@ -38,6 +35,15 @@ export function bootstrap() {
 
   renderRef.current = renderers.render;
 
+  // Immediate initial render to show skeletons without any delay
+  responsive.syncResponsiveView();
+  renderers.render();
+
+  // Reveal the interface after the first render
+  if (dom.workspace) {
+    dom.workspace.classList.add("workspace--visible");
+  }
+
   const backToTopics = createBackToTopicsHandler(state, responsive, renderers.render);
   const handleResize = createResizeHandler({
     responsive,
@@ -60,6 +66,10 @@ export function bootstrap() {
     onWheel: responsive.handleScrollableWheel
   });
 
-  responsive.syncResponsiveView();
-  renderers.render();
+  // Simulate loading delay
+  setTimeout(() => {
+    state.users = buildUsers(initialUsers);
+    state.topics = buildTopics(topicSeedData, state.users);
+    renderers.render();
+  }, 2000);
 }

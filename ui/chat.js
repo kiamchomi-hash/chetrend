@@ -4,7 +4,9 @@ import { getSelectedTopic } from "../model.js";
 export function renderChat(state, dom) {
   const topic = getSelectedTopic(state.topics, state.selectedTopicId);
   const isMobileViewport = document.documentElement.classList.contains("is-mobile-viewport");
-  syncChatComposer(topic, dom);
+  const isLoading = state.topics.length === 0;
+
+  syncChatComposer(topic, dom, isLoading);
 
   if (!dom.messageStream) {
     return;
@@ -12,10 +14,10 @@ export function renderChat(state, dom) {
 
   const chatHero = dom.chatTopicName?.closest(".chat-hero");
   if (chatHero) {
-    chatHero.hidden = !topic || !isMobileViewport;
+    chatHero.hidden = isLoading || !topic || !isMobileViewport;
   }
 
-  dom.messageStream.hidden = !topic;
+  dom.messageStream.hidden = isLoading || !topic;
   dom.messageStream.innerHTML = "";
   if (!topic) {
     return;
@@ -27,18 +29,19 @@ export function renderChat(state, dom) {
   dom.messageStream.scrollTop = dom.messageStream.scrollHeight;
 }
 
-function syncChatComposer(topic, dom) {
+function syncChatComposer(topic, dom, isLoading) {
   const isCreatingTopic = !topic;
   const topicTitleField = dom.topicTitleInput?.closest(".composer__field");
   const chatHeader = dom.chatTitle?.closest(".panel__header--chat");
 
   if (topicTitleField) {
-    topicTitleField.hidden = !isCreatingTopic;
+    topicTitleField.hidden = isLoading || !isCreatingTopic;
   }
   if (chatHeader) {
-    chatHeader.hidden = isCreatingTopic;
+    chatHeader.hidden = isLoading || isCreatingTopic;
   }
   if (dom.messageForm) {
+    dom.messageForm.hidden = isLoading;
     dom.messageForm.classList.toggle("composer--topic-create", isCreatingTopic);
   }
   if (dom.messageInput) {

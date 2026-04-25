@@ -63,6 +63,54 @@ export function createTopicItem(topic, users, selected = false) {
   return button;
 }
 
+export function createTopicSkeleton() {
+  const button = el("button", "topic-item topic-item--skeleton");
+  button.type = "button";
+  button.disabled = true;
+
+  const avatar = el("span", "topic-item__avatar");
+  avatar.setAttribute("aria-hidden", "true");
+
+  const content = el("span", "topic-item__content");
+  content.append(
+    el("span", "topic-item__title"),
+    el("span", "topic-item__meta")
+  );
+
+  button.append(avatar, content);
+  return button;
+}
+
+export function createUserSkeleton() {
+  const node = el("article", "user-item user-item--skeleton");
+  const info = el("div", "user-item__info");
+  info.append(el("div", "user-item__skeleton-line"));
+
+  const actions = el("div", "user-item__actions");
+  actions.append(
+    el("div", "user-item__skeleton-circle"),
+    el("div", "user-item__skeleton-circle")
+  );
+
+  node.append(info, actions);
+  return node;
+}
+
+export function createRankingSkeleton(index) {
+  const node = el("article", `ranking-item ranking-item--skeleton ranking-item--rank-${index + 1}`);
+  const badge = el("span", "ranking-item__badge");
+  badge.setAttribute("aria-hidden", "true");
+
+  const content = el("div", "ranking-item__content");
+  content.append(
+    el("div", "ranking-item__skeleton-line"),
+    el("div", "ranking-item__skeleton-line ranking-item__skeleton-line--short")
+  );
+
+  node.append(badge, content);
+  return node;
+}
+
 export function createMessageItem(message, users) {
   const node = el("article", `message${message.kind === "system" ? " message--system" : ""}`);
   const author = message.kind === "system" ? "Sistema" : getUserName(users, message.authorId);

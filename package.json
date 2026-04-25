@@ -1,0 +1,24 @@
+{
+  "name": "chetrend",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app-store.js",
+  "directories": {
+    "test": "tests"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kiamchomi-hash/chetrend.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "module",
+  "bugs": {
+    "url": "https://github.com/kiamchomi-hash/chetrend/issues"
+  },
+  "homepage": "https://github.com/kiamchomi-hash/chetrend#readme"
+}

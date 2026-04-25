@@ -1,5 +1,6 @@
 const REQUIRED_DOM_KEYS = [
   "shell",
+  "workspace",
   "topbar",
   "themeToggle",
   "refreshButton",
@@ -53,6 +54,7 @@ const REQUIRED_DOM_KEYS = [
 export function cacheDom() {
   const cached = {
     shell: document.querySelector(".shell"),
+    workspace: document.querySelector(".workspace"),
     topbar: document.querySelector(".topbar"),
     themeToggle: document.getElementById("themeToggle"),
     refreshButton: document.getElementById("refreshButton"),
@@ -78,8 +80,8 @@ export function cacheDom() {
     rankingScopeButton: document.getElementById("rankingScopeButton"),
     rankingScopeIcon: document.getElementById("rankingScopeIcon"),
     rankingsEmpty: document.getElementById("rankingsEmpty"),
-    rankingsBody: document.querySelector(".panel__body--rankings"),
-    rankingsPanel: document.getElementById("rankingsTitle")?.closest(".panel--rankings"),
+    rankingsBody: document.querySelector(".panel__body--users-rankings .rankings-section"),
+    rankingsPanel: document.getElementById("rankingsTitle")?.closest(".panel--users-rankings"),
     rankingCarousel: document.getElementById("rankingPrev")?.closest(".ranking-carousel"),
     drawerRankingsTitle: document.getElementById("drawerRankingsTitle"),
     drawerRankingsGlyph: document.getElementById("drawerRankingsGlyph"),

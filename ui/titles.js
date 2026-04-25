@@ -23,10 +23,10 @@ export function renderTitles(state, dom) {
   }
 
   if (dom.rankingsTitle) {
-    dom.rankingsTitle.textContent = "Ranking";
+    dom.rankingsTitle.innerHTML = state.rankingScope === "global" ? "Ranking<br>Histórico" : "Ranking<br>Por Tema";
   }
   if (dom.drawerRankingsTitle) {
-    dom.drawerRankingsTitle.textContent = "Ranking";
+    dom.drawerRankingsTitle.innerHTML = state.rankingScope === "global" ? "Ranking<br>Histórico" : "Ranking<br>Por Tema";
   }
   const currentLabel = getCurrentRankingLabel(state);
   const currentAriaLabel = `Modo actual: ${currentLabel}`;

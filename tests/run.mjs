@@ -252,8 +252,8 @@ await (async () => {
     assert.match(html, /id="drawerRankingPrev"/);
     assert.match(html, /id="drawerRankingCurrent"/);
     assert.match(html, /id="drawerRankingNext"/);
-    assert.match(html, /<h2 id="usersTitle">Usuarios conectados<\/h2>/);
-    assert.match(html, /<h2 id="rankingsTitle">Ranking<\/h2>/);
+    assert.match(html, /<h3>Usuarios conectados<\/h3>/);
+    assert.match(html, /<h3 id="rankingsTitle">Ranking<\/h3>/);
     assert.match(html, /<h3 id="drawerRankingsTitle">Ranking<\/h3>/);
     assert.doesNotMatch(html, /createTopicForm|mobileCreateTopicForm|Nuevo tema|Ordenados por presencia/);
     assert.match(data, /"Café de madrugada"/);

@@ -1,5 +1,6 @@
 export const dom = {
   shell: null,
+  workspace: null,
   topbar: null,
   themeToggle: null,
   refreshButton: null,
