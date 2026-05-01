@@ -2,19 +2,30 @@ import { createRankingItem, createRankingSkeleton } from "../components.js";
 import { getActiveRankingStep } from "../ranking-state.js";
 import { buildPostRankingEntries, buildUserRankingEntries } from "./ranking-data.js";
 import { renderIntoTargets } from "./render-utils.js";
-import { resetRankingScroll, showRankingEmpty, showRankingList, showRankingLoading } from "./ranking-panel-state.js";
+import {
+  resetRankingScroll,
+  showRankingEmpty,
+  showRankingList,
+  showRankingLoading,
+  syncRankingListHeights,
+  syncRankingSkeletonHeights
+} from "./ranking-panel-state.js";
 
 export function renderRankings(state, dom) {
   const activeRankingStep = getActiveRankingStep(state);
   const showTopicEmpty = state.rankingScope === "topic" && !state.selectedTopicId;
   const showTopicSelected = state.rankingScope === "topic" && !!state.selectedTopicId;
+  const showGlobalSelected = state.rankingScope === "global";
+  const showExtendedRanking = showGlobalSelected || showTopicSelected;
   const isLoading = state.topics.length === 0 || state.users.length === 0;
 
   if (dom.rankingsBody) {
     dom.rankingsBody.classList.toggle("is-topic-selected", showTopicSelected);
+    dom.rankingsBody.classList.toggle("is-ranking-scrollable", showExtendedRanking);
   }
   if (dom.drawerRankingsBody) {
     dom.drawerRankingsBody.classList.toggle("is-topic-selected", showTopicSelected);
+    dom.drawerRankingsBody.classList.toggle("is-ranking-scrollable", showExtendedRanking);
   }
 
   if (isLoading) {
@@ -22,6 +33,7 @@ export function renderRankings(state, dom) {
     renderIntoTargets([dom.rankingList, dom.drawerRankingList], "scroll-list ranking-list", () =>
       Array.from({ length: 3 }, (_, i) => createRankingSkeleton(i))
     );
+    syncRankingSkeletonHeights(dom);
     return;
   }
 
@@ -62,5 +74,6 @@ export function renderRankings(state, dom) {
   renderIntoTargets([dom.rankingList, dom.drawerRankingList], "scroll-list ranking-list", () =>
     rankings.map((entry, index) => createRankingItem(entry, index, state.rankingScope))
   );
+  syncRankingListHeights(dom);
   resetRankingScroll(dom);
 }

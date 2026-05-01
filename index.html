@@ -5,11 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Chetrend - Café IRC social</title>
     <link rel="icon" href="./favicon.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/mdbassit/Coloris@latest/dist/coloris.min.css" />
     <link rel="stylesheet" href="./styles.css" />
     <script>
       (function () {
-        const theme = localStorage.getItem("chetrend-theme") || "light";
+        const theme = localStorage.getItem("chetrend-theme") || "dark";
+        const palette = localStorage.getItem("chetrend-palette") || "default";
         document.documentElement.dataset.theme = theme;
+        document.documentElement.dataset.palette = palette;
       })();
     </script>
   </head>
@@ -26,7 +29,7 @@
             </span>
             <span class="button-label">Perfil</span>
           </button>
-          <button class="icon-button icon-button--ghost" id="themeToggle" type="button" aria-label="Cambiar tema">
+          <button class="icon-button" id="themeToggle" type="button" aria-label="Cambiar tema">
             <span class="icon-button__icon" aria-hidden="true">
               <svg class="theme-icon theme-icon--sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
                 <circle cx="12" cy="12" r="4"></circle>
@@ -38,7 +41,7 @@
             </span>
             <span class="theme-toggle__label">Tema</span>
           </button>
-          <button class="icon-button icon-button--ghost" id="paletteButton" type="button" aria-label="Paletas">
+          <button class="icon-button" id="paletteButton" type="button" aria-label="Paletas" aria-haspopup="dialog" aria-expanded="false">
             <span class="icon-button__icon" aria-hidden="true">
               <span class="palette-mark" aria-hidden="true">
                 <span class="palette-mark__swatch palette-mark__swatch--one"></span>
@@ -51,7 +54,15 @@
         </div>
 
         <div class="topbar__title" aria-label="Chetrend">
-          <img class="brand-mark__icon" src="./favicon.svg" alt="" aria-hidden="true" />
+          <span class="brand-mark__icon" aria-hidden="true">
+            <svg viewBox="0 0 64 64" fill="none">
+              <rect class="brand-mark__icon-base" width="64" height="64" rx="16"></rect>
+              <path class="brand-mark__icon-fill" d="M17 19h30v18c0 5.5-4.5 10-10 10H27c-5.5 0-10-4.5-10-10V19Z"></path>
+              <path class="brand-mark__icon-stroke" d="M44 23h4.2c2.7 0 4.8 2.1 4.8 4.8s-2.1 4.8-4.8 4.8H44"></path>
+              <path class="brand-mark__icon-stroke" d="M22 48h20"></path>
+              <path class="brand-mark__icon-stroke" d="M26 14v7M32 11v10M38 14v7"></path>
+            </svg>
+          </span>
           <span class="brand-mark" aria-hidden="true">
             <span class="brand-mark__che">CHE</span>
             <span class="brand-mark__trend">TREND</span>
@@ -59,16 +70,34 @@
         </div>
 
         <div class="topbar__group topbar__group--right">
-          <button class="text-button" id="contactAdminButton" type="button" aria-label="Contacto admin">
-            <span class="icon-button__icon" aria-hidden="true">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M4 6h16v12H4z"></path>
-                <path d="m4 7 8 6 8-6"></path>
-              </svg>
-            </span>
-            <span class="button-label">Contacto admin</span>
-          </button>
-          <button class="text-button text-button--accent" id="storeButton" type="button" aria-label="Tienda">
+          <div class="topbar__auth-tools" id="authTools" hidden>
+            <button class="icon-button icon-button--circular" id="friendRequestsButton" type="button" aria-label="Solicitudes de amistad">
+              <span class="icon-button__icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path>
+                  <circle cx="9" cy="7" r="4"></circle>
+                  <line x1="19" y1="8" x2="19" y2="14"></line>
+                  <line x1="16" y1="11" x2="22" y2="11"></line>
+                </svg>
+              </span>
+            </button>
+            <button class="icon-button icon-button--circular" id="messagesButton" type="button" aria-label="Mensajes">
+              <span class="icon-button__icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path>
+                </svg>
+              </span>
+            </button>
+            <button class="icon-button icon-button--circular" id="notificationsButton" type="button" aria-label="Notificaciones">
+              <span class="icon-button__icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+                  <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+                </svg>
+              </span>
+            </button>
+          </div>
+          <button class="text-button text-button--prominent" id="storeButton" type="button" aria-label="Tienda">
             <span class="icon-button__icon" aria-hidden="true">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
                 <path d="M5 9h14l-1 11H6L5 9Z"></path>
@@ -76,6 +105,9 @@
               </svg>
             </span>
             <span class="button-label">Tienda</span>
+          </button>
+          <button class="text-button text-button--accent prominent-auth" id="authButton" type="button" aria-label="Iniciar sesión">
+            <span class="button-label">Iniciar Sesión</span>
           </button>
           <button class="icon-button icon-button--drawer mobile-right-drawer" id="openRightDrawer" type="button" aria-label="Abrir usuarios y rankings">
             <span class="icon-button__icon" aria-hidden="true">
@@ -111,18 +143,11 @@
               <h2 id="chatTitle">Chat principal</h2>
             </div>
             <div class="chat-actions">
-              <button class="icon-button icon-button--compact" id="refreshButton" type="button" aria-label="Actualizar contenido manualmente">
-                <span aria-hidden="true">
+              <button class="icon-button icon-button--compact icon-button--refresh" id="refreshButton" type="button" aria-label="Actualizar contenido manualmente">
+                <span class="icon-button__icon" aria-hidden="true">
                   <svg class="refresh-button__wheel" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-                    <circle cx="12" cy="12" r="3.1"></circle>
-                    <path d="M12 2.6v3.2"></path>
-                    <path d="M12 18.2v3.2"></path>
-                    <path d="m18.6 5.4-2.2 2.2"></path>
-                    <path d="m7.6 16.4-2.2 2.2"></path>
-                    <path d="M21.4 12h-3.2"></path>
-                    <path d="M5.8 12H2.6"></path>
-                    <path d="m18.6 18.6-2.2-2.2"></path>
-                    <path d="m7.6 7.6-2.2-2.2"></path>
+                    <path d="M19.9 13a8 8 0 1 1-9.9-8.8c3.9-1 7.9 1 9.4 4.7"></path>
+                    <path d="M20 4v5h-5"></path>
                   </svg>
                 </span>
                 <span>Actualizar</span>
@@ -173,14 +198,24 @@
               <div class="scroll-list" id="userList"></div>
             </div>
             <div class="rankings-section">
-              <div class="section-title">
-                <div class="section-title__main">
-                  <span class="panel__title-glyph" id="rankingsGlyph" aria-hidden="true">•</span>
+              <div class="section-title section-title--ranking">
+                <div class="panel__title-inline panel__title-inline--ranking">
+                  <span class="panel__title-glyph" id="rankingsGlyph" aria-hidden="true"></span>
                   <h3 id="rankingsTitle">Ranking</h3>
                 </div>
-                <button class="icon-button icon-button--drawer ranking-scope-toggle" id="rankingScopeButton" type="button" aria-label="Cambiar entre ranking global y por tema">
-                  <span class="icon-button__icon" aria-hidden="true" id="rankingScopeIcon"></span>
-                </button>
+                <div class="rankings-legacy" hidden>
+                  <button class="icon-button icon-button--drawer ranking-scope-toggle" id="rankingScopeButton" type="button" aria-label="Cambiar entre ranking global y por tema">
+                    <span class="icon-button__icon" aria-hidden="true" id="rankingScopeIcon"></span>
+                  </button>
+                </div>
+              </div>
+              <div class="ranking-controls">
+                <div class="ranking-scope-tabs" id="rankingScopeTabs" role="group" aria-label="Alcance del ranking">
+                  <button class="ranking-scope-tabs__button" type="button" data-ranking-scope="global">GLOBAL</button>
+                  <span class="ranking-scope-tabs__divider" aria-hidden="true">/</span>
+                  <button class="ranking-scope-tabs__button" type="button" data-ranking-scope="topic">TEMA</button>
+                </div>
+                <div class="ranking-mode-list" id="rankingModeList" role="group" aria-label="Modo de ranking"></div>
               </div>
               <div class="ranking-carousel" aria-label="Cambiar ranking">
                 <button class="icon-button icon-button--compact ranking-carousel__nav" id="rankingPrev" type="button" aria-label="Ranking anterior">
@@ -211,6 +246,22 @@
       </main>
     </div>
 
+    <div class="palette-modal-backdrop" id="paletteModalBackdrop" hidden>
+      <section class="palette-modal" id="paletteModal" role="dialog" aria-modal="true" aria-hidden="true" aria-labelledby="paletteModalTitle">
+        <div class="palette-modal__header">
+          <div class="palette-modal__title-group">
+            <h2 id="paletteModalTitle">Paletas</h2>
+          </div>
+          <button class="icon-button icon-button--compact palette-modal__close" id="closePaletteModalButton" type="button" aria-label="Cerrar selector de paletas">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="palette-modal__body">
+          <div class="palette-grid" id="paletteOptionGrid"></div>
+        </div>
+      </section>
+    </div>
+
     <div class="drawer-backdrop" id="drawerBackdrop" hidden></div>
 
     <aside class="drawer drawer--left" id="leftDrawer" aria-label="Temas" aria-hidden="true">
@@ -229,7 +280,15 @@
     <aside class="drawer drawer--right" id="rightDrawer" aria-label="Usuarios y rankings" aria-hidden="true">
       <div class="drawer__header">
         <div class="drawer__brand" aria-hidden="true">
-          <img class="drawer__brand-icon" src="./favicon.svg" alt="" />
+          <span class="brand-mark__icon drawer__brand-icon" aria-hidden="true">
+            <svg viewBox="0 0 64 64" fill="none">
+              <rect class="brand-mark__icon-base" width="64" height="64" rx="16"></rect>
+              <path class="brand-mark__icon-fill" d="M17 19h30v18c0 5.5-4.5 10-10 10H27c-5.5 0-10-4.5-10-10V19Z"></path>
+              <path class="brand-mark__icon-stroke" d="M44 23h4.2c2.7 0 4.8 2.1 4.8 4.8s-2.1 4.8-4.8 4.8H44"></path>
+              <path class="brand-mark__icon-stroke" d="M22 48h20"></path>
+              <path class="brand-mark__icon-stroke" d="M26 14v7M32 11v10M38 14v7"></path>
+            </svg>
+          </span>
           <span class="brand-mark">
             <span class="brand-mark__che">CHE</span><span class="brand-mark__trend">TREND</span>
           </span>
@@ -244,7 +303,7 @@
       </section>
       <section class="drawer__section drawer__section--half">
         <div class="drawer-ranking__header">
-          <div class="panel__title-inline">
+          <div class="panel__title-inline panel__title-inline--ranking">
             <span class="panel__title-glyph" id="drawerRankingsGlyph" aria-hidden="true"></span>
             <h3 id="drawerRankingsTitle">Ranking</h3>
           </div>
@@ -253,6 +312,14 @@
           </button>
         </div>
         <div class="panel__body panel__body--drawer-rankings">
+          <div class="ranking-controls ranking-controls--drawer">
+            <div class="ranking-scope-tabs" id="drawerRankingScopeTabs" role="group" aria-label="Alcance del ranking">
+              <button class="ranking-scope-tabs__button" type="button" data-ranking-scope="global">GLOBAL</button>
+              <span class="ranking-scope-tabs__divider" aria-hidden="true">/</span>
+              <button class="ranking-scope-tabs__button" type="button" data-ranking-scope="topic">TEMA</button>
+            </div>
+            <div class="ranking-mode-list" id="drawerRankingModeList" role="group" aria-label="Modo de ranking"></div>
+          </div>
           <div class="drawer-ranking__switch">
             <button class="icon-button icon-button--compact ranking-carousel__nav" id="drawerRankingPrev" type="button" aria-label="Ranking anterior">
               <span class="icon-button__icon" aria-hidden="true">
@@ -280,6 +347,7 @@
       </section>
     </aside>
 
+    <script src="https://cdn.jsdelivr.net/gh/mdbassit/Coloris@latest/dist/coloris.min.js"></script>
     <script type="module" src="./app.js"></script>
   </body>
 </html>

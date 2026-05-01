@@ -1,14 +1,36 @@
+import {
+  applyPaletteToDocument,
+  DEFAULT_CUSTOM_PALETTE_HEX,
+  DEFAULT_PALETTE_ID,
+  isPaletteId,
+  normalizeHexColor
+} from "./palettes.js";
+
+const DEFAULT_THEME = "dark";
+
 export function applyStoredTheme(state) {
   const hasStorage = typeof localStorage !== "undefined";
   const hasDocument = typeof document !== "undefined";
+  let rootTheme = null;
+  let rootPalette = null;
+  let rootCustomPalette = null;
+
   if (hasStorage) {
-    const rootTheme = localStorage.getItem("chetrend-theme");
-    if (rootTheme === "dark" || rootTheme === "light") {
-      state.theme = rootTheme;
-    }
+    rootTheme = localStorage.getItem("chetrend-theme");
+    rootPalette = localStorage.getItem("chetrend-palette");
+    rootCustomPalette = localStorage.getItem("chetrend-custom-palette-hex");
   }
 
+  state.theme = rootTheme === "dark" || rootTheme === "light" ? rootTheme : DEFAULT_THEME;
+  state.paletteId = isPaletteId(rootPalette) ? rootPalette : DEFAULT_PALETTE_ID;
+  state.customPaletteHex = normalizeHexColor(rootCustomPalette, DEFAULT_CUSTOM_PALETTE_HEX);
+
   if (hasDocument) {
-    document.documentElement.dataset.theme = state.theme;
+    applyPaletteToDocument(
+      document.documentElement,
+      state.theme,
+      state.paletteId || DEFAULT_PALETTE_ID,
+      state.customPaletteHex
+    );
   }
 }

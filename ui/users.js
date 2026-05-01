@@ -16,6 +16,6 @@ export function renderUsers(state, dom) {
     if (isLoading) {
       return Array.from({ length: 10 }, () => createUserSkeleton());
     }
-    return ordered.map((user) => createUserItem(user, state.currentUserId));
+    return ordered.map((user) => createUserItem(user, state.currentUserId, state.activeConnectedUserId));
   });
 }

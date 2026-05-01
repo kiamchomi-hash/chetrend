@@ -1,5 +1,84 @@
 import { createChatActions } from "./controller-chat-actions.js";
 import { createRankingActions } from "./controller-ranking-actions.js";
+import {
+  applyPaletteToDocument,
+  CUSTOM_PALETTE_ID,
+  DEFAULT_CUSTOM_PALETTE_HEX,
+  DEFAULT_PALETTE_ID,
+  isPaletteId,
+  normalizeHexColor,
+  parseHexColor
+} from "./palettes.js";
+
+function focusPaletteOption(dom, paletteId) {
+  dom.paletteOptionGrid
+    ?.querySelector(`[data-palette-option="${paletteId}"]`)
+    ?.focus();
+}
+
+function hslToHex(hue, saturation, lightness) {
+  const h = hue / 360;
+  const s = saturation / 100;
+  const l = lightness / 100;
+
+  const hueToRgb = (p, q, t) => {
+    let value = t;
+    if (value < 0) {
+      value += 1;
+    }
+    if (value > 1) {
+      value -= 1;
+    }
+    if (value < 1 / 6) {
+      return p + (q - p) * 6 * value;
+    }
+    if (value < 1 / 2) {
+      return q;
+    }
+    if (value < 2 / 3) {
+      return p + (q - p) * (2 / 3 - value) * 6;
+    }
+    return p;
+  };
+
+  const q = l < 0.5 ? l * (1 + s) : l + s - l * s;
+  const p = 2 * l - q;
+  const channels = s === 0
+    ? [l, l, l]
+    : [
+        hueToRgb(p, q, h + 1 / 3),
+        hueToRgb(p, q, h),
+        hueToRgb(p, q, h - 1 / 3)
+      ];
+
+  return `#${channels
+    .map((channel) => Math.round(channel * 255).toString(16).padStart(2, "0"))
+    .join("")
+    .toUpperCase()}`;
+}
+
+function createRandomPaletteHex() {
+  const hue = Math.floor(Math.random() * 360);
+  const saturation = 56 + Math.floor(Math.random() * 20);
+  const lightness = 42 + Math.floor(Math.random() * 12);
+  return hslToHex(hue, saturation, lightness);
+}
+
+function isInputLike(node) {
+  if (typeof HTMLInputElement !== "undefined") {
+    return node instanceof HTMLInputElement;
+  }
+
+  return Boolean(node && typeof node === "object" && "value" in node && "dataset" in node);
+}
+
+function isStyleHost(node) {
+  if (typeof HTMLElement !== "undefined") {
+    return node instanceof HTMLElement;
+  }
+
+  return Boolean(node && typeof node === "object" && node.style && typeof node.style.setProperty === "function");
+}
 
 export function createActionHandlers({
   state,
@@ -17,11 +96,160 @@ export function createActionHandlers({
     void text;
   }
 
+  function applyPalette() {
+    if (typeof document === "undefined") {
+      return;
+    }
+
+    applyPaletteToDocument(
+      document.documentElement,
+      state.theme,
+      state.paletteId || DEFAULT_PALETTE_ID,
+      state.customPaletteHex || DEFAULT_CUSTOM_PALETTE_HEX
+    );
+  }
+
+  function persistPaletteState() {
+    if (typeof localStorage === "undefined") {
+      return;
+    }
+
+    localStorage.setItem("chetrend-palette", state.paletteId);
+    if (state.paletteId === CUSTOM_PALETTE_ID) {
+      localStorage.setItem("chetrend-custom-palette-hex", state.customPaletteHex || DEFAULT_CUSTOM_PALETTE_HEX);
+    }
+  }
+
+  function syncCustomPaletteControls(hexValue) {
+    const normalized = normalizeHexColor(hexValue, state.customPaletteHex || DEFAULT_CUSTOM_PALETTE_HEX);
+
+    dom.paletteOptionGrid
+      ?.querySelectorAll("[data-custom-palette-hex]")
+      ?.forEach((input) => {
+        if (!isInputLike(input)) {
+          return;
+        }
+        input.value = normalized;
+        input.defaultValue = normalized;
+        input.dataset.lastValid = normalized;
+      });
+
+    dom.paletteOptionGrid
+      ?.querySelectorAll("[data-custom-palette-picker]")
+      ?.forEach((input) => {
+        if (isInputLike(input)) {
+          input.value = normalized;
+        }
+      });
+
+    dom.paletteOptionGrid
+      ?.querySelectorAll(".palette-option__color-preview")
+      ?.forEach((preview) => {
+        if (isStyleHost(preview)) {
+          preview.style.setProperty("--palette-custom-preview", normalized);
+        }
+      });
+  }
+
   function toggleTheme() {
     state.theme = state.theme === "light" ? "dark" : "light";
-    document.documentElement.dataset.theme = state.theme;
-    localStorage.setItem("chetrend-theme", state.theme);
+    applyPalette();
+    if (typeof localStorage !== "undefined") {
+      localStorage.setItem("chetrend-theme", state.theme);
+    }
     render();
+  }
+
+  function openPaletteModal() {
+    if (state.isPaletteModalOpen) {
+      return;
+    }
+
+    state.isPaletteModalOpen = true;
+    render();
+    focusPaletteOption(dom, state.paletteId);
+  }
+
+  function closePaletteModal() {
+    if (!state.isPaletteModalOpen) {
+      return;
+    }
+
+    state.isPaletteModalOpen = false;
+    render();
+    dom.paletteButton?.focus();
+  }
+
+  function selectPalette(paletteId) {
+    if (!isPaletteId(paletteId)) {
+      return;
+    }
+
+    state.paletteId = paletteId || DEFAULT_PALETTE_ID;
+    applyPalette();
+    persistPaletteState();
+    render();
+    focusPaletteOption(dom, state.paletteId);
+  }
+
+  function ensureCustomPaletteActive() {
+    if (state.paletteId === CUSTOM_PALETTE_ID) {
+      return false;
+    }
+
+    state.paletteId = CUSTOM_PALETTE_ID;
+    applyPalette();
+    persistPaletteState();
+    render();
+    return true;
+  }
+
+  function updateCustomPaletteHex(nextHexValue, options = {}) {
+    const { render: shouldRender = true, focus: shouldFocus = true } = options;
+    const parsedHex = parseHexColor(nextHexValue);
+    if (!parsedHex) {
+      return false;
+    }
+
+    state.customPaletteHex = normalizeHexColor(parsedHex, state.customPaletteHex || DEFAULT_CUSTOM_PALETTE_HEX);
+    state.paletteId = CUSTOM_PALETTE_ID;
+    applyPalette();
+    persistPaletteState();
+    if (shouldRender) {
+      render();
+      if (shouldFocus) {
+        focusPaletteOption(dom, state.paletteId);
+      }
+    } else {
+      syncCustomPaletteControls(state.customPaletteHex);
+    }
+    return true;
+  }
+
+  function randomizeCustomPalette() {
+    return updateCustomPaletteHex(createRandomPaletteHex());
+  }
+
+  function activateConnectedUser(userId, action = "item") {
+    const targetUser = state.users.find((user) => user.id === userId);
+    if (!targetUser) {
+      return;
+    }
+
+    state.activeConnectedUserId = userId;
+    render();
+
+    if (action === "profile") {
+      flashTitle(`Perfil de ${targetUser.name} listo para conectar`);
+      return;
+    }
+
+    if (action === "message") {
+      flashTitle(`Mensaje directo con ${targetUser.name} listo para conectar`);
+      return;
+    }
+
+    flashTitle(`${targetUser.name} seleccionado`);
   }
 
   const rankingActions = createRankingActions({
@@ -40,12 +268,21 @@ export function createActionHandlers({
   return {
     flashTitle,
     toggleTheme,
+    setRankingScope: rankingActions.setRankingScope,
     toggleRankingScope: rankingActions.toggleRankingScope,
     focusTopic: rankingActions.focusTopic,
     setRankingStep: rankingActions.setRankingStep,
+    selectRankingStep: rankingActions.selectRankingStep,
     createNewTopic: chatActions.createNewTopic,
     submitMessage: chatActions.submitMessage,
     refreshCurrentTopic: chatActions.refreshCurrentTopic,
+    openPaletteModal,
+    closePaletteModal,
+    selectPalette,
+    ensureCustomPaletteActive,
+    updateCustomPaletteHex,
+    randomizeCustomPalette,
+    activateConnectedUser,
     closeDrawers
   };
 }

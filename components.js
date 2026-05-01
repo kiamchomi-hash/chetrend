@@ -9,25 +9,12 @@ function el(tag, className, text) {
   return node;
 }
 
-function getUserName(users, userId, fallback = "Anónimo") {
+function getUserName(users, userId, fallback = "Anonimo") {
   return users.find((user) => user.id === userId)?.name ?? fallback;
 }
 
-function getUserRole(users, userId, fallback = "Invitado") {
-  return users.find((user) => user.id === userId)?.role ?? fallback;
-}
-
-export function createTopicItem(topic, users, selected = false) {
-  const button = el("button", `topic-item${selected ? " is-active" : ""}`);
-  button.type = "button";
-
-  const topicCommentCount = topic.messages.filter((message) => message.kind === "user").length;
-  const lastCommentAuthor = [...topic.messages].reverse().find((message) => message.kind === "user");
-  const lastCommenterName = lastCommentAuthor
-    ? getUserName(users, lastCommentAuthor.authorId)
-    : "Sin actividad";
-
-  const avatar = el("span", "topic-item__avatar");
+function createProfileAvatar(className = "topic-item__avatar") {
+  const avatar = el("span", className);
   avatar.setAttribute("aria-hidden", "true");
 
   const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
@@ -52,11 +39,24 @@ export function createTopicItem(topic, users, selected = false) {
 
   svg.append(rect, circle, path);
   avatar.appendChild(svg);
+  return avatar;
+}
 
+export function createTopicItem(topic, users, selected = false) {
+  const button = el("button", `topic-item${selected ? " is-active" : ""}`);
+  button.type = "button";
+
+  const topicCommentCount = topic.messages.filter((message) => message.kind === "user").length;
+  const lastCommentAuthor = [...topic.messages].reverse().find((message) => message.kind === "user");
+  const lastCommenterName = lastCommentAuthor
+    ? getUserName(users, lastCommentAuthor.authorId)
+    : "Sin actividad";
+
+  const avatar = createProfileAvatar();
   const content = el("span", "topic-item__content");
   content.append(
     el("span", "topic-item__title", topic.title),
-    el("span", "topic-item__meta", `${topicCommentCount} comentarios, ${lastCommenterName}`)
+    el("span", "topic-item__meta", `${topicCommentCount}, ${lastCommenterName}`)
   );
 
   button.append(avatar, content);
@@ -68,9 +68,7 @@ export function createTopicSkeleton() {
   button.type = "button";
   button.disabled = true;
 
-  const avatar = el("span", "topic-item__avatar");
-  avatar.setAttribute("aria-hidden", "true");
-
+  const avatar = createProfileAvatar();
   const content = el("span", "topic-item__content");
   content.append(
     el("span", "topic-item__title"),
@@ -114,21 +112,30 @@ export function createRankingSkeleton(index) {
 export function createMessageItem(message, users) {
   const node = el("article", `message${message.kind === "system" ? " message--system" : ""}`);
   const author = message.kind === "system" ? "Sistema" : getUserName(users, message.authorId);
-  const role = message.kind === "system" ? "Aviso" : getUserRole(users, message.authorId);
+  const avatar = createProfileAvatar("message__avatar");
+  const body = el("div", "message__body");
 
   const meta = el("div", "message__meta");
   meta.append(
     el("span", "message__author", author),
-    el("span", null, role),
-    el("span", null, message.timestamp.toLocaleTimeString("es-AR", { hour: "2-digit", minute: "2-digit" }))
+    el("span", "message__time", message.timestamp.toLocaleTimeString("es-AR", { hour: "2-digit", minute: "2-digit" }))
   );
 
-  node.append(meta, el("p", "message__text", message.text));
+  body.append(meta, el("p", "message__text", message.text));
+  node.append(avatar, body);
   return node;
 }
 
-export function createUserItem(user, currentUserId) {
-  const node = el("article", `user-item${user.id === currentUserId ? " is-current" : ""}`);
+export function createUserItem(user, currentUserId, activeConnectedUserId = null) {
+  const isCurrentUser = user.id === currentUserId;
+  const isActive = user.id === activeConnectedUserId;
+  const node = el("article", `user-item${isCurrentUser ? " is-current" : ""}${isActive ? " is-active" : ""}`);
+  node.tabIndex = 0;
+  node.setAttribute("role", "button");
+  node.setAttribute("aria-pressed", String(isActive));
+  node.setAttribute("aria-label", `${user.name}${isCurrentUser ? ", usuario actual" : ""}`);
+  node.dataset.connectedUserId = user.id;
+
   const info = el("div", "user-item__info");
   info.append(el("p", "user-item__name", user.name));
 
@@ -147,6 +154,7 @@ function createUserActionButton(label, kind) {
   button.type = "button";
   button.setAttribute("aria-label", label);
   button.title = label;
+  button.dataset.userAction = kind;
 
   const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
   svg.setAttribute("viewBox", "0 0 24 24");

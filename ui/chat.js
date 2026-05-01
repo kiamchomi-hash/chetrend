@@ -26,19 +26,38 @@ export function renderChat(state, dom) {
   topic.messages.forEach((message) => {
     dom.messageStream.appendChild(createMessageItem(message, state.users));
   });
+  syncMessageCardHeights(dom.messageStream);
   dom.messageStream.scrollTop = dom.messageStream.scrollHeight;
+}
+
+function syncMessageCardHeights(messageStream) {
+  const messageCards = messageStream.querySelectorAll(".message");
+
+  messageCards.forEach((card) => {
+    const body = card.querySelector(".message__body");
+    if (!body) {
+      return;
+    }
+
+    card.style.height = "auto";
+    card.style.minHeight = `${Math.max(84, body.scrollHeight)}px`;
+  });
 }
 
 function syncChatComposer(topic, dom, isLoading) {
   const isCreatingTopic = !topic;
   const topicTitleField = dom.topicTitleInput?.closest(".composer__field");
   const chatHeader = dom.chatTitle?.closest(".panel__header--chat");
+  const chatPanel = dom.messageForm?.closest(".panel--chat");
 
   if (topicTitleField) {
     topicTitleField.hidden = isLoading || !isCreatingTopic;
   }
   if (chatHeader) {
     chatHeader.hidden = isLoading || isCreatingTopic;
+  }
+  if (chatPanel) {
+    chatPanel.classList.toggle("panel--topic-create", !isLoading && isCreatingTopic);
   }
   if (dom.messageForm) {
     dom.messageForm.hidden = isLoading;

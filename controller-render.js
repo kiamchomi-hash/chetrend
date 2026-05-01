@@ -1,4 +1,5 @@
 import { renderChat } from "./ui/chat.js";
+import { renderPaletteModal } from "./ui/palette-modal.js";
 import { renderRankings } from "./ui/rankings.js";
 import { renderTitles } from "./ui/titles.js";
 import { renderUsers } from "./ui/users.js";
@@ -19,6 +20,7 @@ export function createRenderers({ state, dom, actions, responsive, closeTimerRef
     renderUsers(state, dom);
     renderRankings(state, dom);
     renderTitles(state, dom);
+    renderPaletteModal(state, dom);
     responsive.updateLayoutMetrics();
   }
 

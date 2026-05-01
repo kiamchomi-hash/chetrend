@@ -1,5 +1,8 @@
 export const state = {
-  theme: "light",
+  theme: "dark",
+  paletteId: "default",
+  customPaletteHex: "#B25B33",
+  isPaletteModalOpen: false,
   selectedTopicId: null,
   rankingScope: "global",
   globalRankingIndex: 0,
@@ -7,6 +10,7 @@ export const state = {
   refreshCount: 0,
   mobileView: "browse",
   currentUserId: "u1",
+  activeConnectedUserId: null,
   topics: [],
   users: []
 };

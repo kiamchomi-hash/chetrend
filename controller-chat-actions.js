@@ -1,6 +1,17 @@
 import { createMessage, createTopic, getSelectedTopic, trimMessages } from "./model.js";
 
-export function createChatActions({ state, dom, render }) {
+export function createChatActions({ state, dom, render, refreshFeedbackMs = 750 }) {
+  let refreshFeedbackTimer = 0;
+
+  function setRefreshButtonState(isRefreshing) {
+    if (!dom.refreshButton) {
+      return;
+    }
+
+    dom.refreshButton.classList.toggle("is-refreshing", isRefreshing);
+    dom.refreshButton.setAttribute("aria-busy", String(isRefreshing));
+  }
+
   function submitMessage(event) {
     event.preventDefault();
     const input = dom.messageInput;
@@ -46,20 +57,15 @@ export function createChatActions({ state, dom, render }) {
     }
 
     state.refreshCount += 1;
-    const last = topic.messages[topic.messages.length - 1];
-    if (!last || last.kind !== "system" || state.refreshCount % 3 === 0) {
-      topic.messages.push(
-        createMessage(
-          "u2",
-          `Actualización manual ${state.refreshCount}: la sala sigue estable y sin sincronización en tiempo real.`,
-          0,
-          "system"
-        )
-      );
-      topic.messages = trimMessages(topic.messages);
+    if (refreshFeedbackTimer) {
+      clearTimeout(refreshFeedbackTimer);
     }
 
-    render();
+    setRefreshButtonState(true);
+    refreshFeedbackTimer = setTimeout(() => {
+      setRefreshButtonState(false);
+      refreshFeedbackTimer = 0;
+    }, refreshFeedbackMs);
   }
 
   function createNewTopic() {

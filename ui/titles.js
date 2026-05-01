@@ -1,5 +1,5 @@
 import { getSelectedTopic } from "../model.js";
-import { getCurrentRankingLabel, renderRankingLabel } from "./ranking-labels.js";
+import { getCurrentRankingLabel, getRankingOptions, renderRankingLabel } from "./ranking-labels.js";
 import { getRankingGlyph, getScopeIcon } from "./ranking-icons.js";
 
 export function renderTitles(state, dom) {
@@ -19,15 +19,16 @@ export function renderTitles(state, dom) {
   if (dom.chatTopicDescription) {
     dom.chatTopicDescription.textContent = topic
       ? topic.subtitle
-      : "Escribe un título y el primer mensaje para abrir un tema nuevo.";
+      : "Escribe un titulo y el primer mensaje para abrir un tema nuevo.";
   }
 
   if (dom.rankingsTitle) {
-    dom.rankingsTitle.innerHTML = state.rankingScope === "global" ? "Ranking<br>Histórico" : "Ranking<br>Por Tema";
+    dom.rankingsTitle.textContent = "Ranking";
   }
   if (dom.drawerRankingsTitle) {
-    dom.drawerRankingsTitle.innerHTML = state.rankingScope === "global" ? "Ranking<br>Histórico" : "Ranking<br>Por Tema";
+    dom.drawerRankingsTitle.textContent = "Ranking";
   }
+
   const currentLabel = getCurrentRankingLabel(state);
   const currentAriaLabel = `Modo actual: ${currentLabel}`;
   [
@@ -71,4 +72,47 @@ export function renderTitles(state, dom) {
   if (dom.drawerRankingScopeIcon) {
     dom.drawerRankingScopeIcon.innerHTML = scopeIcon;
   }
+
+  [dom.rankingScopeTabs, dom.drawerRankingScopeTabs].forEach((container) => {
+    syncScopeTabs(container, state.rankingScope);
+  });
+
+  [dom.rankingModeList, dom.drawerRankingModeList].forEach((container) => {
+    renderRankingModeOptions(container, state, currentLabel);
+  });
+}
+
+function syncScopeTabs(container, scope) {
+  if (!container) {
+    return;
+  }
+
+  container.querySelectorAll("[data-ranking-scope]").forEach((button) => {
+    const isActive = button.dataset.rankingScope === scope;
+    button.classList.toggle("is-active", isActive);
+    button.setAttribute("aria-pressed", String(isActive));
+  });
+}
+
+function renderRankingModeOptions(container, state, currentLabel) {
+  if (!container) {
+    return;
+  }
+
+  container.innerHTML = getRankingOptions(state)
+    .map(
+      ({ index, order, label, active }) => `
+        <button
+          class="ranking-mode-list__option${active ? " is-active" : ""}"
+          type="button"
+          data-ranking-index="${index}"
+          aria-pressed="${active}"
+          aria-label="${active ? `Modo activo: ${currentLabel}` : `Ver ${label}`}"
+        >
+          <span class="ranking-mode-list__index" aria-hidden="true">${order}</span>
+          <span class="ranking-mode-list__label">${label}</span>
+        </button>
+      `
+    )
+    .join("");
 }

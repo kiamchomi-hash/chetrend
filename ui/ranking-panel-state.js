@@ -1,4 +1,5 @@
 export function showRankingEmpty(dom, emptyHtml) {
+  clearRankingListHeights(dom);
   if (dom.rankingsEmpty) {
     dom.rankingsEmpty.innerHTML = emptyHtml;
     dom.rankingsEmpty.hidden = false;
@@ -41,6 +42,86 @@ export function resetRankingScroll(dom) {
   if (dom.drawerRankingList) {
     dom.drawerRankingList.scrollTop = 0;
   }
+}
+
+function captureRankingSkeletonHeight(list) {
+  if (!list || list.hidden) {
+    return;
+  }
+
+  const skeletonItem = list.querySelector(".ranking-item--skeleton");
+  if (!skeletonItem) {
+    return;
+  }
+
+  const height = skeletonItem.getBoundingClientRect().height;
+  if (height > 0) {
+    list.style.setProperty("--ranking-skeleton-item-height", `${height}px`);
+  }
+}
+
+export function syncRankingSkeletonHeights(dom) {
+  captureRankingSkeletonHeight(dom.rankingList);
+  captureRankingSkeletonHeight(dom.drawerRankingList);
+}
+
+function fitRankingListHeight(list) {
+  if (!list || list.hidden) {
+    return;
+  }
+
+  const frame = list.parentElement;
+  if (!frame) {
+    return;
+  }
+
+  list.style.removeProperty("height");
+  list.style.removeProperty("min-height");
+  list.style.removeProperty("max-height");
+  frame.style.setProperty("--ranking-bottom-mask", "0px");
+
+  const items = Array.from(list.querySelectorAll(":scope > .ranking-item"));
+  if (!items.length) {
+    return;
+  }
+
+  const frameRect = frame.getBoundingClientRect();
+  if (!frameRect.height) {
+    return;
+  }
+
+  const partialItem = items.find((item) => {
+    const rect = item.getBoundingClientRect();
+    return rect.top < frameRect.bottom && rect.bottom > frameRect.bottom;
+  });
+
+  if (!partialItem) {
+    return;
+  }
+
+  const partialRect = partialItem.getBoundingClientRect();
+  const maskHeight = Math.max(0, Math.ceil(frameRect.bottom - partialRect.top));
+  if (maskHeight > 0) {
+    frame.style.setProperty("--ranking-bottom-mask", `${maskHeight}px`);
+  }
+}
+
+export function syncRankingListHeights(dom) {
+  fitRankingListHeight(dom.rankingList);
+  fitRankingListHeight(dom.drawerRankingList);
+}
+
+export function clearRankingListHeights(dom) {
+  [dom.rankingList, dom.drawerRankingList].forEach((list) => {
+    if (!list) {
+      return;
+    }
+
+    list.style.removeProperty("height");
+    list.style.removeProperty("min-height");
+    list.style.removeProperty("max-height");
+    list.parentElement?.style.setProperty("--ranking-bottom-mask", "0px");
+  });
 }
 
 export function showRankingList(dom) {
@@ -93,6 +174,7 @@ export function showRankingLoading(dom) {
   if (dom.drawerRankingsSection) {
     dom.drawerRankingsSection.classList.add("is-loading");
   }
+  clearRankingListHeights(dom);
   if (dom.rankingList) {
     dom.rankingList.hidden = true;
   }

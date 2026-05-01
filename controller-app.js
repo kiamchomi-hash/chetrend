@@ -8,6 +8,7 @@ import { createResponsiveHelpers } from "./controller-responsive.js";
 import { createRenderers } from "./controller-render.js";
 import { closeTimerRef, dom, state } from "./app-store.js";
 import { applyStoredTheme, createBackToTopicsHandler, createResizeHandler } from "./controller-runtime.js";
+import { syncRankingListHeights } from "./ui/ranking-panel-state.js";
 import { getTransitionDurationMs } from "./ui/transition-utils.js";
 
 export function bootstrap() {
@@ -48,16 +49,25 @@ export function bootstrap() {
   const handleResize = createResizeHandler({
     responsive,
     render: renderers.render,
-    actions
+    actions,
+    syncRankingListHeights: () => syncRankingListHeights(dom)
   });
 
   bindPageEvents(dom, {
     toggleTheme: actions.toggleTheme,
+    setRankingScope: actions.setRankingScope,
     toggleRankingScope: actions.toggleRankingScope,
     refreshCurrentTopic: actions.refreshCurrentTopic,
     createNewTopic: actions.createNewTopic,
     submitMessage: actions.submitMessage,
     setRankingStep: actions.setRankingStep,
+    selectRankingStep: actions.selectRankingStep,
+    openPaletteModal: actions.openPaletteModal,
+    closePaletteModal: actions.closePaletteModal,
+    selectPalette: actions.selectPalette,
+    updateCustomPaletteHex: actions.updateCustomPaletteHex,
+    randomizeCustomPalette: actions.randomizeCustomPalette,
+    activateConnectedUser: actions.activateConnectedUser,
     openDrawer: (side) => openDrawer(side, dom, closeTimerRef),
     closeDrawers: actions.closeDrawers,
     flashTitle: actions.flashTitle,

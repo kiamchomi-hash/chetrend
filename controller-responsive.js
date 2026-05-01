@@ -3,6 +3,21 @@ export function createResponsiveHelpers({ state, dom }) {
     return window.matchMedia("(max-width: 960px)").matches;
   }
 
+  function resetDrawerStateForDesktop() {
+    [dom.leftDrawer, dom.rightDrawer].forEach((drawer) => {
+      if (!drawer) {
+        return;
+      }
+
+      drawer.classList.remove("is-open", "is-closing");
+      drawer.setAttribute("aria-hidden", "true");
+    });
+
+    if (dom.drawerBackdrop) {
+      dom.drawerBackdrop.hidden = true;
+    }
+  }
+
   function syncResponsiveView() {
     const shell = dom.shell;
     if (!shell) {
@@ -14,6 +29,7 @@ export function createResponsiveHelpers({ state, dom }) {
     document.documentElement.classList.toggle("is-desktop-viewport", !mobile);
 
     if (!mobile) {
+      resetDrawerStateForDesktop();
       state.mobileView = "browse";
       shell.dataset.mobileView = "desktop";
       return;

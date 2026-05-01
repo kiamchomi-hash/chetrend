@@ -3,6 +3,7 @@ import { readdir, readFile } from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
+import { createChatActions } from "../controller-chat-actions.js";
 import { initialUsers, topicSeedData } from "../data.js";
 import {
   buildTopics,
@@ -21,7 +22,21 @@ import {
   getActiveRankingStep,
   setStoredRankingIndex
 } from "../ranking-state.js";
+import { createResponsiveHelpers } from "../controller-responsive.js";
+import { applyStoredTheme } from "../controller-theme.js";
+import { createActionHandlers } from "../controller-actions.js";
+import {
+  buildCustomPaletteOption,
+  CUSTOM_PALETTE_ID,
+  DEFAULT_CUSTOM_PALETTE_HEX,
+  DEFAULT_PALETTE_ID,
+  normalizeHexColor,
+  parseHexColor,
+  PALETTE_OPTIONS,
+  isPaletteId
+} from "../palettes.js";
 import { buildPostRankingEntries, buildUserRankingEntries } from "../ui/ranking-data.js";
+import { bindTopbarActionEvents } from "../ui/topbar-action-events.js";
 
 const rootDir = path.dirname(fileURLToPath(new URL("../app.js", import.meta.url)));
 const SOURCE_EXTENSIONS = new Set([".js", ".mjs", ".cjs", ".html", ".css", ".md"]);
@@ -73,6 +88,41 @@ async function test(name, fn) {
   }
 }
 
+function createClassList() {
+  const values = new Set();
+
+  return {
+    add(token) {
+      values.add(token);
+    },
+    remove(token) {
+      values.delete(token);
+    },
+    toggle(token, force) {
+      if (force === undefined) {
+        if (values.has(token)) {
+          values.delete(token);
+          return false;
+        }
+
+        values.add(token);
+        return true;
+      }
+
+      if (force) {
+        values.add(token);
+        return true;
+      }
+
+      values.delete(token);
+      return false;
+    },
+    contains(token) {
+      return values.has(token);
+    }
+  };
+}
+
 await (async () => {
   await test("buildUsers decorates seed users", () => {
     const users = buildUsers(initialUsers);
@@ -93,6 +143,9 @@ await (async () => {
     assert.equal(topics[0].messages[1].authorId, "u2");
     assert.equal(topics[0].messages[0].timestamp instanceof Date, true);
     assert.equal(typeof topics[0].authorId, "string");
+    assert.equal(topics[0].messages[0].text.split("\n").length, 5);
+    assert.equal(topics[0].messages[5].text.split("\n").length, 5);
+    assert.equal(topics[0].messages[9].text.split("\n").length, 5);
   });
 
   await test("getSelectedTopic returns null when no topic is selected", () => {
@@ -123,7 +176,131 @@ await (async () => {
     assert.equal(topic.messages.length, 1);
     assert.equal(topic.messages[0].authorId, "u1");
     assert.equal(topic.messages[0].text, "Primer mensaje para abrir el hilo.");
-    assert.equal(summarizeTopicMessage("a".repeat(110)).endsWith("…"), true);
+    assert.equal(summarizeTopicMessage("a".repeat(110)).endsWith("..."), true);
+  });
+
+  await test("manual refresh only animates the button without adding system messages", async () => {
+    const users = buildUsers(initialUsers);
+    const topics = buildTopics(topicSeedData, users, 1_700_000_000_000);
+    const buttonAttributes = new Map();
+    const refreshButton = {
+      classList: createClassList(),
+      setAttribute(name, value) {
+        buttonAttributes.set(name, value);
+      }
+    };
+    const state = {
+      topics,
+      users,
+      currentUserId: "u1",
+      selectedTopicId: topics[0].id,
+      refreshCount: 0
+    };
+    let renderCalls = 0;
+    const initialMessages = topics[0].messages.length;
+    const actions = createChatActions({
+      state,
+      dom: {
+        refreshButton
+      },
+      render: () => {
+        renderCalls += 1;
+      },
+      refreshFeedbackMs: 5
+    });
+
+    actions.refreshCurrentTopic();
+
+    assert.equal(topics[0].messages.length, initialMessages);
+    assert.equal(state.refreshCount, 1);
+    assert.equal(refreshButton.classList.contains("is-refreshing"), true);
+    assert.equal(buttonAttributes.get("aria-busy"), "true");
+    assert.equal(renderCalls, 0);
+
+    await new Promise((resolve) => setTimeout(resolve, 15));
+
+    assert.equal(refreshButton.classList.contains("is-refreshing"), false);
+    assert.equal(buttonAttributes.get("aria-busy"), "false");
+  });
+
+  await test("syncResponsiveView closes mobile drawers when returning to desktop", () => {
+    const previousWindow = globalThis.window;
+    const previousDocument = globalThis.document;
+
+    const rootClassList = createClassList();
+    const rootStyle = {
+      setProperty() {}
+    };
+    const createDrawer = () => {
+      const values = new Set(["is-open", "is-closing"]);
+      const attributes = new Map();
+      return {
+        classList: {
+          add(...tokens) {
+            tokens.forEach((token) => values.add(token));
+          },
+          remove(...tokens) {
+            tokens.forEach((token) => values.delete(token));
+          },
+          contains(token) {
+            return values.has(token);
+          }
+        },
+        setAttribute(name, value) {
+          attributes.set(name, value);
+        },
+        getAttribute(name) {
+          return attributes.get(name);
+        }
+      };
+    };
+
+    try {
+      globalThis.window = {
+        matchMedia() {
+          return { matches: false };
+        }
+      };
+      globalThis.document = {
+        documentElement: {
+          classList: rootClassList,
+          style: rootStyle
+        }
+      };
+
+      const shell = { dataset: {} };
+      const leftDrawer = createDrawer();
+      const rightDrawer = createDrawer();
+      const drawerBackdrop = { hidden: false };
+      const state = { mobileView: "chat" };
+      const responsive = createResponsiveHelpers({
+        state,
+        dom: {
+          shell,
+          leftDrawer,
+          rightDrawer,
+          drawerBackdrop,
+          topbar: null
+        }
+      });
+
+      responsive.syncResponsiveView();
+
+      assert.equal(state.mobileView, "browse");
+      assert.equal(shell.dataset.mobileView, "desktop");
+      assert.equal(rootClassList.contains("is-mobile-viewport"), false);
+      assert.equal(rootClassList.contains("is-desktop-viewport"), true);
+      assert.equal(leftDrawer.classList.contains("is-open"), false);
+      assert.equal(leftDrawer.classList.contains("is-closing"), false);
+      assert.equal(rightDrawer.classList.contains("is-open"), false);
+      assert.equal(rightDrawer.classList.contains("is-closing"), false);
+      assert.equal(leftDrawer.getAttribute("aria-hidden"), "true");
+      assert.equal(rightDrawer.getAttribute("aria-hidden"), "true");
+      assert.equal(drawerBackdrop.hidden, true);
+    } finally {
+      globalThis.window = previousWindow;
+      globalThis.document = previousDocument;
+    }
   });
 
   await test("ranking builders summarise activity and handle empty topics", () => {
@@ -135,10 +312,10 @@ await (async () => {
     const userComments = buildUserRankingEntries(topics, users, "u1", "comments");
     const userLikes = buildUserRankingEntries(topics, users, "u1", "likes");
 
-    assert.equal(postComments.length, 3);
-    assert.equal(postLikes.length, 3);
-    assert.equal(userComments.length, 3);
-    assert.equal(userLikes.length, 3);
+    assert.equal(postComments.length, Math.min(topics.length, 10));
+    assert.equal(postLikes.length, Math.min(topics.length, 10));
+    assert.equal(userComments.length, Math.min(users.length, 10));
+    assert.equal(userLikes.length, Math.min(users.length, 10));
     assert.ok(postComments[0].count >= postComments[1].count);
     assert.ok(postLikes[0].count >= postLikes[1].count);
     assert.ok(userComments[0].count >= userComments[1].count);
@@ -191,6 +368,464 @@ await (async () => {
     });
   });
 
+  await test("palette registry exposes five selectable options", () => {
+    assert.equal(DEFAULT_PALETTE_ID, "default");
+    assert.equal(CUSTOM_PALETTE_ID, "custom");
+    assert.equal(PALETTE_OPTIONS.length, 5);
+    assert.equal(PALETTE_OPTIONS[0].id, DEFAULT_PALETTE_ID);
+    assert.deepEqual(
+      PALETTE_OPTIONS.map((option) => option.name),
+      ["Default", "Turquesa", "Bosque", "Terracota", "Azul"]
+    );
+    assert.equal(PALETTE_OPTIONS[1].previews.light.surface, "rgba(197, 221, 226, 0.95)");
+    assert.equal(PALETTE_OPTIONS[4].previews.light.surface, "rgba(199, 210, 232, 0.95)");
+    assert.equal(isPaletteId("coast"), true);
+    assert.equal(isPaletteId(CUSTOM_PALETTE_ID), true);
+    assert.equal(isPaletteId("missing"), false);
+  });
+
+  await test("custom palette builder normalizes hex and derives both previews", () => {
+    const customPalette = buildCustomPaletteOption("4a90e2");
+
+    assert.equal(customPalette.id, CUSTOM_PALETTE_ID);
+    assert.equal(customPalette.name, "Personalizada");
+    assert.equal(customPalette.hex, "#4A90E2");
+    assert.equal(customPalette.previews.light.accent.startsWith("#"), true);
+    assert.equal(customPalette.previews.dark.accent.startsWith("#"), true);
+    assert.notEqual(customPalette.previews.light.bg, "#F5EFE5");
+    assert.notEqual(customPalette.previews.light.bg, customPalette.previews.dark.bg);
+    assert.notEqual(customPalette.previews.light.surface, "rgba(255, 251, 245, 0.96)");
+    assert.notEqual(customPalette.previews.light.surface, customPalette.previews.dark.surface);
+    assert.equal(normalizeHexColor("#abc"), "#AABBCC");
+    assert.equal(parseHexColor("#4a90e2"), "#4A90E2");
+    assert.equal(parseHexColor("zzz"), null);
+    assert.equal(normalizeHexColor("invalid", DEFAULT_CUSTOM_PALETTE_HEX), DEFAULT_CUSTOM_PALETTE_HEX);
+  });
+
+  await test("applyStoredTheme restores theme and palette from storage", () => {
+    const previousLocalStorage = globalThis.localStorage;
+    const previousDocument = globalThis.document;
+    const appliedStyle = new Map();
+    const state = {
+      theme: "light",
+      paletteId: DEFAULT_PALETTE_ID,
+      customPaletteHex: DEFAULT_CUSTOM_PALETTE_HEX
+    };
+
+    try {
+      globalThis.localStorage = {
+        getItem(key) {
+          if (key === "chetrend-theme") {
+            return "dark";
+          }
+          if (key === "chetrend-palette") {
+            return "coast";
+          }
+          return null;
+        }
+      };
+      globalThis.document = {
+        documentElement: {
+          dataset: {},
+          style: {
+            setProperty(name, value) {
+              appliedStyle.set(name, value);
+            },
+            removeProperty(name) {
+              appliedStyle.delete(name);
+            }
+          }
+        }
+      };
+
+      applyStoredTheme(state);
+
+      assert.equal(state.theme, "dark");
+      assert.equal(state.paletteId, "coast");
+      assert.equal(state.customPaletteHex, DEFAULT_CUSTOM_PALETTE_HEX);
+      assert.equal(document.documentElement.dataset.theme, "dark");
+      assert.equal(document.documentElement.dataset.palette, "coast");
+      assert.equal(appliedStyle.size, 0);
+    } finally {
+      globalThis.localStorage = previousLocalStorage;
+      globalThis.document = previousDocument;
+    }
+  });
+
+  await test("applyStoredTheme falls back to dark default palette without storage", () => {
+    const previousLocalStorage = globalThis.localStorage;
+    const previousDocument = globalThis.document;
+    const appliedStyle = new Map();
+    const state = {
+      theme: "light",
+      paletteId: "coast",
+      customPaletteHex: "#123456"
+    };
+
+    try {
+      globalThis.localStorage = {
+        getItem() {
+          return null;
+        }
+      };
+      globalThis.document = {
+        documentElement: {
+          dataset: {},
+          style: {
+            setProperty(name, value) {
+              appliedStyle.set(name, value);
+            },
+            removeProperty(name) {
+              appliedStyle.delete(name);
+            }
+          }
+        }
+      };
+
+      applyStoredTheme(state);
+
+      assert.equal(state.theme, "dark");
+      assert.equal(state.paletteId, DEFAULT_PALETTE_ID);
+      assert.equal(state.customPaletteHex, DEFAULT_CUSTOM_PALETTE_HEX);
+      assert.equal(document.documentElement.dataset.theme, "dark");
+      assert.equal(document.documentElement.dataset.palette, DEFAULT_PALETTE_ID);
+      assert.equal(appliedStyle.size, 0);
+    } finally {
+      globalThis.localStorage = previousLocalStorage;
+      globalThis.document = previousDocument;
+    }
+  });
+
+  await test("applyStoredTheme reapplies custom palette vars from storage", () => {
+    const previousLocalStorage = globalThis.localStorage;
+    const previousDocument = globalThis.document;
+    const appliedStyle = new Map();
+    const state = {
+      theme: "light",
+      paletteId: DEFAULT_PALETTE_ID,
+      customPaletteHex: DEFAULT_CUSTOM_PALETTE_HEX
+    };
+
+    try {
+      globalThis.localStorage = {
+        getItem(key) {
+          if (key === "chetrend-theme") {
+            return "dark";
+          }
+          if (key === "chetrend-palette") {
+            return CUSTOM_PALETTE_ID;
+          }
+          if (key === "chetrend-custom-palette-hex") {
+            return "#4A90E2";
+          }
+          return null;
+        }
+      };
+      globalThis.document = {
+        documentElement: {
+          dataset: {},
+          style: {
+            setProperty(name, value) {
+              appliedStyle.set(name, value);
+            },
+            removeProperty(name) {
+              appliedStyle.delete(name);
+            }
+          }
+        }
+      };
+
+      applyStoredTheme(state);
+
+      assert.equal(state.theme, "dark");
+      assert.equal(state.paletteId, CUSTOM_PALETTE_ID);
+      assert.equal(state.customPaletteHex, "#4A90E2");
+      assert.equal(document.documentElement.dataset.palette, CUSTOM_PALETTE_ID);
+      assert.equal(appliedStyle.get("--accent").startsWith("#"), true);
+      assert.equal(appliedStyle.has("--bg"), true);
+    } finally {
+      globalThis.localStorage = previousLocalStorage;
+      globalThis.document = previousDocument;
+    }
+  });
+
+  await test("custom palette live updates can skip modal rerender while dragging picker", () => {
+    const previousDocument = globalThis.document;
+    const previousLocalStorage = globalThis.localStorage;
+    const appliedStyle = new Map();
+    const previewStyle = new Map();
+    let renderCount = 0;
+
+    const hexInput = {
+      value: "#B25B33",
+      defaultValue: "#B25B33",
+      dataset: {}
+    };
+    const pickerInput = {
+      value: "#B25B33",
+      dataset: {}
+    };
+    const preview = {
+      style: {
+        setProperty(name, value) {
+          previewStyle.set(name, value);
+        }
+      }
+    };
+
+    const state = {
+      theme: "light",
+      paletteId: CUSTOM_PALETTE_ID,
+      customPaletteHex: "#B25B33",
+      rankingScope: "global",
+      rankingIndices: { global: 0, topic: 0 },
+      topics: [],
+      users: [],
+      selectedTopicId: null,
+      currentUserId: "user-1",
+      refreshCount: 0,
+      isPaletteModalOpen: true
+    };
+
+    const dom = {
+      refreshButton: null,
+      paletteOptionGrid: {
+        querySelector() {
+          return null;
+        },
+        querySelectorAll(selector) {
+          if (selector === "[data-custom-palette-hex]") {
+            return [hexInput];
+          }
+          if (selector === "[data-custom-palette-picker]") {
+            return [pickerInput];
+          }
+          if (selector === ".palette-option__color-preview") {
+            return [preview];
+          }
+          return [];
+        }
+      }
+    };
+
+    try {
+      globalThis.localStorage = {
+        setItem() {}
+      };
+      globalThis.document = {
+        documentElement: {
+          dataset: {},
+          style: {
+            setProperty(name, value) {
+              appliedStyle.set(name, value);
+            },
+            removeProperty(name) {
+              appliedStyle.delete(name);
+            }
+          }
+        }
+      };
+
+      const handlers = createActionHandlers({
+        state,
+        dom,
+        renderRef: {
+          current() {
+            renderCount += 1;
+          }
+        },
+        syncResponsiveView() {},
+        isMobileViewport() {
+          return false;
+        },
+        closeDrawers() {}
+      });
+
+      const applied = handlers.updateCustomPaletteHex("#4A90E2", { render: false, focus: false });
+
+      assert.equal(applied, true);
+      assert.equal(renderCount, 0);
+      assert.equal(state.customPaletteHex, "#4A90E2");
+      assert.equal(state.paletteId, CUSTOM_PALETTE_ID);
+      assert.equal(hexInput.value, "#4A90E2");
+      assert.equal(hexInput.defaultValue, "#4A90E2");
+      assert.equal(hexInput.dataset.lastValid, "#4A90E2");
+      assert.equal(pickerInput.value, "#4A90E2");
+      assert.equal(previewStyle.get("--palette-custom-preview"), "#4A90E2");
+      assert.equal(appliedStyle.has("--accent"), true);
+    } finally {
+      globalThis.document = previousDocument;
+      globalThis.localStorage = previousLocalStorage;
+    }
+  });
+
+  await test("connected user activation stores selected card", () => {
+    const state = {
+      theme: "light",
+      paletteId: DEFAULT_PALETTE_ID,
+      customPaletteHex: DEFAULT_CUSTOM_PALETTE_HEX,
+      isPaletteModalOpen: false,
+      selectedTopicId: null,
+      rankingScope: "global",
+      globalRankingIndex: 0,
+      topicRankingIndex: 0,
+      refreshCount: 0,
+      mobileView: "browse",
+      currentUserId: "u1",
+      activeConnectedUserId: null,
+      topics: [],
+      users: [
+        { id: "u1", name: "Coco Mora", online: true }
+      ]
+    };
+
+    let renderCount = 0;
+    const handlers = createActionHandlers({
+      state,
+      dom: {
+        refreshButton: null,
+        paletteOptionGrid: null
+      },
+      renderRef: {
+        current() {
+          renderCount += 1;
+        }
+      },
+      syncResponsiveView() {},
+      isMobileViewport() {
+        return false;
+      },
+      closeDrawers() {}
+    });
+
+    handlers.activateConnectedUser("u1");
+
+    assert.equal(state.activeConnectedUserId, "u1");
+    assert.equal(renderCount, 1);
+  });
+
+  await test("palette modal dismiss closes the active Coloris picker first", () => {
+    const previousColoris = globalThis.Coloris;
+    const previousDocument = globalThis.document;
+    const previousElement = globalThis.Element;
+    const previousHTMLElement = globalThis.HTMLElement;
+    const previousHTMLInputElement = globalThis.HTMLInputElement;
+    const previousHTMLButtonElement = globalThis.HTMLButtonElement;
+
+    class FakeElement {
+      constructor() {
+        this.dataset = {};
+        this.listeners = new Map();
+      }
+
+      addEventListener(type, listener) {
+        this.listeners.set(type, listener);
+      }
+
+      dispatch(type, event = {}) {
+        this.listeners.get(type)?.({
+          preventDefault() {},
+          stopImmediatePropagation() {},
+          ...event,
+          target: event.target || this
+        });
+      }
+
+      closest() {
+        return null;
+      }
+    }
+
+    class FakeInput extends FakeElement {
+      constructor(value) {
+        super();
+        this.value = value;
+        this.defaultValue = value;
+      }
+
+      blur() {}
+    }
+
+    class FakeButton extends FakeElement {}
+
+    const createTarget = () => new FakeElement();
+    const pickerInput = new FakeInput("#4A90E2");
+    const closePaletteModalButton = new FakeButton();
+    const paletteModalBackdrop = createTarget();
+    const paletteOptionGrid = createTarget();
+    paletteOptionGrid.querySelector = (selector) => (
+      selector === "[data-custom-palette-picker]" ? pickerInput : null
+    );
+
+    const dom = {
+      themeToggle: createTarget(),
+      refreshButton: createTarget(),
+      messageForm: createTarget(),
+      profileButton: createTarget(),
+      backToTopics: createTarget(),
+      contactAdminButton: createTarget(),
+      storeButton: createTarget(),
+      paletteButton: createTarget(),
+      closePaletteModalButton,
+      paletteModalBackdrop,
+      paletteOptionGrid,
+      createTopicButton: createTarget()
+    };
+
+    let closeCalls = 0;
+    let dismissCalls = 0;
+
+    try {
+      globalThis.Element = FakeElement;
+      globalThis.HTMLElement = FakeElement;
+      globalThis.HTMLInputElement = FakeInput;
+      globalThis.HTMLButtonElement = FakeButton;
+      globalThis.Coloris = {
+        close() {
+          closeCalls += 1;
+        }
+      };
+      globalThis.document = {
+        documentElement: { dataset: {} },
+        addEventListener() {},
+        querySelector() {
+          return null;
+        }
+      };
+
+      bindTopbarActionEvents(dom, {
+        toggleTheme() {},
+        refreshCurrentTopic() {},
+        submitMessage() {},
+        flashTitle() {},
+        backToTopics() {},
+        openPaletteModal() {},
+        closePaletteModal() {
+          dismissCalls += 1;
+        },
+        updateCustomPaletteHex() {
+          return true;
+        },
+        randomizeCustomPalette() {},
+        selectPalette() {},
+        createNewTopic() {}
+      });
+
+      closePaletteModalButton.dispatch("click");
+
+      assert.equal(closeCalls, 1);
+      assert.equal(dismissCalls, 1);
+      assert.equal(pickerInput.dataset.pendingCommit, "false");
+    } finally {
+      globalThis.Coloris = previousColoris;
+      globalThis.document = previousDocument;
+      globalThis.Element = previousElement;
+      globalThis.HTMLElement = previousHTMLElement;
+      globalThis.HTMLInputElement = previousHTMLInputElement;
+      globalThis.HTMLButtonElement = previousHTMLButtonElement;
+    }
+  });
+
   await test("source files stay free of mojibake markers", async () => {
     const files = await collectSourceFiles(rootDir);
     const offenders = [];
@@ -209,6 +844,7 @@ await (async () => {
   await test("index and app structure stay trimmed", async () => {
     const html = await read("index.html");
     const app = await read("app.js");
+    const components = await read("components.js");
     const controller = await read("controller.js");
     const controllerApp = await read("controller-app.js");
     const controllerTheme = await read("controller-theme.js");
@@ -216,6 +852,7 @@ await (async () => {
     const actions = await read("controller-actions.js");
     const rankingActions = await read("controller-ranking-actions.js");
     const rankingState = await read("ranking-state.js");
+    const palettes = await read("palettes.js");
     const responsiveController = await read("controller-responsive.js");
     const renderController = await read("controller-render.js");
     const stateStore = await read("state-store.js");
@@ -228,19 +865,23 @@ await (async () => {
     const eventsModule = await read("ui/events.js");
     const chat = await read("ui/chat.js");
     const rankings = await read("ui/rankings.js");
+    const rankingPanelState = await read("ui/ranking-panel-state.js");
     const rankingLabels = await read("ui/ranking-labels.js");
     const rankingIcons = await read("ui/ranking-icons.js");
+    const paletteModal = await read("ui/palette-modal.js");
     const titles = await read("ui/titles.js");
     const topics = await read("ui/topics.js");
     const users = await read("ui/users.js");
     const renderUtils = await read("ui/render-utils.js");
     const drawers = await read("ui/drawers.js");
     const topbar = await read("ui/topbar.js");
+    const topbarActionEvents = await read("ui/topbar-action-events.js");
 
     assert.match(html, /id="topicList"/);
     assert.match(html, /id="createTopicButton"/);
     assert.match(html, /id="topicTitleInput"/);
     assert.match(html, /id="chatTitle"/);
+    assert.match(html, /icon-button--refresh/);
     assert.match(html, /id="leftDrawerTopics"/);
     assert.match(html, /refresh-button__wheel/);
     assert.match(html, /id="backToTopics"/);
@@ -252,6 +893,23 @@ await (async () => {
     assert.match(html, /id="drawerRankingPrev"/);
     assert.match(html, /id="drawerRankingCurrent"/);
     assert.match(html, /id="drawerRankingNext"/);
+    assert.match(html, /id="rankingScopeTabs"/);
+    assert.match(html, /id="rankingModeList"/);
+    assert.match(html, /id="drawerRankingScopeTabs"/);
+    assert.match(html, /id="drawerRankingModeList"/);
+    assert.match(html, /id="paletteModalBackdrop"/);
+    assert.match(html, /id="paletteModal"/);
+    assert.match(html, /class="palette-modal__body"/);
+    assert.match(html, /id="paletteOptionGrid"/);
+    assert.match(html, /cdn\.jsdelivr\.net\/gh\/mdbassit\/Coloris@latest\/dist\/coloris\.min\.css/);
+    assert.match(html, /cdn\.jsdelivr\.net\/gh\/mdbassit\/Coloris@latest\/dist\/coloris\.min\.js/);
+    assert.match(html, /localStorage\.getItem\("chetrend-theme"\) \|\| "dark"/);
+    assert.match(html, /localStorage\.getItem\("chetrend-palette"\) \|\| "default"/);
+    assert.match(html, /id="authTools" hidden/);
+    assert.doesNotMatch(html, /5 combinaciones con variante light y dark/);
+    assert.doesNotMatch(html, /Personalizacion/);
+    assert.match(html, /class="brand-mark__icon"[\s\S]*brand-mark__icon-base/);
+    assert.match(html, /class="brand-mark__icon drawer__brand-icon"[\s\S]*brand-mark__icon-base/);
     assert.match(html, /<h3>Usuarios conectados<\/h3>/);
     assert.match(html, /<h3 id="rankingsTitle">Ranking<\/h3>/);
     assert.match(html, /<h3 id="drawerRankingsTitle">Ranking<\/h3>/);
@@ -261,13 +919,124 @@ await (async () => {
     assert.match(styles, /\.topic-item__title,\s*\.topic-item__meta\s*\{[\s\S]*text-overflow:\s*ellipsis;/);
     assert.match(styles, /\.topic-item\s*\{[\s\S]*width:\s*100%;[\s\S]*min-width:\s*0;/);
     assert.match(styles, /\.workspace\s*\{[\s\S]*grid-template-columns:\s*minmax\(275px,\s*1fr\)\s*minmax\(0,\s*1\.78fr\)\s*minmax\(275px,\s*1fr\);/);
+    assert.match(styles, /\.topbar__auth-tools\[hidden\]\s*\{[\s\S]*display:\s*none;/);
     assert.match(styles, /html\.is-desktop-viewport \.panel--topics \.topic-item__title\s*\{[\s\S]*font-size:\s*0\.98rem;/);
+    assert.match(styles, /\.brand-mark__icon\s*\{[\s\S]*color:\s*var\(--accent\);/);
+    assert.match(styles, /\.brand-mark__icon-base\s*\{[\s\S]*fill:\s*currentColor;/);
+    assert.match(styles, /\.brand-mark__icon-stroke\s*\{[\s\S]*stroke:\s*var\(--button-fill-text\);/);
+    assert.match(styles, /:root\s*\{[\s\S]*--ranking-badge-border:\s*color-mix\(in srgb,\s*#f2b97a 62%,\s*var\(--line\)\);/);
+    assert.match(styles, /:root\s*\{[\s\S]*--button-fill-bg:\s*var\(--accent-strong\);/);
+    assert.match(styles, /html\[data-theme="light"\]\[data-palette="coast"\]\s*\{/);
+    assert.match(styles, /html\[data-theme="light"\]\[data-palette="coast"\]\s*\{[\s\S]*--surface:\s*rgba\(205,\s*228,\s*232,\s*0\.86\);[\s\S]*--surface-strong:\s*rgba\(197,\s*221,\s*226,\s*0\.95\);/);
+    assert.match(styles, /\.palette-modal-backdrop\s*\{[\s\S]*position:\s*fixed;[\s\S]*z-index:\s*40;/);
+    assert.match(styles, /\.palette-modal\s*\{[\s\S]*position:\s*relative;[\s\S]*grid-template-rows:\s*auto minmax\(0,\s*1fr\);[\s\S]*overflow:\s*hidden;/);
+    assert.match(styles, /\.palette-modal__body\s*\{[\s\S]*overflow:\s*auto;[\s\S]*padding-right:\s*4px;/);
+    assert.match(styles, /\.palette-grid\s*\{[\s\S]*grid-template-columns:\s*repeat\(2,\s*minmax\(0,\s*1fr\)\);/);
+    assert.match(styles, /\.palette-grid__featured\s*\{[\s\S]*grid-column:\s*1 \/ -1;[\s\S]*grid-template-columns:\s*repeat\(2,\s*minmax\(0,\s*1fr\)\);/);
+    assert.match(styles, /\.palette-option\s*\{[\s\S]*padding:\s*12px;[\s\S]*border-radius:\s*14px;[\s\S]*transition:\s*[\s\S]*border-color 180ms ease,[\s\S]*background-color 180ms ease,[\s\S]*box-shadow 180ms ease;/);
+    assert.match(styles, /\.palette-option:hover,\s*\.palette-option:focus-visible\s*\{[\s\S]*border-color:\s*color-mix\(in srgb,\s*var\(--accent\) 72%,\s*var\(--line\)\);[\s\S]*box-shadow:/);
+    assert.doesNotMatch(styles, /\.palette-option:hover,\s*\.palette-option:focus-visible\s*\{[^}]*transform:/);
+    assert.match(styles, /\.palette-option\.is-active\s*\{[\s\S]*border-color:\s*color-mix\(in srgb,\s*var\(--accent-strong\) 88%,\s*var\(--line\)\);[\s\S]*box-shadow:/);
+    assert.match(styles, /\.palette-option--action\s*\{[\s\S]*place-content:\s*center;/);
+    assert.match(styles, /\.palette-option__controls\s*\{[\s\S]*grid-template-columns:\s*44px minmax\(0,\s*1fr\);/);
+    assert.match(styles, /\.palette-option--custom \.palette-option__modes\s*\{[\s\S]*grid-template-columns:\s*repeat\(2,\s*minmax\(0,\s*1fr\)\);/);
+    assert.match(styles, /\.palette-option__sample-layout\s*\{[\s\S]*grid-template-columns:\s*0\.85fr 1\.2fr 0\.9fr;/);
+    assert.match(styles, /\.palette-option__sample-bubble--accent\s*\{/);
+    assert.match(styles, /\.palette-option__color-preview\s*\{/);
+    assert.match(styles, /\.palette-option__color-preview:hover,\s*\.palette-option__color-preview:focus-visible,\s*\.palette-option__color-preview:focus-within\s*\{[\s\S]*box-shadow:/);
+    assert.match(styles, /\.palette-option__color-swatch\s*\{[\s\S]*var\(--palette-custom-preview\)/);
+    assert.match(styles, /\.palette-option__color-picker-input\s*\{[\s\S]*position:\s*absolute;[\s\S]*opacity:\s*0;/);
+    assert.match(styles, /\.clr-clear\s*\{[\s\S]*display:\s*none !important;/);
+    assert.match(styles, /\.clr-picker\s*\{[\s\S]*grid-template-areas:\s*[\s\S]*"actions actions";/);
+    assert.match(styles, /\.palette-picker__actions\s*\{[\s\S]*grid-template-columns:\s*1fr;[\s\S]*align-items:\s*stretch;/);
+    assert.match(styles, /\.palette-picker__dismiss-button,\s*\.palette-picker__actions \.clr-close\s*\{[\s\S]*min-height:\s*40px;/);
+    assert.match(styles, /\.palette-picker__actions \.clr-close\s*\{[\s\S]*background:\s*var\(--button-fill-bg\);/);
+    assert.match(styles, /\.palette-option__hex-label\s*\{/);
+    assert.match(styles, /\.palette-option__hex-input\s*\{[\s\S]*text-transform:\s*uppercase;/);
+    assert.match(styles, /\.palette-option__sample-surface\s*\{[\s\S]*min-height:\s*68px;/);
+    assert.match(styles, /--palette-modal-scrollbar-thumb:\s*color-mix\(in srgb,\s*var\(--accent\) 74%,\s*var\(--bg\) 26%\);/);
+    assert.match(styles, /\.palette-modal__body::-webkit-scrollbar-thumb\s*\{[\s\S]*background:\s*var\(--palette-modal-scrollbar-thumb\);/);
+    assert.match(styles, /html\[data-custom-picker-open="false"\] \.clr-picker\s*\{[\s\S]*display:\s*none !important;/);
+    assert.match(styles, /html\[data-theme="dark"\]\s*\{[\s\S]*--ranking-badge-border:\s*color-mix\(in srgb,\s*#f2b97a 62%,\s*var\(--line\)\);/);
+    assert.match(styles, /html:not\(\[data-theme="dark"\]\) #profileButton \.button-label,\s*[\s\S]*#themeToggle \.theme-toggle__label,\s*[\s\S]*#paletteButton \.theme-toggle__label,\s*[\s\S]*#contactAdminButton \.button-label\s*\{[\s\S]*color:\s*#000;/);
+    assert.match(styles, /\.message\s*\{[\s\S]*position:\s*relative;[\s\S]*padding:\s*0 0 0 84px;[\s\S]*min-height:\s*84px;[\s\S]*border-radius:\s*0;/);
+    assert.match(styles, /\.message \+ \.message::before\s*\{[\s\S]*top:\s*0;[\s\S]*left:\s*0;[\s\S]*right:\s*0;[\s\S]*height:\s*1px;/);
+    assert.match(styles, /\.message \+ \.message \.message__avatar\s*\{[\s\S]*border-top:\s*1px solid/);
+    assert.match(styles, /\.message__avatar\s*\{[\s\S]*position:\s*absolute;[\s\S]*top:\s*0;[\s\S]*left:\s*0;[\s\S]*width:\s*84px;[\s\S]*height:\s*84px;[\s\S]*border-right:\s*1px solid/);
+    assert.match(styles, /\.message__body\s*\{[\s\S]*display:\s*flex;[\s\S]*flex-direction:\s*column;[\s\S]*padding:\s*14px;/);
+    assert.match(styles, /\.message__meta\s*\{[\s\S]*justify-content:\s*space-between;/);
+    assert.match(styles, /\.message__time\s*\{[\s\S]*margin-left:\s*auto;/);
+    assert.match(styles, /\.panel__title-inline--ranking\s*\{[\s\S]*justify-content:\s*center;/);
+    assert.match(styles, /\.rankings-section\.is-ranking-scrollable \.ranking-list,\s*[\s\S]*overflow:\s*auto;/);
+    assert.match(styles, /\.rankings-section\.is-ranking-scrollable \.ranking-list,\s*[\s\S]*height:\s*100%;/);
+    assert.match(styles, /\.rankings-section\.is-ranking-scrollable \.ranking-list,\s*[\s\S]*max-height:\s*100%;/);
+    assert.match(styles, /\.rankings-section\.is-ranking-scrollable \.ranking-item,\s*[\s\S]*min-height:\s*var\(--ranking-skeleton-item-height,\s*34px\);/);
+    assert.match(styles, /\.ranking-content,\s*\.drawer-ranking-content\s*\{[\s\S]*position:\s*relative;[\s\S]*overflow:\s*hidden;[\s\S]*--ranking-bottom-mask:\s*0px;/);
+    assert.match(styles, /\.ranking-content::after,\s*\.drawer-ranking-content::after\s*\{[\s\S]*height:\s*var\(--ranking-bottom-mask\);/);
+    assert.doesNotMatch(styles, /\.panel__body--drawer-rankings\.is-topic-selected \.ranking-item--rank-1 \.ranking-item__badge--topic/);
+    assert.doesNotMatch(styles, /\.panel__body--drawer-rankings\.is-topic-selected \.ranking-item--rank-2 \.ranking-item__badge--topic/);
+    assert.doesNotMatch(styles, /\.panel__body--drawer-rankings\.is-topic-selected \.ranking-item--rank-3 \.ranking-item__badge--topic/);
+    assert.match(styles, /\.ranking-item__badge\s*\{[\s\S]*border:\s*1px solid var\(--ranking-badge-border\);/);
+    assert.doesNotMatch(styles, /\.ranking-item--global\.ranking-item--rank-1 \.ranking-item__badge\s*\{/);
+    assert.doesNotMatch(styles, /\.ranking-item--global\.ranking-item--rank-2 \.ranking-item__badge\s*\{/);
+    assert.doesNotMatch(styles, /\.ranking-item--global\.ranking-item--rank-3 \.ranking-item__badge\s*\{/);
+    assert.match(styles, /\.panel__body--drawer-rankings\s*\{[\s\S]*grid-template-rows:\s*auto auto minmax\(0,\s*1fr\);/);
+    assert.match(styles, /\.ranking-scope-tabs\s*\{[\s\S]*grid-template-columns:\s*minmax\(0,\s*1fr\)\s*minmax\(0,\s*1fr\);[\s\S]*border-radius:\s*0;/);
+    assert.match(styles, /\.ranking-carousel\s*\{[\s\S]*grid-template-columns:\s*44px minmax\(0,\s*1fr\) 44px;[\s\S]*gap:\s*0;[\s\S]*padding:\s*0;[\s\S]*border-radius:\s*0;/);
+    assert.match(styles, /\.ranking-carousel__nav:hover,\s*\.ranking-carousel__nav:focus-visible\s*\{[\s\S]*background:\s*color-mix\(in srgb,\s*var\(--accent-soft\) 26%,\s*transparent\);[\s\S]*transform:\s*none;/);
+    assert.match(styles, /\.ranking-carousel__nav:active\s*\{[\s\S]*background:\s*color-mix\(in srgb,\s*var\(--accent-soft\) 38%,\s*transparent\);/);
+    assert.match(styles, /html:not\(\[data-theme="dark"\]\) \.ranking-carousel__nav:hover,\s*html:not\(\[data-theme="dark"\]\) \.ranking-carousel__nav:focus-visible\s*\{[\s\S]*background:\s*var\(--button-fill-bg\);/);
+    assert.match(styles, /html:not\(\[data-theme="dark"\]\) \.ranking-carousel__nav:active\s*\{[\s\S]*background:\s*var\(--button-fill-bg-hover\);/);
+    assert.match(styles, /html\[data-theme="dark"\] \.ranking-carousel__nav:hover,\s*html\[data-theme="dark"\] \.ranking-carousel__nav:focus-visible\s*\{[\s\S]*background:\s*var\(--button-fill-bg\);/);
+    assert.match(styles, /html\[data-theme="dark"\] \.ranking-carousel__nav:active\s*\{[\s\S]*background:\s*var\(--button-fill-bg-hover\);/);
+    assert.match(styles, /\.ranking-carousel__current:hover,\s*\.ranking-carousel__current:focus-visible\s*\{[\s\S]*transform:\s*none;/);
+    assert.match(styles, /\.ranking-scope-tabs__button\s*\{[\s\S]*text-transform:\s*uppercase;/);
+    assert.match(styles, /html\[data-theme="light"\]\[data-palette="default"\] \.ranking-scope-tabs\s*\{[\s\S]*background:\s*#fff;[\s\S]*border-color:\s*color-mix\(in srgb,\s*var\(--accent\) 56%,\s*var\(--line\)\);/);
+    assert.match(styles, /html\[data-theme="light"\]\[data-palette="default"\] \.ranking-scope-tabs__button\.is-active[\s\S]*box-shadow:\s*inset 0 -2px 0 var\(--accent\);/);
+    assert.match(styles, /html\[data-theme="light"\]:not\(\[data-palette="default"\]\) \.ranking-scope-tabs\s*\{[\s\S]*background:\s*color-mix\(in srgb,\s*var\(--surface-strong\) 92%,\s*var\(--accent-soft\) 8%\);/);
+    assert.match(styles, /html\[data-theme="light"\]:not\(\[data-palette="default"\]\) \.ranking-scope-tabs__button\.is-active[\s\S]*background:\s*color-mix\(in srgb,\s*var\(--surface-strong\) 74%,\s*var\(--accent-soft\) 26%\);/);
+    assert.match(styles, /html:not\(\[data-theme="dark"\]\) \.ranking-label__main\s*\{[\s\S]*color:\s*var\(--text\);/);
+    assert.match(styles, /html\[data-theme="dark"\] #rankingCurrent,\s*[\s\S]*background:\s*var\(--button-fill-bg\);[\s\S]*color:\s*var\(--button-fill-text\);/);
+    assert.match(styles, /html\.is-mobile-viewport \.drawer--right\s*\{[\s\S]*grid-template-rows:\s*auto minmax\(0,\s*0\.82fr\) minmax\(0,\s*1\.18fr\);/);
+    assert.match(styles, /html\.is-mobile-viewport \.panel__body--drawer-rankings\s*\{[\s\S]*gap:\s*0;/);
+    assert.match(styles, /html\.is-mobile-viewport \.panel__body--drawer-rankings \.drawer-ranking-content,\s*[\s\S]*margin-top:\s*12px;/);
+    assert.match(styles, /@media \(max-height:\s*720px\)\s*\{[\s\S]*html\.is-desktop-viewport\s*\{[\s\S]*--ranking-row-height:\s*29px;[\s\S]*--ranking-list-gap:\s*7px;[\s\S]*--ranking-list-padding-y:\s*8px;/);
+    assert.match(styles, /\.ranking-mode-list__option\s*\{[\s\S]*grid-template-columns:\s*2rem minmax\(0,\s*1fr\);/);
+    assert.match(styles, /\.ranking-mode-list__option\.is-active::before\s*\{[\s\S]*width:\s*12px;/);
+    assert.match(styles, /\.user-item\[data-connected-user-id\]:hover,\s*\.user-item\[data-connected-user-id\]:focus-visible\s*\{/);
+    assert.match(styles, /\.user-item\[data-connected-user-id\]:active\s*\{/);
+    assert.match(styles, /\.user-item\.is-active\s*\{/);
+    assert.match(styles, /html\[data-theme="light"\]\.is-desktop-viewport \.panel--topics \.topics-panel__list-frame\s*\{[\s\S]*border:\s*1px solid/);
+    assert.match(styles, /html\[data-theme="light"\] \.panel--chat,\s*html\[data-theme="light"\] \.panel--users-rankings\s*\{[\s\S]*border:\s*1px solid[\s\S]*box-shadow:\s*none;[\s\S]*backdrop-filter:\s*none;/);
+    assert.match(styles, /html\[data-theme="light"\] \.panel--chat\s*\{[\s\S]*border-top:\s*1px solid[\s\S]*border-top-left-radius:\s*0;[\s\S]*border-top-right-radius:\s*0;[\s\S]*background:\s*var\(--surface-strong\);/);
+    assert.match(styles, /html\[data-theme="light"\] \.panel--chat\.panel--topic-create\s*\{[\s\S]*border-top:\s*0;/);
+    assert.match(styles, /html\[data-theme="light"\] \.panel--chat \.panel__header\s*\{[\s\S]*border-bottom:\s*1px solid/);
+    assert.match(styles, /html\[data-theme="light"\] \.topic-item,\s*html\[data-theme="light"\] \.user-item,\s*html\[data-theme="light"\] \.ranking-item\s*\{[\s\S]*border-color:\s*color-mix/);
+    assert.match(styles, /html\[data-theme="light"\] \.ranking-carousel,\s*html\[data-theme="light"\] \.drawer-ranking__switch\s*\{[\s\S]*border-color:\s*color-mix/);
+    assert.match(styles, /html\[data-theme="light"\] \.composer\s*\{[\s\S]*border-top:\s*1px solid/);
+    assert.match(styles, /input::placeholder,\s*textarea::placeholder\s*\{[\s\S]*color:\s*color-mix\(in srgb,\s*var\(--accent\) 28%,\s*var\(--text-soft\)\);[\s\S]*opacity:\s*1;/);
+    assert.match(styles, /html\[data-theme="light"\] \.composer input,\s*html\[data-theme="light"\] \.composer textarea\s*\{[\s\S]*border:\s*1px solid color-mix/);
+    assert.match(styles, /html\[data-theme="light"\] \.composer--topic-create input,\s*html\[data-theme="light"\] \.composer--topic-create textarea\s*\{[\s\S]*border-radius:\s*0;/);
+    assert.match(styles, /html\[data-theme="light"\] \.message \+ \.message::before\s*\{[\s\S]*height:\s*1px;/);
+    assert.match(styles, /html\[data-theme="light"\] \.rankings-section\s*\{[\s\S]*border-left:\s*0;[\s\S]*border-top:\s*1px solid/);
     assert.match(app, /from "\.\/controller\.js"/);
+    assert.match(components, /createProfileAvatar/);
+    assert.match(components, /message__avatar/);
+    assert.match(components, /message__body/);
+    assert.match(components, /message__time/);
+    assert.match(components, /dataset\.connectedUserId/);
+    assert.match(components, /dataset\.userAction/);
+    assert.match(components, /aria-pressed/);
+    assert.doesNotMatch(components, /getUserRole|Aviso|Invitado/);
     assert.match(controller, /export \{ bootstrap \} from "\.\/controller-app\.js";/);
     assert.match(controllerApp, /from "\.\/ui\/transition-utils\.js"/);
     assert.match(controllerTheme, /export function applyStoredTheme/);
+    assert.match(controllerTheme, /chetrend-palette/);
+    assert.match(controllerTheme, /applyPaletteToDocument/);
+    assert.match(controllerTheme, /chetrend-custom-palette-hex/);
     assert.match(controllerViewport, /export function createBackToTopicsHandler/);
     assert.match(controllerViewport, /export function createResizeHandler/);
+    assert.match(controllerViewport, /syncRankingListHeights/);
     assert.match(controllerApp, /from "\.\/app-store\.js"/);
     assert.match(controllerApp, /from "\.\/ui\/dom\.js"/);
     assert.match(controllerApp, /from "\.\/ui\/events\.js"/);
@@ -278,32 +1047,102 @@ await (async () => {
     assert.doesNotMatch(controllerApp, /function cacheDom|function bindEvents|function renderIntoTargets|function getTransitionDurationMs|function bindTopbarEvents|function toggleTheme|function submitMessage/);
     assert.match(actions, /export function createActionHandlers/);
     assert.match(actions, /createNewTopic/);
+    assert.match(actions, /openPaletteModal/);
+    assert.match(actions, /closePaletteModal/);
+    assert.match(actions, /selectPalette/);
+    assert.match(actions, /ensureCustomPaletteActive/);
+    assert.match(actions, /updateCustomPaletteHex/);
+    assert.match(actions, /randomizeCustomPalette/);
+    assert.match(actions, /activateConnectedUser/);
     assert.match(rankingActions, /from "\.\/ranking-state\.js"/);
     assert.match(rankingState, /export function getActiveRankingStep/);
     assert.match(rankingState, /export function setStoredRankingIndex/);
+    assert.match(palettes, /export const PALETTE_OPTIONS/);
+    assert.match(palettes, /export const DEFAULT_PALETTE_ID/);
+    assert.match(palettes, /export const CUSTOM_PALETTE_ID/);
+    assert.match(palettes, /export function buildCustomPaletteOption/);
+    assert.match(palettes, /export function applyPaletteToDocument/);
+    assert.match(palettes, /export function parseHexColor/);
     assert.match(responsiveController, /export function createResponsiveHelpers/);
     assert.match(renderController, /export function createRenderers/);
+    assert.match(renderController, /renderPaletteModal/);
     assert.match(chat, /renderChat/);
+    assert.match(chat, /panel--topic-create/);
     assert.match(rankings, /renderRankings/);
     assert.match(rankings, /getActiveRankingStep/);
+    assert.match(rankings, /syncRankingListHeights/);
+    assert.match(rankings, /syncRankingSkeletonHeights/);
+    assert.match(rankingPanelState, /export function syncRankingListHeights/);
+    assert.match(rankingPanelState, /export function syncRankingSkeletonHeights/);
+    assert.match(rankingPanelState, /export function clearRankingListHeights/);
+    assert.match(rankingPanelState, /ranking-skeleton-item-height/);
+    assert.match(rankingPanelState, /getBoundingClientRect/);
     assert.match(rankingLabels, /getActiveRankingStep/);
+    assert.match(rankingLabels, /getRankingOptions/);
     assert.match(rankingIcons, /getActiveRankingStep/);
+    assert.match(paletteModal, /renderPaletteModal/);
+    assert.match(paletteModal, /palette-grid__featured/);
+    assert.match(paletteModal, /data-randomize-custom-palette/);
+    assert.match(paletteModal, /palette-option__sample-layout/);
+    assert.match(paletteModal, /palette-option__sample-bubble--accent/);
+    assert.match(paletteModal, /data-custom-palette-hex/);
+    assert.match(paletteModal, /palette-option__color-preview/);
+    assert.match(paletteModal, /data-open-custom-palette-picker/);
+    assert.match(paletteModal, /data-custom-palette-picker/);
+    assert.match(paletteModal, /data-custom-palette-card/);
+    assert.doesNotMatch(paletteModal, /data-accept-custom-palette/);
+    assert.match(paletteModal, /closeButton:\s*true/);
+    assert.match(paletteModal, /closeLabel:\s*"Aceptar"/);
+    assert.match(paletteModal, /syncCustomPalettePicker/);
+    assert.doesNotMatch(paletteModal, /palette-option__description/);
     assert.match(titles, /renderTitles/);
     assert.match(topics, /renderTopics/);
     assert.match(users, /renderUsers/);
     assert.match(domModule, /export function cacheDom/);
     assert.match(domModule, /chatTitle/);
     assert.match(domModule, /topicTitleInput/);
+    assert.match(domModule, /rankingScopeTabs/);
+    assert.match(domModule, /drawerRankingModeList/);
+    assert.match(domModule, /paletteModalBackdrop/);
+    assert.match(domModule, /paletteOptionGrid/);
     assert.match(domModule, /assertRequiredDom/);
     assert.match(domModule, /Missing required DOM nodes/);
     assert.match(eventsModule, /export function bindPageEvents/);
+    assert.match(eventsModule, /Coloris\.close/);
+    assert.match(eventsModule, /activateConnectedUser/);
+    assert.match(eventsModule, /data-connected-user-id/);
+    assert.match(eventsModule, /data-user-action/);
     assert.match(renderUtils, /renderIntoTargets/);
     assert.match(drawers, /getTransitionDurationMs/);
     assert.match(topbar, /bindTopbarEvents/);
+    assert.match(topbarActionEvents, /openPaletteModal/);
+    assert.match(topbarActionEvents, /closePaletteModal/);
+    assert.match(topbarActionEvents, /updateCustomPaletteHex/);
+    assert.match(topbarActionEvents, /randomizeCustomPalette/);
+    assert.match(topbarActionEvents, /data-open-custom-palette-picker/);
+    assert.match(topbarActionEvents, /data-custom-palette-picker/);
+    assert.match(topbarActionEvents, /data-custom-palette-card/);
+    assert.match(topbarActionEvents, /CUSTOM_PALETTE_ID/);
+    assert.match(topbarActionEvents, /bindPickerLifecycle/);
+    assert.match(topbarActionEvents, /bindPickerActionButtons/);
+    assert.match(topbarActionEvents, /requestPickerClose/);
+    assert.match(topbarActionEvents, /applyPickerClose/);
+    assert.match(topbarActionEvents, /dismissPaletteModal/);
+    assert.match(topbarActionEvents, /data-dismiss-custom-palette-picker/);
+    assert.match(topbarActionEvents, /sanitizeHexDraft/);
+    assert.match(topbarActionEvents, /syncAuthUi/);
+    assert.match(topbarActionEvents, /dom\.authTools\.hidden = !isLoggedIn/);
+    assert.match(topbarActionEvents, /addListener\(dom\.authButton,\s*"click"/);
+    assert.match(topbarActionEvents, /label\.textContent = isLoggedIn \? "Cerrar Sesión" : "Iniciar Sesión"/);
     assert.match(store, /export \{ state \} from "\.\/state-store\.js";/);
     assert.match(store, /export \{ dom \} from "\.\/dom-store\.js";/);
     assert.match(store, /export \{ closeTimerRef \} from "\.\/timer-store\.js";/);
     assert.match(stateStore, /export const state/);
+    assert.match(stateStore, /theme:\s*"dark"/);
+    assert.match(stateStore, /paletteId:\s*"default"/);
+    assert.match(stateStore, /customPaletteHex:\s*"#B25B33"/);
+    assert.match(stateStore, /isPaletteModalOpen:\s*false/);
+    assert.match(stateStore, /activeConnectedUserId:\s*null/);
     assert.doesNotMatch(stateStore, /\brankingType\b|\brankingMetric\b|\brankingIndex\b/);
     assert.match(domStore, /export const dom/);
     assert.match(timerStore, /export const closeTimerRef/);

@@ -1,10 +1,21 @@
 import { getActiveRankingIndex, getStoredRankingIndex, setStoredRankingIndex } from "./ranking-state.js";
 
 export function createRankingActions({ state, isMobileViewport, syncResponsiveView, render }) {
-  function toggleRankingScope() {
-    state.rankingScope = state.rankingScope === "global" ? "topic" : "global";
+  function setRankingScope(scope) {
+    if (scope !== "global" && scope !== "topic") {
+      return;
+    }
+    if (state.rankingScope === scope) {
+      return;
+    }
+
+    state.rankingScope = scope;
     setStoredRankingIndex(state, getStoredRankingIndex(state));
     render();
+  }
+
+  function toggleRankingScope() {
+    setRankingScope(state.rankingScope === "global" ? "topic" : "global");
   }
 
   function focusTopic(topicId) {
@@ -26,8 +37,10 @@ export function createRankingActions({ state, isMobileViewport, syncResponsiveVi
   }
 
   return {
+    setRankingScope,
     toggleRankingScope,
     focusTopic,
-    setRankingStep
+    setRankingStep,
+    selectRankingStep: applyRankingStep
   };
 }

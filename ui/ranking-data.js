@@ -111,6 +111,7 @@ function getScopedTopics(topics, selectedTopicId, scope) {
 export function buildPostRankingEntries(topics, users, currentUserId, metric = "comments", selectedTopicId = null, scope = "global") {
   const scopedTopics = getScopedTopics(topics, selectedTopicId, scope);
   const counts = metric === "likes" ? countTopicLikes(scopedTopics) : countTopicComments(scopedTopics);
+  const limit = scope === "topic" ? 10 : 10;
   return buildTopicRankingEntries(
     scopedTopics,
     counts,
@@ -118,7 +119,7 @@ export function buildPostRankingEntries(topics, users, currentUserId, metric = "
     metric === "likes"
       ? "Todavía no hay likes para clasificar."
       : "Todavía no hay comentarios para clasificar.",
-    3,
+    limit,
     (count) => (metric === "likes" ? `${count} likes` : formatCommentCount(count))
   );
 }
@@ -126,7 +127,7 @@ export function buildPostRankingEntries(topics, users, currentUserId, metric = "
 export function buildUserRankingEntries(topics, users, currentUserId, metric = "comments", selectedTopicId = null, scope = "global") {
   const scopedTopics = getScopedTopics(topics, selectedTopicId, scope);
   const counts = metric === "likes" ? countUserLikes(scopedTopics) : countUserComments(scopedTopics);
-  const limit = scope === "topic" ? 10 : 3;
+  const limit = scope === "topic" ? 10 : 10;
   return buildRankingEntries(
     counts,
     users,
