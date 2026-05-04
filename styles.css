@@ -3466,6 +3466,8 @@ html.is-mobile-viewport .panel--topics {
 }
 
 html.is-mobile-viewport .topics-panel__body {
+  display: flex;
+  flex-direction: column-reverse;
   gap: 0;
 }
 
@@ -3475,7 +3477,14 @@ html.is-mobile-viewport .topics-panel__list-frame {
 }
 
 html.is-mobile-viewport .topics-panel__footer {
-  display: none;
+  display: flex;
+  padding: 14px 16px;
+  border-bottom: 1px solid var(--line);
+}
+
+html.is-mobile-viewport .topics-panel__create-button {
+  width: 100%;
+  justify-content: center;
 }
 
 html.is-mobile-viewport .mobile-topic-stage {

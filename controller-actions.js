@@ -1,5 +1,6 @@
 import { createChatActions } from "./controller-chat-actions.js";
 import { createRankingActions } from "./controller-ranking-actions.js";
+import { dispatch, reducers } from "./store-logic.js";
 import {
   applyPaletteToDocument,
   CUSTOM_PALETTE_ID,
@@ -152,7 +153,7 @@ export function createActionHandlers({
   }
 
   function toggleTheme() {
-    state.theme = state.theme === "light" ? "dark" : "light";
+    dispatch(state, reducers.setTheme, state.theme === "light" ? "dark" : "light");
     applyPalette();
     if (typeof localStorage !== "undefined") {
       localStorage.setItem("chetrend-theme", state.theme);
@@ -185,7 +186,7 @@ export function createActionHandlers({
       return;
     }
 
-    state.paletteId = paletteId || DEFAULT_PALETTE_ID;
+    dispatch(state, reducers.setPalette, { paletteId: paletteId || DEFAULT_PALETTE_ID });
     applyPalette();
     persistPaletteState();
     render();
@@ -236,7 +237,7 @@ export function createActionHandlers({
       return;
     }
 
-    state.activeConnectedUserId = userId;
+    dispatch(state, reducers.setActiveUser, userId);
     render();
 
     if (action === "profile") {

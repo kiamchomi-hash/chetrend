@@ -1,4 +1,5 @@
 import { getActiveRankingIndex, getStoredRankingIndex, setStoredRankingIndex } from "./ranking-state.js";
+import { dispatch, reducers } from "./store-logic.js";
 
 export function createRankingActions({ state, isMobileViewport, syncResponsiveView, render }) {
   function setRankingScope(scope) {
@@ -9,7 +10,8 @@ export function createRankingActions({ state, isMobileViewport, syncResponsiveVi
       return;
     }
 
-    state.rankingScope = scope;
+    dispatch(state, reducers.setRankingScope, scope);
+    // setStoredRankingIndex handles normalization and cross-scope index preservation
     setStoredRankingIndex(state, getStoredRankingIndex(state));
     render();
   }
@@ -19,15 +21,17 @@ export function createRankingActions({ state, isMobileViewport, syncResponsiveVi
   }
 
   function focusTopic(topicId) {
-    state.selectedTopicId = topicId;
+    dispatch(state, reducers.setSelectedTopic, topicId);
     if (isMobileViewport()) {
-      state.mobileView = "chat";
+      dispatch(state, reducers.setMobileView, "chat");
       syncResponsiveView();
     }
     render();
   }
 
   function applyRankingStep(index) {
+    // We still use setStoredRankingIndex helper as it has the normalization logic,
+    // but we could also move it to a reducer later.
     setStoredRankingIndex(state, index);
     render();
   }

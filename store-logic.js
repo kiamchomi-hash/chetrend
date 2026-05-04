@@ -1,0 +1,94 @@
+/**
+ * Store logic for immutable-like state updates.
+ * These functions follow the pattern: (state, payload) => nextState
+ */
+
+export const reducers = {
+  setTheme: (state, theme) => ({
+    ...state,
+    theme
+  }),
+
+  setPalette: (state, { paletteId, customPaletteHex }) => ({
+    ...state,
+    paletteId,
+    customPaletteHex: customPaletteHex ?? state.customPaletteHex
+  }),
+
+  setSelectedTopic: (state, selectedTopicId) => ({
+    ...state,
+    selectedTopicId,
+    // Reset message flow state if needed
+    activeConnectedUserId: null
+  }),
+
+  setRankingScope: (state, rankingScope) => ({
+    ...state,
+    rankingScope
+  }),
+
+  setRankingIndex: (state, { scope, index }) => ({
+    ...state,
+    [scope === "global" ? "globalRankingIndex" : "topicRankingIndex"]: index
+  }),
+
+  setActiveUser: (state, userId) => ({
+    ...state,
+    activeConnectedUserId: userId
+  }),
+
+  addMessageToTopic: (state, { topicId, message }) => ({
+    ...state,
+    topics: state.topics.map((topic) =>
+      topic.id === topicId
+        ? { ...topic, messages: [...topic.messages, message] }
+        : topic
+    )
+  }),
+
+  setLoadingData: (state, { users, topics }) => ({
+    ...state,
+    users,
+    topics
+  }),
+
+  createTopic: (state, topic) => ({
+    ...state,
+    topics: [topic, ...state.topics],
+    selectedTopicId: topic.id
+  }),
+
+  incrementRefreshCount: (state) => ({
+    ...state,
+    refreshCount: state.refreshCount + 1
+  }),
+
+  setMobileView: (state, mobileView) => ({
+    ...state,
+    mobileView
+  })
+};
+
+/**
+ * Applies a reducer and updates the state object reference.
+ * While we want immutability for the logic, the app currently shares
+ * a single state object. This helper bridges both worlds.
+ */
+export function dispatch(state, reducer, payload) {
+  const reducerName = reducer.name || "anonymous";
+  const prevState = { ...state };
+  const nextState = reducer(state, payload);
+  
+  Object.assign(state, nextState);
+
+  // Simple DX Logger
+  if (globalThis.DEBUG_STATE) {
+    console.group(`[STORE] ${reducerName}`);
+    console.log("Prev State:", prevState);
+    console.log("Payload:", payload);
+    console.log("Next State:", state);
+    console.groupEnd();
+  }
+
+  return state;
+}

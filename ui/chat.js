@@ -1,5 +1,6 @@
 import { createMessageItem } from "../components.js";
 import { getSelectedTopic } from "../model.js";
+import { renderIntoTargets } from "./render-utils.js";
 
 export function renderChat(state, dom) {
   const topic = getSelectedTopic(state.topics, state.selectedTopicId);
@@ -18,14 +19,17 @@ export function renderChat(state, dom) {
   }
 
   dom.messageStream.hidden = isLoading || !topic;
-  dom.messageStream.innerHTML = "";
   if (!topic) {
+    if (dom.messageStream) {
+      dom.messageStream.innerHTML = "";
+    }
     return;
   }
 
-  topic.messages.forEach((message) => {
-    dom.messageStream.appendChild(createMessageItem(message, state.users));
+  renderIntoTargets([dom.messageStream], "message-stream", () => {
+    return topic.messages.map((message) => createMessageItem(message, state.users));
   });
+
   syncMessageCardHeights(dom.messageStream);
   dom.messageStream.scrollTop = dom.messageStream.scrollHeight;
 }

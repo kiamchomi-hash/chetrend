@@ -7,7 +7,7 @@ export function renderTopics(state, dom, onFocusTopic) {
 
   renderIntoTargets([dom.topicList, dom.leftDrawerTopics], "scroll-list topic-list", () => {
     if (isLoading) {
-      return Array.from({ length: 20 }, () => createTopicSkeleton());
+      return Array.from({ length: 20 }, (_, i) => createTopicSkeleton(i));
     }
 
     return topics.map((topic) => {

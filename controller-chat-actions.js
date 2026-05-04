@@ -1,4 +1,5 @@
 import { createMessage, createTopic, getSelectedTopic, trimMessages } from "./model.js";
+import { dispatch, reducers } from "./store-logic.js";
 
 export function createChatActions({ state, dom, render, refreshFeedbackMs = 750 }) {
   let refreshFeedbackTimer = 0;
@@ -34,8 +35,7 @@ export function createChatActions({ state, dom, render, refreshFeedbackMs = 750 
       }
 
       const createdTopic = createTopic(state.currentUserId, title, text);
-      state.topics = [createdTopic, ...state.topics];
-      state.selectedTopicId = createdTopic.id;
+      dispatch(state, reducers.createTopic, createdTopic);
       if (titleInput) {
         titleInput.value = "";
       }
@@ -44,19 +44,28 @@ export function createChatActions({ state, dom, render, refreshFeedbackMs = 750 
       return;
     }
 
-    topic.messages.push(createMessage(state.currentUserId, text, 0));
-    topic.messages = trimMessages(topic.messages);
+    const newMessage = createMessage(state.currentUserId, text, 0);
+    dispatch(state, reducers.addMessageToTopic, {
+      topicId: topic.id,
+      message: newMessage
+    });
+    // Trim messages logic should probably be in the reducer or model, 
+    // but for now let's ensure the state reflects it.
+    const updatedTopic = getSelectedTopic(state.topics, state.selectedTopicId);
+    if (updatedTopic) {
+      updatedTopic.messages = trimMessages(updatedTopic.messages);
+    }
+
     input.value = "";
     render();
   }
-
   function refreshCurrentTopic() {
     const topic = getSelectedTopic(state.topics, state.selectedTopicId);
     if (!topic) {
       return;
     }
 
-    state.refreshCount += 1;
+    dispatch(state, reducers.incrementRefreshCount);
     if (refreshFeedbackTimer) {
       clearTimeout(refreshFeedbackTimer);
     }
@@ -69,7 +78,7 @@ export function createChatActions({ state, dom, render, refreshFeedbackMs = 750 
   }
 
   function createNewTopic() {
-    state.selectedTopicId = null;
+    dispatch(state, reducers.setSelectedTopic, null);
     if (dom.topicTitleInput) {
       dom.topicTitleInput.value = "";
     }

@@ -1,3 +1,5 @@
+import { createAvatarIcon as createProfileAvatar, createIcon } from "./ui/icons.js";
+
 function el(tag, className, text) {
   const node = document.createElement(tag);
   if (className) {
@@ -13,38 +15,10 @@ function getUserName(users, userId, fallback = "Anonimo") {
   return users.find((user) => user.id === userId)?.name ?? fallback;
 }
 
-function createProfileAvatar(className = "topic-item__avatar") {
-  const avatar = el("span", className);
-  avatar.setAttribute("aria-hidden", "true");
-
-  const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
-  svg.setAttribute("viewBox", "0 0 48 48");
-  svg.setAttribute("fill", "none");
-  svg.setAttribute("aria-hidden", "true");
-
-  const rect = document.createElementNS("http://www.w3.org/2000/svg", "rect");
-  rect.setAttribute("x", "4");
-  rect.setAttribute("y", "4");
-  rect.setAttribute("width", "40");
-  rect.setAttribute("height", "40");
-  rect.setAttribute("rx", "10");
-
-  const circle = document.createElementNS("http://www.w3.org/2000/svg", "circle");
-  circle.setAttribute("cx", "24");
-  circle.setAttribute("cy", "18");
-  circle.setAttribute("r", "7");
-
-  const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
-  path.setAttribute("d", "M11.5 38c2.6-6.2 7.7-9.3 12.5-9.3S33.9 31.8 36.5 38");
-
-  svg.append(rect, circle, path);
-  avatar.appendChild(svg);
-  return avatar;
-}
-
 export function createTopicItem(topic, users, selected = false) {
   const button = el("button", `topic-item${selected ? " is-active" : ""}`);
   button.type = "button";
+  button.dataset.id = topic.id;
 
   const topicCommentCount = topic.messages.filter((message) => message.kind === "user").length;
   const lastCommentAuthor = [...topic.messages].reverse().find((message) => message.kind === "user");
@@ -63,10 +37,11 @@ export function createTopicItem(topic, users, selected = false) {
   return button;
 }
 
-export function createTopicSkeleton() {
+export function createTopicSkeleton(index) {
   const button = el("button", "topic-item topic-item--skeleton");
   button.type = "button";
   button.disabled = true;
+  button.dataset.id = `skeleton-topic-${index}`;
 
   const avatar = createProfileAvatar();
   const content = el("span", "topic-item__content");
@@ -79,8 +54,9 @@ export function createTopicSkeleton() {
   return button;
 }
 
-export function createUserSkeleton() {
+export function createUserSkeleton(index) {
   const node = el("article", "user-item user-item--skeleton");
+  node.dataset.id = `skeleton-user-${index}`;
   const info = el("div", "user-item__info");
   info.append(el("div", "user-item__skeleton-line"));
 
@@ -96,6 +72,7 @@ export function createUserSkeleton() {
 
 export function createRankingSkeleton(index) {
   const node = el("article", `ranking-item ranking-item--skeleton ranking-item--rank-${index + 1}`);
+  node.dataset.id = `skeleton-ranking-${index}`;
   const badge = el("span", "ranking-item__badge");
   badge.setAttribute("aria-hidden", "true");
 
@@ -111,6 +88,7 @@ export function createRankingSkeleton(index) {
 
 export function createMessageItem(message, users) {
   const node = el("article", `message${message.kind === "system" ? " message--system" : ""}`);
+  node.dataset.id = message.id;
   const author = message.kind === "system" ? "Sistema" : getUserName(users, message.authorId);
   const avatar = createProfileAvatar("message__avatar");
   const body = el("div", "message__body");
@@ -134,6 +112,7 @@ export function createUserItem(user, currentUserId, activeConnectedUserId = null
   node.setAttribute("role", "button");
   node.setAttribute("aria-pressed", String(isActive));
   node.setAttribute("aria-label", `${user.name}${isCurrentUser ? ", usuario actual" : ""}`);
+  node.dataset.id = user.id;
   node.dataset.connectedUserId = user.id;
 
   const info = el("div", "user-item__info");
@@ -156,32 +135,9 @@ function createUserActionButton(label, kind) {
   button.title = label;
   button.dataset.userAction = kind;
 
-  const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
-  svg.setAttribute("viewBox", "0 0 24 24");
-  svg.setAttribute("fill", "none");
-  svg.setAttribute("aria-hidden", "true");
-
-  if (kind === "profile") {
-    const head = document.createElementNS("http://www.w3.org/2000/svg", "circle");
-    head.setAttribute("cx", "12");
-    head.setAttribute("cy", "8.5");
-    head.setAttribute("r", "3.2");
-
-    const shoulders = document.createElementNS("http://www.w3.org/2000/svg", "path");
-    shoulders.setAttribute("d", "M5.5 19c1.4-3.6 4-5.4 6.5-5.4s5.1 1.8 6.5 5.4");
-
-    svg.append(head, shoulders);
-  } else {
-    const bubble = document.createElementNS("http://www.w3.org/2000/svg", "path");
-    bubble.setAttribute("d", "M5 6.5h14v8H9.2L6 17.5V14.5H5z");
-
-    const dot = document.createElementNS("http://www.w3.org/2000/svg", "path");
-    dot.setAttribute("d", "M9 10h6");
-
-    svg.append(bubble, dot);
-  }
-
-  button.appendChild(svg);
+  const iconName = kind === "profile" ? "userProfile" : "userMessage";
+  button.appendChild(createIcon(iconName));
+  
   return button;
 }
 
@@ -190,6 +146,7 @@ export function createRankingItem(entry, index, scope = "global") {
     "article",
     `ranking-item ranking-item--rank-${index + 1}${scope === "global" ? " ranking-item--global" : ""}${entry.active ? " is-active" : ""}`
   );
+  node.dataset.id = entry.id;
   const badge = el("span", "ranking-item__badge", String(index + 1));
   badge.setAttribute("aria-hidden", "true");
   if (scope === "topic") {

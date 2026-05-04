@@ -14,7 +14,7 @@ export function renderUsers(state, dom) {
 
   renderIntoTargets([dom.userList, dom.drawerUserList], "scroll-list user-list", () => {
     if (isLoading) {
-      return Array.from({ length: 10 }, () => createUserSkeleton());
+      return Array.from({ length: 10 }, (_, i) => createUserSkeleton(i));
     }
     return ordered.map((user) => createUserItem(user, state.currentUserId, state.activeConnectedUserId));
   });

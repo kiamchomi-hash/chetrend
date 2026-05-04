@@ -61,76 +61,65 @@ const REQUIRED_DOM_KEYS = [
   "rightDrawer"
 ];
 
+const DOM_IDS = [
+  "themeToggle", "refreshButton", "chatTitle", "messageForm",
+  "rankingPrev", "rankingCurrent", "rankingNext",
+  "drawerRankingPrev", "drawerRankingCurrent", "drawerRankingNext",
+  "openRightDrawer", "drawerBackdrop", "profileButton", "backToTopics",
+  "authTools", "friendRequestsButton", "notificationsButton", "messagesButton",
+  "authButton", "storeButton", "paletteButton", "paletteModalBackdrop",
+  "paletteModal", "paletteOptionGrid", "closePaletteModalButton",
+  "chatTopicName", "chatTopicDescription", "rankingsTitle",
+  "rankingScopeTabs", "rankingModeList", "rankingsGlyph",
+  "rankingScopeButton", "rankingScopeIcon", "rankingsEmpty",
+  "drawerRankingsTitle", "drawerRankingScopeTabs", "drawerRankingModeList",
+  "drawerRankingsGlyph", "drawerRankingScopeButton", "drawerRankingScopeIcon",
+  "drawerRankingsEmpty", "topicTitleInput", "messageInput", "messageStream",
+  "topicList", "createTopicButton", "leftDrawerTopics", "userList",
+  "drawerUserList", "rankingList", "drawerRankingList", "leftDrawer", "rightDrawer"
+];
+
 export function cacheDom() {
-  const cached = {
+  const baseCache = {
     shell: document.querySelector(".shell"),
     workspace: document.querySelector(".workspace"),
     topbar: document.querySelector(".topbar"),
-    themeToggle: document.getElementById("themeToggle"),
-    refreshButton: document.getElementById("refreshButton"),
-    chatTitle: document.getElementById("chatTitle"),
-    messageForm: document.getElementById("messageForm"),
-    rankingPrev: document.getElementById("rankingPrev"),
-    rankingCurrent: document.getElementById("rankingCurrent"),
-    rankingNext: document.getElementById("rankingNext"),
-    drawerRankingPrev: document.getElementById("drawerRankingPrev"),
-    drawerRankingCurrent: document.getElementById("drawerRankingCurrent"),
-    drawerRankingNext: document.getElementById("drawerRankingNext"),
-    openRightDrawer: document.getElementById("openRightDrawer"),
-    drawerBackdrop: document.getElementById("drawerBackdrop"),
-    profileButton: document.getElementById("profileButton"),
-    backToTopics: document.getElementById("backToTopics"),
-    authTools: document.getElementById("authTools"),
-    friendRequestsButton: document.getElementById("friendRequestsButton"),
-    notificationsButton: document.getElementById("notificationsButton"),
-    messagesButton: document.getElementById("messagesButton"),
-    authButton: document.getElementById("authButton"),
-    storeButton: document.getElementById("storeButton"),
-    paletteButton: document.getElementById("paletteButton"),
-    paletteModalBackdrop: document.getElementById("paletteModalBackdrop"),
-    paletteModal: document.getElementById("paletteModal"),
-    paletteOptionGrid: document.getElementById("paletteOptionGrid"),
-    closePaletteModalButton: document.getElementById("closePaletteModalButton"),
-    chatTopicName: document.getElementById("chatTopicName"),
-    chatTopicDescription: document.getElementById("chatTopicDescription"),
-    rankingsTitle: document.getElementById("rankingsTitle"),
-    rankingScopeTabs: document.getElementById("rankingScopeTabs"),
-    rankingModeList: document.getElementById("rankingModeList"),
-    rankingsGlyph: document.getElementById("rankingsGlyph"),
-    rankingScopeButton: document.getElementById("rankingScopeButton"),
-    rankingScopeIcon: document.getElementById("rankingScopeIcon"),
-    rankingsEmpty: document.getElementById("rankingsEmpty"),
     rankingsBody: document.querySelector(".panel__body--users-rankings .rankings-section"),
-    rankingsPanel: document.getElementById("rankingsTitle")?.closest(".panel--users-rankings"),
-    rankingCarousel: document.getElementById("rankingPrev")?.closest(".ranking-carousel"),
-    drawerRankingsTitle: document.getElementById("drawerRankingsTitle"),
-    drawerRankingScopeTabs: document.getElementById("drawerRankingScopeTabs"),
-    drawerRankingModeList: document.getElementById("drawerRankingModeList"),
-    drawerRankingsGlyph: document.getElementById("drawerRankingsGlyph"),
-    drawerRankingScopeButton: document.getElementById("drawerRankingScopeButton"),
-    drawerRankingScopeIcon: document.getElementById("drawerRankingScopeIcon"),
-    drawerRankingsEmpty: document.getElementById("drawerRankingsEmpty"),
     drawerRankingsBody: document.querySelector(".panel__body--drawer-rankings"),
-    topicTitleInput: document.getElementById("topicTitleInput"),
-    messageInput: document.getElementById("messageInput"),
-    messageStream: document.getElementById("messageStream"),
-    topicList: document.getElementById("topicList"),
-    createTopicButton: document.getElementById("createTopicButton"),
-    leftDrawerTopics: document.getElementById("leftDrawerTopics"),
-    userList: document.getElementById("userList"),
-    drawerUserList: document.getElementById("drawerUserList"),
-    rankingList: document.getElementById("rankingList"),
-    drawerRankingList: document.getElementById("drawerRankingList"),
-    leftDrawer: document.getElementById("leftDrawer"),
-    rightDrawer: document.getElementById("rightDrawer"),
     drawerCloseButtons: Array.from(document.querySelectorAll("[data-close-drawer]"))
   };
 
-  cached.drawerRankingsSection = cached.drawerRankingList?.closest(".drawer__section") ?? null;
-  cached.drawerRankingSwitch = cached.drawerRankingPrev?.closest(".drawer-ranking__switch") ?? null;
+  // Pre-populate with known IDs for performance
+  DOM_IDS.forEach((id) => {
+    baseCache[id] = document.getElementById(id);
+  });
 
-  assertRequiredDom(cached);
-  return cached;
+  const domProxy = new Proxy(baseCache, {
+    get(target, prop) {
+      if (target[prop] !== undefined) {
+        return target[prop];
+      }
+
+      // If not in cache, try to find it by ID
+      if (typeof prop === "string") {
+        const element = document.getElementById(prop);
+        if (element) {
+          target[prop] = element;
+          return element;
+        }
+      }
+
+      return undefined;
+    }
+  });
+
+  domProxy.rankingsPanel = domProxy.rankingsTitle?.closest(".panel--users-rankings") ?? null;
+  domProxy.rankingCarousel = domProxy.rankingPrev?.closest(".ranking-carousel") ?? null;
+  domProxy.drawerRankingsSection = domProxy.drawerRankingList?.closest(".drawer__section") ?? null;
+  domProxy.drawerRankingSwitch = domProxy.drawerRankingPrev?.closest(".drawer-ranking__switch") ?? null;
+
+  assertRequiredDom(domProxy);
+  return domProxy;
 }
 
 function assertRequiredDom(cached) {
